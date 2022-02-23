@@ -6,6 +6,7 @@ Description: A Pytorch Dataset for geotiff images that dynamically crops the ima
 """
 
 import itertools
+from pathlib import Path
 from typing import Callable, List, Optional, Tuple, Union
 
 import numpy as np
@@ -14,12 +15,8 @@ from torch.utils.data import IterableDataset
 
 
 class GeotiffReader(IterableDataset):
-    def __init__(self,
-                 img_path: Union[str, 'Path'],
-                 crop_size: int,
-                 padding: Optional[int] = 0,
-                 fill_value: Optional[Union[int, float]] = None,
-                 transform: Optional[Callable] = None,
+    def __init__(self, img_path: Union[str, 'Path'], crop_size: int, padding: Optional[int] = 0,
+                 fill_value: Optional[Union[int, float]] = None, transform: Optional[Callable] = None,
                  filter_: Optional[Callable] = None):
         """A Pytorch dataset that returns cropped segments of a tif image file.
 
@@ -103,8 +100,7 @@ class GeotiffReader(IterableDataset):
                     crop = self._get_crop(self.idx)
                     self.idx += 1
 
-                    unpadded = crop[self.padding:self.crop_size + self.padding,
-                                    self.padding:self.crop_size + self.padding]
+                    unpadded = crop[self.padding:self.crop_size + self.padding, self.padding:self.crop_size + self.padding]
                     if self.filter is None or self.filter(unpadded):
                         break
 

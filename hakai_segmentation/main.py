@@ -15,9 +15,8 @@ from hakai_segmentation.models import KelpPresenceSegmentationModel, \
 
 
 class GeotiffSegmentation:
-    def __init__(self, model: '_Model', input_path: Union[str, 'Path'],
-                 output_path: Union[str, 'Path'],
-                 crop_size: int = 256, padding: int = 128, batch_size: int = 2):
+    def __init__(self, model: '_Model', input_path: Union[str, 'Path'], output_path: Union[str, 'Path'], crop_size: int = 256,
+                 padding: int = 128, batch_size: int = 2):
         self.model = model
 
         tran = transforms.Compose([
@@ -70,17 +69,12 @@ class GeotiffSegmentation:
     def on_start(self):
         # Check data type assumptions
         if self.reader.raster.nodata is None:
-            warnings.warn(
-                "Define the correct nodata value on the input raster to speed up processing.",
-                UserWarning)
+            warnings.warn("Define the correct nodata value on the input raster to speed up processing.", UserWarning)
         if (dtype := self.reader.raster.dtypes[0]) != 'uint8':
-            raise AssertionError(
-                f"Input image has incorrect data type {dtype}. "
-                f"Only uint8 (aka Byte) images are supported.")
+            raise AssertionError(f"Input image has incorrect data type {dtype}. Only uint8 (aka Byte) images are supported.")
         if self.reader.raster.count < 3:
-            raise AssertionError(
-                f"Input image has less than 3 bands. "
-                f"The image should have at least 3 bands, with the first three being in RGB order.")
+            raise AssertionError("Input image has less than 3 bands. "
+                                 "The image should have at least 3 bands, with the first three being in RGB order.")
 
         # Setup progress bar
         self.progress = tqdm(

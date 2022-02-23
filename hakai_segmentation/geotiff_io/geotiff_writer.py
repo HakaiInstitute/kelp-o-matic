@@ -6,19 +6,17 @@ Description: A Pytorch Dataset for geotiff images that dynamically crops the ima
 """
 
 import itertools
+from pathlib import Path
 from typing import Union
 
 import numpy as np
 import rasterio
 
+from hakai_segmentation.geotiff_io import GeotiffReader
+
 
 class GeotiffWriter:
-    def __init__(self,
-                 img_path: Union[str, 'Path'],
-                 profile: dict,
-                 crop_size: int,
-                 padding: int = 0,
-                 **kwargs):
+    def __init__(self, img_path: Union[str, 'Path'], profile: dict, crop_size: int, padding: int = 0, **kwargs):
         """Write a tif file in small sections.
 
         Args:
