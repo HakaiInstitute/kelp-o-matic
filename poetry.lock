@@ -340,8 +340,8 @@ python-versions = ">=3.6"
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.8"
-content-hash = "c3a03084b8a8696340379db6477ac5aba7e94fc5f30503869349de8a6723200b"
+python-versions = ">=3.8,<3.10"
+content-hash = "be6e0786670304758ce68bf9044eda506663a6bda45de6c71327f597799c89b3"
 
 [metadata.files]
 affine = [
