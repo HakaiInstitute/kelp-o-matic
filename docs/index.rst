@@ -1,7 +1,7 @@
 Welcome to Hakai Segmentation's documentation!
 ==============================================
 
-.. automodule:: hakai_segmentation.lib
+.. automodule:: hakai_segmentation
     :members:
 
 .. toctree::
