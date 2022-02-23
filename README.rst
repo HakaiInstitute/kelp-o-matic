@@ -7,7 +7,7 @@ Hakai Segmentation
 
 Segmentation Tools for Remotely Sensed RPAS Imagery
 
-Read the Docs at
+Read the Docs at http://hakai-segmentation.readthedocs.io/
 
 Features
 --------
