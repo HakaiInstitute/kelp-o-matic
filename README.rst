@@ -1,9 +1,9 @@
 Hakai Segmentation
 ==================
 
-.. image:: http://unmaintained.tech/badge.svg
-  :target: http://unmaintained.tech
-  :alt: No Maintenance Intended
+.. image:: https://github.com/tayden/hakai-segmentation/actions/workflows/python-package.yml/badge.svg
+  :target: https://github.com/tayden/hakai-segmentation/actions/workflows/python-package.yml
+  :alt: Tests Status
 
 Segmentation Tools for Remotely Sensed RPAS Imagery
 
