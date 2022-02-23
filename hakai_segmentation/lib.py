@@ -4,7 +4,7 @@ from hakai_segmentation.models import KelpPresenceSegmentationModel, MusselPrese
 
 def find_kelp(source: str, dest: str,
               crop_size: int = 256, padding: int = 128, batch_size: int = 2):
-    """Detect kelp in source image and output the resulting classification raster to dest.
+    """Detect kelp in image at path `source` and output the resulting classification raster to file at path `dest`.
 
     :param source: Input image with Byte data type.
     :param dest: File path location to save output to.
@@ -19,7 +19,7 @@ def find_kelp(source: str, dest: str,
 
 def find_mussels(source: str, dest: str,
                  crop_size: int = 256, padding: int = 128, batch_size: int = 2):
-    """Detect mussels in source image and output the resulting classification raster to dest.
+    """Detect mussels in image at path `source` and output the resulting classification raster to file at path `dest`.
 
     :param source: Input image with Byte data type.
     :param dest: File path location to save output to.

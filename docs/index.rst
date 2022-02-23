@@ -1,5 +1,5 @@
-Welcome to Hakai Segmentation's documentation!
-==============================================
+Hakai Segmentation!
+===================
 
 .. automodule:: hakai_segmentation
     :members:
