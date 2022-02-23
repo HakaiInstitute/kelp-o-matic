@@ -12,7 +12,7 @@ packages = [
 ]
 
 [tool.poetry.scripts]
-kom = "hakai_segmentation.main:cli"
+kom = "hakai_segmentation.cli:cli"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.10"

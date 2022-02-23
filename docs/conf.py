@@ -14,20 +14,23 @@
 #
 # import os
 # import sys
-# sys.path.insert(0, '/home/taylor/PycharmProjects/hakai-segmentation/hakai_segmentation')
+# sys.path.insert(0, os.path.abspath('.'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'hakai_segmentation'
+project = 'Hakai Segmentation'
 copyright = '2022, Taylor Denouden'
 author = 'Taylor Denouden'
 
 # The short X.Y version
-version = '0.1'
+version = ''
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+release = '0.1.0'
 
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration ---------------------------------------------------
 
@@ -40,8 +43,9 @@ release = '0.1'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
-    'sphinx.ext.todo',
+    'sphinx.ext.napoleon',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -61,7 +65,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = 'en'
+language = None
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -104,7 +108,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'hakai_segmentationdoc'
+htmlhelp_basename = 'HakaiSegmentationdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -131,7 +135,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'hakai_segmentation.tex', 'hakai\\_segmentation Documentation',
+    (master_doc, 'HakaiSegmentation.tex', 'Hakai Segmentation Documentation',
      'Taylor Denouden', 'manual'),
 ]
 
@@ -141,7 +145,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'hakai_segmentation', 'hakai_segmentation Documentation',
+    (master_doc, 'hakaisegmentation', 'Hakai Segmentation Documentation',
      [author], 1)
 ]
 
@@ -152,8 +156,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'hakai_segmentation', 'hakai_segmentation Documentation',
-     author, 'hakai_segmentation', 'One line description of project.',
+    (master_doc, 'HakaiSegmentation', 'Hakai Segmentation Documentation',
+     author, 'HakaiSegmentation', 'One line description of project.',
      'Miscellaneous'),
 ]
 
@@ -177,8 +181,3 @@ epub_exclude_files = ['search.html']
 
 
 # -- Extension configuration -------------------------------------------------
-
-# -- Options for todo extension ----------------------------------------------
-
-# If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = True

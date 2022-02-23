@@ -1,16 +1,13 @@
-.. hakai_segmentation documentation master file, created by
-   sphinx-quickstart on Wed Feb 23 12:30:36 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to hakai_segmentation's documentation!
+Welcome to Hakai Segmentation's documentation!
 ==============================================
 
+.. automodule:: hakai_segmentation.lib
+    :members:
+
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :caption: Contents:
 
-   hakai_segmentation
 
 
 Indices and tables

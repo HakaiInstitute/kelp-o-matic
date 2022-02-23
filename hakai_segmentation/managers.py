@@ -2,7 +2,6 @@ import warnings
 from pathlib import Path
 from typing import Union
 
-import fire
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
@@ -10,13 +9,24 @@ from torchvision import transforms
 from tqdm.auto import tqdm
 
 from hakai_segmentation.geotiff_io import GeotiffReader, GeotiffWriter
-from hakai_segmentation.models import KelpPresenceSegmentationModel, \
-    MusselPresenceSegmentationModel, _Model
+from hakai_segmentation.models import _Model
 
 
 class GeotiffSegmentation:
+    """Class for configuring data io and efficient segmentation of Geotiff imagery."""
+
     def __init__(self, model: '_Model', input_path: Union[str, 'Path'], output_path: Union[str, 'Path'], crop_size: int = 256,
                  padding: int = 128, batch_size: int = 2):
+        """
+        Create the segmentation object.
+
+        :param model: A callable module that accepts a batch of torch.Tensor data and returns classifications.
+        :param input_path: The path to the input geotiff image.
+        :param output_path: The destination file path for the output segmentation data.
+        :param crop_size: The size of image crop to classify iteratively until the entire image is classified.
+        :param padding: The number of context pixels to add to each side of an image crop to improve outputs.
+        :param batch_size: The number of crops to classify at a time using the model.
+        """
         self.model = model
 
         tran = transforms.Compose([
@@ -46,11 +56,18 @@ class GeotiffSegmentation:
 
     @staticmethod
     def _should_keep(img: 'np.ndarray') -> bool:
+        """
+        Determines if an image crop should be classified or discarded.
+
+        :param img: The image crop, with padding removed.
+        :return: Flag to indicate if crop should be discarded.
+        """
         _img = np.clip(img, 0, 255)
         is_blank = np.all((_img == 0) | (_img == 255))
         return not is_blank
 
     def __call__(self):
+        """Run the segmentation task."""
         self.on_start()
 
         for batch_idx, batch in enumerate(self._dataloader):
@@ -67,6 +84,7 @@ class GeotiffSegmentation:
         self.on_end()
 
     def on_start(self):
+        """Hook that runs before image processing. By default, sets up a tqdm progress bar."""
         # Check data type assumptions
         if self.reader.raster.nodata is None:
             warnings.warn("Define the correct nodata value on the input raster to speed up processing.", UserWarning)
@@ -86,56 +104,31 @@ class GeotiffSegmentation:
         )
 
     def on_end(self):
+        """Hook that runs after image processing. By default, tears down the tqdm progress bar."""
         self.progress.close()
         self.progress = None
 
     def on_batch_start(self, batch_idx: int):
+        """
+        Hook that runs for each batch of data, immediately before classification by the model.
+
+        :param batch_idx: The batch index being processed.
+        """
         pass
 
     def on_batch_end(self, batch_idx: int):
+        """
+        Hook that runs for each batch of data, immediately after classification by the model.
+
+        :param batch_idx: The batch index being processed.
+        """
         pass
 
     def on_chip_write_end(self, index: int):
+        """
+        Hook that runs for each crop of data, immediately after classification by the model.
+        By default, increments a tqdm progress bar.
+
+        :param index: The index of the image crop that was processed.
+        """
         self.progress.update(index + 1 - self.progress.n)
-
-
-def find_mussels(source: str, dest: str,
-                 crop_size: int = 256, padding: int = 128, batch_size: int = 2):
-    """Detect mussels in source image and output the resulting classification raster to dest.
-
-    :param source: Input image with Byte data type.
-    :param dest: File path location to save output to.
-    :param crop_size: The size of cropped image square run through the segmentation model.
-    :param padding: The number of context pixels added to each side of the cropped image squares.
-    :param batch_size: The batch size of cropped image sections to process together.
-    """
-
-    model = MusselPresenceSegmentationModel()
-    GeotiffSegmentation(model, source, dest,
-                        crop_size=crop_size, padding=padding, batch_size=batch_size)()
-
-
-def find_kelp(source: str, dest: str,
-              crop_size: int = 256, padding: int = 128, batch_size: int = 2):
-    """Detect kelp in source image and output the resulting classification raster to dest.
-
-    :param source: Input image with Byte data type.
-    :param dest: File path location to save output to.
-    :param crop_size: The size of cropped image square run through the segmentation model.
-    :param padding: The number of context pixels added to each side of the cropped image squares.
-    :param batch_size: The batch size of cropped image sections to process together.
-    """
-    model = KelpPresenceSegmentationModel()
-    GeotiffSegmentation(model, source, dest,
-                        crop_size=crop_size, padding=padding, batch_size=batch_size)()
-
-
-def cli():
-    fire.Fire({
-        "find-mussels": find_mussels,
-        "find-kelp": find_kelp
-    })
-
-
-if __name__ == '__main__':
-    cli()
