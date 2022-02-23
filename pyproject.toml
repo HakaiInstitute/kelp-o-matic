@@ -15,7 +15,7 @@ packages = [
 kom = "hakai_segmentation.main:cli"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 numpy = "^1.22.2"
 rasterio = "^1.2.10"
 tqdm = "^4.62.3"
