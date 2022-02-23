@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "hakai-segmentation"
 version = "0.1.0rc2"
-description = "Hakai Segment Tool for GeoTiff RPAS Imagery"
+description = "Segmentation Tools for Remotely Sensed RPAS Imagery"
 authors = ["Taylor Denouden <taylordenouden@gmail.com>"]
 license = "MIT"
 readme = "README.rst"
@@ -25,6 +25,7 @@ fire = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"
+Sphinx = "^4.4.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
