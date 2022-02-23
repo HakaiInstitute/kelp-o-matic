@@ -3,7 +3,11 @@ Hakai Segmentation
 
 .. image:: https://github.com/tayden/hakai-segmentation/actions/workflows/python-package.yml/badge.svg
   :target: https://github.com/tayden/hakai-segmentation/actions/workflows/python-package.yml
-  :alt: Tests Status
+  :alt: Test Status
+
+.. image:: https://readthedocs.org/projects/hakai-segmentation/badge/?version=latest
+  :target: https://hakai-segmentation.readthedocs.io/en/latest/?badge=latest
+  :alt: Documentation Status
 
 Segmentation Tools for Remotely Sensed RPAS Imagery
 
