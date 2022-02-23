@@ -28,7 +28,7 @@ class GeotiffReader(IterableDataset):
             fill_value: The value to fill in border regions of nodata areas of the image.
                 Defaults to image nodata value.
             transform: Optional Pytorch style data transform to apply to each cropped section.
-            filter: Optional function to filter a chip out from the iteratlor.
+            filter_: Optional function to filter a chip out from the iteratlor.
                 Must have signature `(img: np.array) -> bool`
         """
         super().__init__()
@@ -92,25 +92,26 @@ class GeotiffReader(IterableDataset):
     def __next__(self) -> Tuple[np.ndarray, int]:
         # Assumes single worker process
         if self.idx < len(self):
-
-            if self.filter is not None:
-                # Get crops until one meets the filter criteria
-                while self.idx < len(self):
-                    # and not self.filter(
-                    crop = self._get_crop(self.idx)
-                    self.idx += 1
-
-                    unpadded = crop[self.padding:self.crop_size + self.padding, self.padding:self.crop_size + self.padding]
-                    if self.filter is None or self.filter(unpadded):
-                        break
-
-            if self.transform:
-                crop = self.transform(crop)
-
-            return crop, self.idx - 1
-
+            crop = self._get_crop(self.idx)
+            self.idx += 1
         else:
             raise StopIteration
+
+        if self.filter is not None:
+            # Get crops until one meets the filter criteria
+            while True:
+                if self.filter(crop[self.padding:self.crop_size + self.padding, self.padding:self.crop_size + self.padding]):
+                    break
+                elif self.idx < len(self):
+                    crop = self._get_crop(self.idx)
+                    self.idx += 1
+                else:
+                    raise StopIteration
+
+        if self.transform:
+            crop = self.transform(crop)
+
+        return crop, self.idx - 1
 
     @property
     def y0(self) -> List[int]:

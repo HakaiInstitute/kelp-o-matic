@@ -70,7 +70,9 @@ class GeotiffSegmentation:
         # Check data type assumptions
         if self.reader.raster.nodata is None:
             warnings.warn("Define the correct nodata value on the input raster to speed up processing.", UserWarning)
-        if (dtype := self.reader.raster.dtypes[0]) != 'uint8':
+
+        dtype = self.reader.raster.dtypes[0]
+        if dtype != 'uint8':
             raise AssertionError(f"Input image has incorrect data type {dtype}. Only uint8 (aka Byte) images are supported.")
         if self.reader.raster.count < 3:
             raise AssertionError("Input image has less than 3 bands. "
