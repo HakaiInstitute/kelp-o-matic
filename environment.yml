@@ -7,7 +7,5 @@ dependencies:
   - conda-forge::numpy
   - conda-forge::rasterio
   - conda-forge::tqdm
-  - nvidia::cudatoolkit=10.2
   - pytorch::pytorch>=1.10
-  - pytorch::torchaudio
   - pytorch::torchvision
