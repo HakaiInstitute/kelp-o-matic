@@ -24,12 +24,12 @@ fire = "^0.4.0"
 rasterio = [
     { version = "^1.2.10", platform = "linux" },
     { version = "^1.2.10", platform = "darwin" },
-    { path = "windows/rasterio-1.2.10-cp38-cp38-win_amd64.whl", python = "3.8", platform = "windows" },
-    { path = "windows/rasterio-1.2.10-cp39-cp39-win_amd64.whl", python = "3.9", platform = "windows" },
+    { path = "windows/rasterio-1.2.10-cp38-cp38-win32.whl", python = "3.8", platform = "win32" },
+    { path = "windows/rasterio-1.2.10-cp39-cp39-win32.whl", python = "3.9", platform = "win32" },
 ]
 gdal = [
-    { path = "windows/GDAL-3.4.1-cp38-cp38-win_amd64.whl", python = "3.8", platform = "windows" },
-    { path = "windows/GDAL-3.4.1-cp39-cp39-win_amd64.whl", python = "3.9", platform = "windows" },
+    { path = "windows/GDAL-3.4.1-cp38-cp38-win32.whl", python = "3.8", platform = "win32" },
+    { path = "windows/GDAL-3.4.1-cp39-cp39-win32.whl", python = "3.9", platform = "win32" },
 ]
 
 [tool.poetry.dev-dependencies]
