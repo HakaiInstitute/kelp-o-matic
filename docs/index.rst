@@ -20,11 +20,11 @@ Features
 
 Installation
 ------------
-Install hakai_segmentation by running:
+The most reliable way to install hakai_segmentation is with Anaconda:
 
 .. code-block:: bash
 
-    pip install hakai_segmentation
+    conda install hakai_segmentation -c hakai
 
 .. toctree::
    :maxdepth: 2

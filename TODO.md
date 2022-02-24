@@ -1,3 +1,4 @@
-- Test for image assumptions (uint8, defined nodata, 3+ bands in RGB order) and warn if they aren't met
 - Add Hann Window classifier to reduce edge artifacts
-- Github actions tests
+- Single source version number
+- Publish package to conda
+- Test install in various OS environments
