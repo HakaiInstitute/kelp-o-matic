@@ -1,0 +1,50 @@
+{% set name = "hakai_segmentation" %}
+{% set version = "0.1.0rc2" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  path: ../../
+
+build:
+  noarch: python
+  number: 0
+  entry_points:
+    - kom = hakai_segmentation.cli:cli
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  host:
+    - python
+    - pip
+    - poetry
+  run:
+    - python
+    - fire >=0.4.0,<0.5.0
+    - numpy >=1.22.2,<2.0.0
+    - rasterio >=1.2.10,<2.0.0
+    - pytorch >=1.10.2,<2.0.0
+    - torchvision >=0.11.3,<0.12.0
+    - tqdm >=4.62.3,<5.0
+
+test:
+  imports:
+    - hakai_segmentation
+    - hakai_segmentation.data
+    - hakai_segmentation.geotiff_io
+  commands:
+    - kom --help
+
+about:
+  home: "https://github.com/hakaiInstitute/hakai-segmentation"
+  license: MIT
+  license_file: LICENSE.txt
+  summary: "Hakai Segment Tool for GeoTiff RPAS Imagery"
+  doc_url: "https://hakai-segmentation.readthedocs.io"
+  dev_url: "https://github.com/hakaiInstitute/hakai-segmentation"
+
+extra:
+  recipe-maintainers:
+    - tayden
