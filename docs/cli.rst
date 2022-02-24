@@ -1,13 +1,15 @@
-CLI Documentation
-=================
+Command Line Interface
+======================
 
 To run the CLI:
-::
+
+.. code-block:: console
 
     $ kom find-kelp ./some/image_with_kelp.tif ./some/place_to_write_output.tif
 
 Get help:
-::
+
+.. code-block:: console
 
     $ kom --help
 
@@ -27,7 +29,8 @@ Get help:
            Detect kelp in source image and output the resulting classification raster to dest.
 
 Get help with a specific sub command:
-::
+
+.. code-block:: console
 
     $ kom find-kelp --help
 
