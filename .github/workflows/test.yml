@@ -10,7 +10,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  test:
     strategy:
       fail-fast: false
       matrix:
@@ -21,7 +21,8 @@ jobs:
       run:
         shell: bash -l {0}
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Install dependencies
         uses: conda-incubator/setup-miniconda@v2
         with:
