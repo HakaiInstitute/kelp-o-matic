@@ -162,7 +162,7 @@ numpy = ["numpy (>1.19.0)"]
 
 [package.source]
 type = "file"
-url = "wheels/GDAL-3.4.1-cp38-cp38-win32.whl"
+url = "windows/GDAL-3.4.1-cp38-cp38-win32.whl"
 
 [[package]]
 name = "idna"
@@ -633,7 +633,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.10"
-content-hash = "826dd5f3af99988de555dabd1eb3668a6b8dec79065b5b2edeb94c0d18047622"
+content-hash = "18792f954da9af69889731748ddc086f7be7541ef746d25828a17c1f7a0c412d"
 
 [metadata.files]
 affine = [
