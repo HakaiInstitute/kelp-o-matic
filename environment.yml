@@ -1,0 +1,13 @@
+name: hakai-segmentation
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.8,<3.10
+  - conda-forge::fire
+  - conda-forge::numpy
+  - conda-forge::rasterio
+  - conda-forge::tqdm
+  - pytorch::pytorch>=1.10
+  - pytorch::torchvision

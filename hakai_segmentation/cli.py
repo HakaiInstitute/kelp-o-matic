@@ -1,6 +1,6 @@
 import fire
 
-from hakai_segmentation import find_kelp, find_mussels
+from hakai_segmentation.lib import find_kelp, find_mussels
 
 
 def cli():

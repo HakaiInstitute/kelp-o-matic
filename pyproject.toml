@@ -6,6 +6,7 @@ authors = ["Taylor Denouden <taylordenouden@gmail.com>"]
 license = "MIT"
 readme = "README.rst"
 repository = "https://github.com/hakaiInstitute/hakai-segmentation"
+documentation = "https://hakai-segmentation.readthedocs.io"
 
 packages = [
     { include = "hakai_segmentation" }
@@ -21,19 +22,7 @@ tqdm = "^4.62.3"
 torchvision = "^0.11.3"
 torch = "^1.10.2"
 fire = "^0.4.0"
-rasterio = [
-    { version = "^1.2.10", platform = "linux || darwin" },
-    { path = "windows/rasterio-1.2.10-cp38-cp38-win32.whl", markers = "python_version == '3.8' and platform_system == 'Windows' and platform_machine == 'x86_64'" },
-    { path = "windows/rasterio-1.2.10-cp39-cp39-win32.whl", markers = "python_version == '3.9' and platform_system == 'Windows' and platform_machine == 'x86_64'" },
-    { path = "windows/rasterio-1.2.10-cp38-cp38-win_amd64.whl", markers = "python_version == '3.8' and platform_system == 'Windows' and platform_machine == 'AMD64'" },
-    { path = "windows/rasterio-1.2.10-cp39-cp39-win_amd64.whl", markers = "python_version == '3.9' and platform_system == 'Windows' and platform_machine == 'AMD64'" },
-]
-gdal = [
-    { path = "windows/GDAL-3.4.1-cp38-cp38-win32.whl", markers = "python_version == '3.8' and platform_system == 'Windows' and platform_machine == 'x86_64'" },
-    { path = "windows/GDAL-3.4.1-cp39-cp39-win32.whl", markers = "python_version == '3.9' and platform_system == 'Windows' and platform_machine == 'x86_64'" },
-    { path = "windows/GDAL-3.4.1-cp38-cp38-win_amd64.whl", markers = "python_version == '3.8' and platform_system == 'Windows' and platform_machine == 'AMD64'" },
-    { path = "windows/GDAL-3.4.1-cp39-cp39-win_amd64.whl", markers = "python_version == '3.9' and platform_system == 'Windows' and platform_machine == 'AMD64'" },
-]
+rasterio = "^1.2.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"
