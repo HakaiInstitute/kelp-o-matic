@@ -23,7 +23,7 @@ requirements:
   run:
     - python
     - fire >=0.4.0,<0.5.0
-    - numpy >=1.16.4,<2.0.0
+    - numpy >=1.22.2,<2.0.0
     - rasterio >=1.2.10,<2.0.0
     - pytorch >=1.10.2,<2.0.0
     - torchvision >=0.11.3,<0.12.0
