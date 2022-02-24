@@ -17,11 +17,24 @@ kom = "hakai_segmentation.cli:cli"
 [tool.poetry.dependencies]
 python = ">=3.8,<3.10"
 numpy = "^1.22.2"
-rasterio = "^1.2.10"
 tqdm = "^4.62.3"
 torchvision = "^0.11.3"
 torch = "^1.10.2"
 fire = "^0.4.0"
+rasterio = [
+    { version = "^1.2.10", platform = "linux" },
+    { version = "^1.2.10", platform = "darwin" },
+    { path = "wheels/rasterio-1.2.10-cp38-cp38-win32.whl", python = "3.8", platform = "win32" },
+    { path = "wheels/rasterio-1.2.10-cp39-cp39-win32.whl", python = "3.9", platform = "win32" },
+    { path = "wheels/rasterio-1.2.10-cp38-cp38-win_amd64.whl", python = "3.8", platform = "win_amd64" },
+    { path = "wheels/rasterio-1.2.10-cp39-cp39-win_amd64.whl", python = "3.9", platform = "win_amd64" },
+]
+gdal = [
+    { path = "wheels/GDAL-3.4.1-cp38-cp38-win32.whl", python = "3.8", platform = "win32" },
+    { path = "wheels/GDAL-3.4.1-cp39-cp39-win32.whl", python = "3.9", platform = "win32" },
+    { path = "wheels/GDAL-3.4.1-cp38-cp38-win_amd64.whl", python = "3.8", platform = "win_amd64" },
+    { path = "wheels/GDAL-3.4.1-cp39-cp39-win_amd64.whl", python = "3.9", platform = "win_amd64" },
+]
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"
