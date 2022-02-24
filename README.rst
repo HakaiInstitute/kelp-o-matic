@@ -1,8 +1,8 @@
 Hakai Segmentation
 ==================
 
-.. image:: https://github.com/tayden/hakai-segmentation/actions/workflows/python-package.yml/badge.svg
-  :target: https://github.com/tayden/hakai-segmentation/actions/workflows/python-package.yml
+.. image:: https://github.com/tayden/hakai-segmentation/actions/workflows/test.yml/badge.svg
+  :target: https://github.com/tayden/hakai-segmentation/actions/workflows/test.yml
   :alt: Test Status
 
 .. image:: https://readthedocs.org/projects/hakai-segmentation/badge/?version=latest
