@@ -3,6 +3,8 @@ name: Python package using Conda
 on:
   release:
     types: [ published ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
