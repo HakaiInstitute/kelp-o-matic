@@ -1,3 +1,4 @@
 - Add Hann Window classifier to reduce edge artifacts
 - Test install in various OS environments
 - Automate building of package
+- Cache conda env for test workflow (see https://dev.to/epassaro/caching-anaconda-environments-in-github-actions-5hde)

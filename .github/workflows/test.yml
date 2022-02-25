@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  CACHE_NUMBER: 0  # increase to reset cache manually
+
 jobs:
   test:
     strategy:
@@ -20,21 +23,36 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install dependencies
+      - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          environment-file: environment.yml
           python-version: ${{ matrix.python-version }}
-          auto-update-conda: true
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
           auto-activate-base: true
+          use-mamba: true
+
+      - name: Set cache date
+        run: echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
+
+      - uses: actions/cache@v2
+        with:
+          path: ${{ matrix.prefix }}
+          key: ${{ matrix.label }}-conda-${{ hashFiles('environment.yml') }}-${{ env.DATE }}-${{ env.CACHE_NUMBER }}
+        id: cache
+
+      - name: Update environment
+        run: mamba env update -n base -f environment.yml
+        if: steps.cache.outputs.cache-hit != 'true'
+
       - name: Lint with flake8
         run: |
-          conda install flake8
+          mamba install flake8
           # stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test with pytest
         run: |
-          conda install pytest
+          mamba install pytest
           pytest
