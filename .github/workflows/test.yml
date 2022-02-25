@@ -42,7 +42,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           miniforge-variant: Mambaforge
           miniforge-version: latest
-          auto-activate-base: true
+          activate-environment: my-env
           use-mamba: true
 
       - name: Set cache date
@@ -55,7 +55,7 @@ jobs:
         id: cache
 
       - name: Update environment
-        run: mamba env update -n base -f environment.yml
+        run: mamba env update -n my-env -f environment.yml
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Lint with flake8
