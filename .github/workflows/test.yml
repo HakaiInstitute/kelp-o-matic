@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  release:
+    types: [ created ]
 
 env:
   CACHE_NUMBER: 1  # increase to reset cache manually
