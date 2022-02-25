@@ -24,7 +24,7 @@ The most reliable way to install hakai_segmentation is with Anaconda:
 
 .. code-block:: bash
 
-    conda install hakai_segmentation -c hakai
+    conda install hakai_segmentation -c hakai-institute
 
 .. toctree::
    :maxdepth: 2
