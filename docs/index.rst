@@ -1,6 +1,6 @@
-===================
-Hakai Segmentation!
-===================
+==================
+Hakai Segmentation
+==================
 
 Segmentation Tools for Remotely Sensed RPAS Imagery
 

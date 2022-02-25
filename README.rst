@@ -1,5 +1,8 @@
+==================
 Hakai Segmentation
 ==================
+
+Segmentation Tools for Remotely Sensed RPAS Imagery
 
 .. image:: https://github.com/tayden/hakai-segmentation/actions/workflows/test.yml/badge.svg?branch=main&event=push
   :target: https://github.com/tayden/hakai-segmentation/actions/workflows/test.yml
@@ -25,7 +28,7 @@ Hakai Segmentation
   :alt: Version
   :height: 20px
 
-Segmentation tools for remotely sensed RPAS imagery
+`Go To Documentation <http://hakai-segmentation.readthedocs.io/>`_
+------------------------------------------------------------
 
 
-`Read the Docs <http://hakai-segmentation.readthedocs.io/>`_
