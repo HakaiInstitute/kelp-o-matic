@@ -5,8 +5,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build-noarch:
-    runs-on: ubuntu-latest
+  package:
+    runs-on: "ubuntu-latest"
     defaults:
       run:
         shell: bash -l {0}
