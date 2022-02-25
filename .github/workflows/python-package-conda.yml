@@ -1,6 +1,8 @@
 name: Python package using Conda
 
 on:
+  release:
+    types: [ published ]
   push:
     branches: [ main ]
   pull_request:
@@ -23,9 +25,8 @@ jobs:
           python-version: 3.9
           auto-update-conda: true
           auto-activate-base: true
-      - name: Build noarch package
-        run: |
-          conda build conda/hakai_segmenetation/meta.yaml
-      - name: Upload to Anaconda
-        run: |
-          conda upload --user hakai-institute ~/anaconda3/conda-bld/noarch/hakai_segmentation-0.1.0rc2-py_0.tar.bz2
+      - name: Publish to Anaconda
+        uses: fcakyon/conda-publish-action@v1.3
+        with:
+          subdir: 'conda'
+          anacondatoken: ${{ secrets.ANACONDA_TOKEN }}
