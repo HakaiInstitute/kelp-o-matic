@@ -1,4 +1,4 @@
-{% set data = load_setup_py_data(setup_file='../../setup.py', from_recipe_dir=True) %}
+{% set data = load_setup_py_data(setup_file='../setup.py', from_recipe_dir=True) %}
 {% set name = data.get('name') %}
 {% set version = data.get('version') %}
 
@@ -10,7 +10,6 @@ source:
   path: ../
 
 build:
-  noarch: python
   number: 0
   entry_points:
     - kom = hakai_segmentation.cli:cli
