@@ -6,8 +6,6 @@ on:
 
 jobs:
   build-noarch:
-    needs:
-      - test
     runs-on: ubuntu-latest
     defaults:
       run:
