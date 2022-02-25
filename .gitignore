@@ -287,3 +287,11 @@ dmypy.json
 cython_debug/
 
 testdata/
+
+conda/noarch/
+
+conda/linux-64/
+
+conda/channeldata.json
+
+conda/index.html
