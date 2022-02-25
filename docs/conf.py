@@ -12,8 +12,8 @@ import os
 import sys
 import importlib.metadata
 
-__version__ = importlib.metadata.version("hakai_segmentation")
 sys.path.insert(0, os.path.abspath('..'))
+__version__ = importlib.metadata.version("hakai_segmentation")
 
 
 # -- Project information
