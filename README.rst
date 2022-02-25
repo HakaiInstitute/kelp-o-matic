@@ -11,19 +11,18 @@ Hakai Segmentation
   :alt: Documentation Status
   :height: 20px
 
-.. image:: https://badgen.net/github/license/tayden/hakai-segmentation
+.. image:: https://anaconda.org/hakai-institute/hakai-segmentation/badges/license.svg
   :target: https://github.com/tayden/hakai-segmentation/blob/main/LICENSE.txt
   :alt: License
   :height: 20px
 
-.. image:: https://badgen.net/github/release/tayden/hakai-segmentation?icon=github
-  :target: https://github.com/tayden/hakai-segmentation/releases
-  :alt: License
+.. image:: https://anaconda.org/hakai-institute/hakai-segmentation/badges/platforms.svg
+  :alt: Platforms
   :height: 20px
 
-.. image:: https://badgen.net/pypi/python/hakai-segmentation?icon=pypi
-  :target: https://pypi.org/project/hakai-segmentation/
-  :alt: License
+.. image:: https://anaconda.org/hakai-institute/hakai-segmentation/badges/version.svg
+  :target: https://anaconda.org/Hakai-Institute/hakai-segmentation
+  :alt: Version
   :height: 20px
 
 Segmentation tools for remotely sensed RPAS imagery
