@@ -18,13 +18,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install dependencies
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          environment-file: environment.yml
-          python-version: 3.9
-          auto-update-conda: true
-          auto-activate-base: true
       - name: Publish to Anaconda
         uses: fcakyon/conda-publish-action@v1.3
         with:
