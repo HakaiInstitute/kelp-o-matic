@@ -1,3 +1,1 @@
 - Add Hann Window classifier to reduce edge artifacts
-- Test install in various OS environments
-- Automate building of package
