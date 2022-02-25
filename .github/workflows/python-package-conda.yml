@@ -1,4 +1,4 @@
-name: Python package using Conda
+name: Build Conda Package
 
 on:
   release:
