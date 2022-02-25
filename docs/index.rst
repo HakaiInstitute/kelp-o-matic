@@ -20,11 +20,15 @@ Features
 
 Installation
 ------------
-The most reliable way to install hakai_segmentation is with Anaconda:
+The most reliable way to install hakai_segmentation is with Anaconda.
 
 .. code-block:: bash
 
-    conda install hakai_segmentation -c hakai-institute
+    # Omit installing cudatoolkit for CPU only install.
+    conda install -c nvidia cudatoolkit=10.2
+
+    conda install -c hakai-institute hakai-segmentation
+
 
 .. toctree::
    :maxdepth: 2
