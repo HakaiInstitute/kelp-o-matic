@@ -8,6 +8,10 @@ on:
   release:
     types: [ created ]
 
+concurrency:
+  group: test-${{ github.ref }}-1
+  cancel-in-progress: true
+
 env:
   CACHE_NUMBER: 1  # increase to reset cache manually
 
