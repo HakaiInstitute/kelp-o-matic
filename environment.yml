@@ -5,9 +5,9 @@ channels:
   - defaults
 dependencies:
   - python~=3.7,<3.10
-  - conda-forge::fire>=0.4.0,<0.5.0
-  - conda-forge::numpy>=1.21.2,<2.0.0
-  - conda-forge::rasterio>=1.2.10,<2.0.0
-  - conda-forge::tqdm>=4.62.3,<5.0
-  - pytorch::pytorch>=1.10.2,<2.0.0
-  - pytorch::torchvision>=0.11.3,<0.12.0
+  - conda-forge::fire~=0.4
+  - conda-forge::numpy~=1.16
+  - conda-forge::rasterio~=1.2
+  - conda-forge::tqdm~=4.62
+  - pytorch::pytorch~=1.10
+  - pytorch::torchvision~=0.11
