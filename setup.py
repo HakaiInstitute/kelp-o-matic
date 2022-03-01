@@ -2,7 +2,7 @@
 from setuptools import setup
 
 PACKAGE_NAME = 'hakai-segmentation'
-VERSION = '0.1.5'
+VERSION = '0.0.1dev1'
 
 packages = [
     'hakai_segmentation',
@@ -15,12 +15,12 @@ package_data = {
 }
 
 install_requires = [
-    'fire>=0.4.0,<0.5.0',
-    'numpy>=1.21.2,<2.0.0',
-    'torch>=1.10.2,<2.0.0',
-    'rasterio>=1.2.10,<2.0.0',
-    'torchvision>=0.11.3,<0.12.0',
-    'tqdm>=4.62.3,<5.0.0'
+    'fire~=0.4',
+    'numpy~=1.16',
+    'torch~=1.10',
+    'rasterio~=1.2',
+    'torchvision~=0.11',
+    'tqdm~=4.62'
 ]
 
 entry_points = {

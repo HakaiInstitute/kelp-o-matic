@@ -10,6 +10,7 @@ source:
   path: ../
 
 build:
+  noarch: python
   number: 0
   entry_points:
     - kom = hakai_segmentation.cli:cli
@@ -17,16 +18,16 @@ build:
 
 requirements:
   host:
-    - python {{ python }}
+    - python ~=3.7,<3.10
     - pip
   run:
-    - python
-    - fire >=0.4.0,<0.5.0
-    - numpy >=1.21.2,<2.0.0
-    - pytorch >=1.10.2,<2.0.0
-    - rasterio >=1.2.10,<2.0.0
-    - torchvision >=0.11.3,<0.12.0
-    - tqdm >=4.62.3,<5.0
+    - python ~=3.7,<3.10
+    - fire ~=0.4
+    - numpy ~=1.16
+    - pytorch ~=1.10
+    - rasterio ~=1.2
+    - torchvision ~=0.11
+    - tqdm ~=4.62
 
 test:
   imports:
