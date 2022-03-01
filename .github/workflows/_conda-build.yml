@@ -1,6 +1,13 @@
 name: Build Conda Package
 
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      should-upload:
+        type: boolean
+        required: false
+        default: false
+        description: Flag to upload to Anaconda
 
 jobs:
   build:
@@ -18,21 +25,13 @@ jobs:
           auto-update-conda: true
           activate-environment: my-env
       - name: Install build packages
-        run: |
-          conda install -y conda-build conda-verify
+        run: conda install -y anaconda-client conda-build conda-verify
+      - name: Config uploading
+        if: inputs.should-upload
+        run: conda config --set anaconda_upload yes
       - name: Build package
+        env:
+          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
           cd conda
           conda build -c pytorch -c conda-forge --output-folder . .
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: py${{ inputs.python-version }}-build
-          path: noarch
-          if-no-files-found: error
-#      - name: Upload packages
-#        env:
-#          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
-#        run: |
-#          anaconda upload --label main noarch/*.tar.bz2
