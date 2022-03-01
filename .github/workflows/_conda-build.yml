@@ -35,7 +35,7 @@ jobs:
         if: always()
         with:
           name: py${{ inputs.python-version }}-build
-          path: noarch/*.tar.bz2
+          path: noarch
           if-no-files-found: error
 #      - name: Upload packages
 #        env:
