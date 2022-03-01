@@ -18,10 +18,10 @@ build:
 
 requirements:
   host:
-    - python {{ python }}
+    - python
     - pip
   run:
-    - python
+    - python ~=3.7,<3.10
     - fire ~=0.4
     - numpy ~=1.16
     - pytorch ~=1.10

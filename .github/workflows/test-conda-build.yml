@@ -1,24 +1,13 @@
-name: '🧬 Pre Release'
+name: '🧬 Test Build'
 
 on:
   pull_request:
     branches: [ main, develop ]
 
 concurrency:
-  group: ci-pre-release-${{ github.ref }}-1
+  group: ci-test-build-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-py37:
+  build:
     uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds
-    with:
-      python-version: "3.7"
-  build-py38:
-    uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds
-    with:
-      python-version: "3.8"
-  build-py39:
-    uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds
-    with:
-      python-version: "3.9"
-

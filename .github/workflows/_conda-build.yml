@@ -1,12 +1,6 @@
 name: Build Conda Package
 
-on:
-  workflow_call:
-    inputs:
-      python-version:
-        type: string
-        required: true
-        description: Python version to build against
+on: workflow_call
 
 jobs:
   build:
@@ -20,12 +14,12 @@ jobs:
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          python-version: ${{ inputs.python-version }}
+          python-version: "3.9"
           auto-update-conda: true
           activate-environment: my-env
       - name: Install build packages
         run: |
-          conda install -y anaconda-client conda-build conda-verify
+          conda install -y conda-build conda-verify
       - name: Build package
         run: |
           cd conda
