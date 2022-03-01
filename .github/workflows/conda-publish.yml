@@ -10,6 +10,6 @@ concurrency:
 
 jobs:
   build:
-    uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds
+    uses: ./.github/workflows/_conda-build.yml
     with:
       should-upload: true
