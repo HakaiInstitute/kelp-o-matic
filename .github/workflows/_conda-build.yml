@@ -2,7 +2,7 @@ name: Build Conda Package
 
 on:
   workflow_call:
-    input:
+    inputs:
       python-version:
         type: string
         required: true

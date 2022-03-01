@@ -1,0 +1,23 @@
+name: '🧬 Pre Release'
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+concurrency:
+  group: ci-pre-release-${{ github.ref }}-1
+  cancel-in-progress: true
+
+jobs:
+  build-py37:
+    uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds
+    with:
+      python-version: "3.7"
+  build-py38:
+    uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds
+    with:
+      python-version: "3.8"
+  build-py39:
+    uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds
+    with:
+      python-version: "3.9"
