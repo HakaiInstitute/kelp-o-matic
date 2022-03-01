@@ -1,1 +1,2 @@
 - Add Hann Window classifier to reduce edge artifacts
+- Support Python 3.7
