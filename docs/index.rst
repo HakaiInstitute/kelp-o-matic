@@ -4,8 +4,8 @@ Hakai Segmentation
 
 Segmentation Tools for Remotely Sensed RPAS Imagery
 
-.. image:: https://github.com/tayden/hakai-segmentation/actions/workflows/test.yml/badge.svg?branch=main&event=push
-  :target: https://github.com/tayden/hakai-segmentation/actions/workflows/test.yml
+.. image:: https://github.com/tayden/hakai-segmentation/actions/workflows/unit-test.yml/badge.svg?branch=main&event=push
+  :target: https://github.com/tayden/hakai-segmentation/actions/workflows/unit-test.yml
   :alt: Test Status
   :height: 20px
 
