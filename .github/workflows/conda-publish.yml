@@ -3,6 +3,12 @@ name: '📦 Conda Publish'
 on:
   release:
     types: [ published ]
+  push:
+    tags:
+      - "*.*.*dev"
+
+env:
+  ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
