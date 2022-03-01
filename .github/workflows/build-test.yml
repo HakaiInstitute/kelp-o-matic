@@ -1,0 +1,13 @@
+name: '🔨 Test Build'
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds

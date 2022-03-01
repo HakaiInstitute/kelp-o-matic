@@ -1,8 +1,8 @@
-name: '🧬 Test Build'
+name: '📦 Conda Publish'
 
 on:
-  pull_request:
-    branches: [ main, develop ]
+  release:
+    types: [ published ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -11,3 +11,5 @@ concurrency:
 jobs:
   build:
     uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds
+    with:
+      should-upload: true

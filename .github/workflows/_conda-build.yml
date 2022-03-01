@@ -26,7 +26,7 @@ jobs:
           activate-environment: my-env
       - name: Install build packages
         run: conda install -y anaconda-client conda-build conda-verify
-      - name: Config uploading
+      - name: Setup Anaconda publish
         if: inputs.should-upload
         run: conda config --set anaconda_upload yes
       - name: Build package
