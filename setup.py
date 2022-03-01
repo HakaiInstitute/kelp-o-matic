@@ -16,9 +16,9 @@ package_data = {
 
 install_requires = [
     'fire>=0.4.0,<0.5.0',
-    'numpy>=1.22.2,<2.0.0',
-    'rasterio>=1.2.1,<2.0.0',
+    'numpy>=1.21.2,<2.0.0',
     'torch>=1.10.2,<2.0.0',
+    'rasterio>=1.2.10,<2.0.0',
     'torchvision>=0.11.3,<0.12.0',
     'tqdm>=4.62.3,<5.0.0'
 ]
