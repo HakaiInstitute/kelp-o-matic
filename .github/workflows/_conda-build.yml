@@ -38,12 +38,14 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: conda install -y anaconda-client conda-build conda-verify
 
-      - name: Set Anaconda Upload
-        run: conda config --set anaconda_upload ${{ inputs.should-upload }}
-
       - name: Build package
-        env:
-          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
           cd conda
           conda build -c pytorch -c conda-forge --output-folder . .
+
+      - name: Publish package
+        if: inputs.should-upload
+        env:
+          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+        run: |
+          anaconda upload --label main noarch/*.tar.bz2
