@@ -5,7 +5,7 @@ on:
     types: [ published ]
   push:
     tags:
-      - "*.*.*dev"
+      - "*"
 
 env:
   ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
