@@ -1,0 +1,49 @@
+name: Build Conda Package
+
+env:
+  CACHE_NUMBER: 0  # increase to reset cache manually
+
+on:
+  workflow_call:
+    inputs:
+      should-upload:
+        type: boolean
+        required: false
+        default: false
+        description: Flag to upload to Anaconda
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: "3.9"
+          auto-update-conda: true
+          activate-environment: my-env
+
+      - uses: actions/cache@v2
+        with:
+          path: /usr/share/miniconda3/envs/my-env
+          key: conda-${{ env.CACHE_NUMBER }}
+        id: cache
+
+      - name: Install build packages
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: conda install -y anaconda-client conda-build conda-verify
+
+      - name: Set Anaconda Upload
+        run: conda config --set anaconda_upload ${{ inputs.should-upload }}
+
+      - name: Build package
+        env:
+          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+        run: |
+          cd conda
+          conda build -c pytorch -c conda-forge --output-folder . .

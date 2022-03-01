@@ -1,8 +1,8 @@
-name: '📦 Conda Publish'
+name: '🔨 Test Build'
 
 on:
-  release:
-    types: [ published ]
+  pull_request:
+    branches: [ main ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -11,5 +11,3 @@ concurrency:
 jobs:
   build:
     uses: ./.github/workflows/_conda-build.yml
-    with:
-      should-upload: true

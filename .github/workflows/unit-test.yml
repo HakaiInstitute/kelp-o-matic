@@ -1,4 +1,4 @@
-name: Tests
+name: "🧪 Unit Tests"
 
 on:
   push:
@@ -7,6 +7,10 @@ on:
     branches: [ main, develop ]
   release:
     types: [ created ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   CACHE_NUMBER: 1  # increase to reset cache manually
