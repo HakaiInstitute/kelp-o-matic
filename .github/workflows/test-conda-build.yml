@@ -9,15 +9,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-py37:
-    uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds
-    with:
-      python-version: "3.7"
-  build-py38:
-    uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds
-    with:
-      python-version: "3.8"
-  build-py39:
-    uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds
-    with:
-      python-version: "3.9"
+  build:
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: [ "3.7", "3.8", "3.9" ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tayden/hakai-segmentation/.github/workflows/_conda-build.yml@feature/improve-conda-builds
+        with:
+          python-version: ${{ matrix.python-version }}
