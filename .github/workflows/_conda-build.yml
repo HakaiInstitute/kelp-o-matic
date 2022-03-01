@@ -1,5 +1,8 @@
 name: Build Conda Package
 
+env:
+  CACHE_NUMBER: 0  # increase to reset cache manually
+
 on:
   workflow_call:
     inputs:
@@ -24,11 +27,20 @@ jobs:
           python-version: "3.9"
           auto-update-conda: true
           activate-environment: my-env
+
+      - uses: actions/cache@v2
+        with:
+          path: /usr/share/miniconda3/envs/my-env
+          key: conda-${{ env.CACHE_NUMBER }}
+        id: cache
+
       - name: Install build packages
+        if: steps.cache.outputs.cache-hit != 'true'
         run: conda install -y anaconda-client conda-build conda-verify
-      - name: Setup Anaconda publish
-        if: inputs.should-upload
-        run: conda config --set anaconda_upload yes
+
+      - name: Set Anaconda Upload
+        run: conda config --set anaconda_upload ${{ inputs.should-upload }}
+
       - name: Build package
         env:
           ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
