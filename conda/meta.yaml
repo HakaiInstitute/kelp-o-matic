@@ -10,6 +10,7 @@ source:
   path: ../
 
 build:
+  noarch: python
   number: 0
   entry_points:
     - kom = hakai_segmentation.cli:cli
