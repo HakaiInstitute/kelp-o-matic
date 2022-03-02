@@ -52,11 +52,11 @@ Usage:
 Expectations:
 ~~~~~~~~~~~~~~~~~~
 
-All interfaces to ``hakai-segmentation`` tool have the following assumptions about input images:
+All interfaces to ``hakai-segmentation`` tool make the following assumptions about input images:
 
-1. The range of values in the input are in the interval [0, 255] and the datatype is Unsigned 8-bit (Often called "uint8" or "Byte" in various some software).
-3. The first three channels of the image are the Red, Green, and Blue bands, in that order.
-4. The *nodata* value for the image is defined in the geotiff metadata.
+1. The range of values in the input are in the interval [0, 255] and the datatype is Unsigned 8-bit (Often called "uint8" or "Byte" GIS software).
+2. The first three channels of the image are the Red, Green, and Blue bands, in that order.
+3. The *nodata* value for the image is defined properly in the geotiff metadata.
     - For images with a black background, this value should be 0, white background would be 255, etc.
     - This is not a hard requirement, but speeds up the processing time considerably
 
@@ -81,6 +81,35 @@ Training Process
 
 Data
 ~~~~
+
+Metrics
+~~~~~~~
+
+For all metrics, let:
+
+:math:`A` equal the set of human-labelled pixels for an image.
+
+:math:`B` be defined as the corresponding set of pixel labels predicted by the model.
+
+:math:`A_i` and :math:`B_i` be the sets of pixels for a particular class of interest, :math:`i` for label images :math:`A` and :math:`B`.
+
+Accuracy
+    The ratio of counts of pixels correctly classified by the model divided over the total number of pixels in an image.
+
+
+IoU
+    The "intersection over union", also called the "Jaccard Index". Defined as:
+
+    .. math::
+
+        IoU_i (A,B) = \frac{|A_i \cap B_i|}{|A_i \cup B_i|}
+
+Mean IoU
+    The mean of the intersection over union values over all classes. Defined as:
+
+    .. math::
+
+        mIoU (A,B) = \frac{\sum_{i=1}^{c} IoU_{i}(A,B)}{c}
 
 Performance
 ~~~~~~~~~~~
