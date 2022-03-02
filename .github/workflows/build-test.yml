@@ -11,3 +11,5 @@ concurrency:
 jobs:
   build:
     uses: ./.github/workflows/_conda-build.yml
+    secrets:
+      ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}

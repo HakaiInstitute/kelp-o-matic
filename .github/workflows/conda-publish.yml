@@ -16,4 +16,5 @@ jobs:
     uses: ./.github/workflows/_conda-build.yml
     with:
       should-upload: true
-      anaconda_token: ${{ secrets.ANACONDA_TOKEN }}
+    secrets:
+      ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}

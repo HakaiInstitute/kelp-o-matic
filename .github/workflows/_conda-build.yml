@@ -11,11 +11,9 @@ on:
         required: false
         default: false
         description: Flag to upload to Anaconda
-      anaconda_token:
-        required: false
-        type: string
-        default: ""
-        description: 'Anaconda access token'
+    secrets:
+      ANACONDA_TOKEN:
+        required: true
 
 jobs:
   build:
@@ -46,9 +44,12 @@ jobs:
       - name: Build package
         run: |
           cd conda
-          conda build -c pytorch -c conda-forge --output-folder . .
+          conda build -c conda-forge -c pytorch --output-folder . .
 
       - name: Publish package
         if: inputs.should-upload
+        env:
+          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
-          anaconda upload --token ${{ secrets.anaconda_token }} --label main noarch/*.tar.bz2
+          cd conda
+          anaconda upload --label main noarch/*.tar.bz2
