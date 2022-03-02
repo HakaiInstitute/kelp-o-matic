@@ -19,10 +19,6 @@ Segmentation Tools for Remotely Sensed RPAS Imagery
   :alt: License
   :height: 20px
 
-.. image:: https://anaconda.org/hakai-institute/hakai-segmentation/badges/platforms.svg
-  :alt: Platforms
-  :height: 20px
-
 .. image:: https://anaconda.org/hakai-institute/hakai-segmentation/badges/version.svg
   :target: https://anaconda.org/Hakai-Institute/hakai-segmentation
   :alt: Version

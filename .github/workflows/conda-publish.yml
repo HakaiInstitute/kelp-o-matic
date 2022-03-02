@@ -7,9 +7,6 @@ on:
     tags:
       - "*"
 
-env:
-  ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -19,3 +16,4 @@ jobs:
     uses: ./.github/workflows/_conda-build.yml
     with:
       should-upload: true
+      anaconda_token: ${{ secrets.ANACONDA_TOKEN }}
