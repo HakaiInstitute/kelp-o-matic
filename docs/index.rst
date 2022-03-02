@@ -72,15 +72,36 @@ All interfaces to ``hakai-segmentation`` tool make the following assumptions abo
 About:
 ------
 
+.. TODO: Overview
+.. TODO: ~~~~~~~~
 
-Overview
-~~~~~~~~
-
-Training Process
-~~~~~~~~~~~~~~~~
+.. TODO: Training Process
+.. TODO: ~~~~~~~~~~~~~~~~
 
 Data
 ~~~~
+
+The dataset used to train the models are a number of scenes collected using DJI Phantom remotely-piloted aircraft systems (RPAS).
+
+For the kelp model, a total of 28 image mosaic scenes were used. The resolution of each image varied between
+0.023m and 0.428m, with an average of 0.069m and standard deviation of 0.087m. These images were collected over a period from
+2018 to 2021, all during the summer season. For model training, each dataset was divided into 512 pixels square cropped sections,
+with 50% overlap between adjacent tiles. To balance the dataset, tiles containing no kelp where discarded. These sets of tiles
+where then divided into training, validation, and test splits with the following summary statistics:
+
+.. TODO: Details about ground area covered
+
+=====   ===========   ============   ===========   ==============   ===============   =============   ===============
+Split   Tiles         Total pixels   Kelp pixels   Max. res. (m)    Min res. (m)      Avg. res. (m)   Stdev. res. (m)
+=====   ===========   ============   ===========   ==============   ===============   =============   ===============
+Train   54233         14216855552    1869302818    0.023            0.428             0.072           0.090
+Val     3667          961282048      147658714     0.023            0.272             0.091           0.121
+Test    4019          1053556736     156686376     0.023            0.068             0.040           0.020
+=====   ===========   ============   ===========   ==============   ===============   =============   ===============
+
+
+.. TODO: Details about mussels dataset
+
 
 Metrics
 ~~~~~~~
