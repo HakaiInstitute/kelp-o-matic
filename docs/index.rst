@@ -35,7 +35,9 @@ Features
     :caption: Index
 
     installation
-    usage
+    expectations
+    cli
+    lib
     about
 
 Contribute
