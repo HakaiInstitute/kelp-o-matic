@@ -99,7 +99,7 @@ Performance
 
     * - IoU :sub:`bg`
       - IoU :sub:`kelp`
-      - mIoU :sub:`avg`
+      - mIoU
       - Accuracy
     * - 0.9437
       - 0.6609
@@ -112,7 +112,7 @@ Performance
 
     * - IoU :sub:`bg`
       - IoU :sub:`kelp`
-      - mIoU :sub:`avg`
+      - mIoU
       - Accuracy
     * - 0.9286
       - 0.5930
