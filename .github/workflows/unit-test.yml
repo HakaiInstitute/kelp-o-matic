@@ -2,11 +2,9 @@ name: "🧪 Unit Tests"
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
     branches: [ main, develop ]
-  release:
-    types: [ created ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
