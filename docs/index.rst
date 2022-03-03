@@ -54,11 +54,9 @@ Expectations:
 
 All interfaces to ``hakai-segmentation`` tool make the following assumptions about input images:
 
-1. The range of values in the input are in the interval [0, 255] and the datatype is Unsigned 8-bit (Often called "uint8" or "Byte" GIS software).
+1. The range of values in the input are in the interval [0, 255] and the datatype is Unsigned 8-bit (Often called "uint8" or "Byte" in various some software).
 2. The first three channels of the image are the Red, Green, and Blue bands, in that order.
-3. The *nodata* value for the image is defined properly in the geotiff metadata.
-    - For images with a black background, this value should be 0, white background would be 255, etc.
-    - This is not a hard requirement, but speeds up the processing time considerably
+3. The *nodata* value for the image is defined in the geotiff metadata. (For images with a black background, this value should be 0, white background would be 255, etc.)
 
 
 .. Usage
@@ -108,8 +106,8 @@ Training Process
 Kelp
 ....
 The `LRASPP MobileNetV3-Large <https://arxiv.org/abs/1905.02244>`_ was trained using a stochastic gradient descent optimizer
-with a learning rate of :math:`0.35`, weight decay set to :math:`3 \times 10^{-6}`, for a total of 100 epochs. A `cosine
-annealing learning rate schedule <https://arxiv.org/abs/1608.03983>` was used to improve accuracy. The loss function used was
+with a learning rate of :math:`0.35`, weight decay set to :math:`3 \times 10^{-6}`, for a total of 100 epochs. A
+`cosine annealing learning rate schedule <https://arxiv.org/abs/1608.03983>` was used to improve accuracy. The loss function used was
 `Focal Tversky Loss <https://arxiv.org/abs/1608.03983>`, with parameters :math:`\alpha=0.7, \beta=0.3, \gamma=4.0 / 3.0`.
 
 The model was trained on an AWS p3.8xlarge instance with 4 Nvidia Tesla V100 GPUS at 16 bit precision and required 18 hours and 1 minute.
