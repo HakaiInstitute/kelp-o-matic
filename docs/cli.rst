@@ -1,7 +1,7 @@
 Command Line Interface
 ======================
 
-To run the CLI:
+Example to run the CLI:
 
 .. code-block:: console
 
