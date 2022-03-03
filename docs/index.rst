@@ -75,13 +75,13 @@ About:
 .. TODO: Overview
 .. TODO: ~~~~~~~~
 
-.. TODO: Training Process
-.. TODO: ~~~~~~~~~~~~~~~~
-
 Data
 ~~~~
 
-The dataset used to train the models are a number of scenes collected using DJI Phantom remotely-piloted aircraft systems (RPAS).
+The datasets used to train the models are a number of scenes collected using DJI Phantom remotely-piloted aircraft systems (RPAS).
+
+Kelp
+....
 
 For the kelp model, a total of 28 image mosaic scenes were used. The resolution of each image varied between
 0.023m and 0.428m, with an average of 0.069m and standard deviation of 0.087m. These images were collected over a period from
@@ -101,6 +101,22 @@ Test    4019          1053556736     156686376     0.023            0.068       
 
 
 .. TODO: Details about mussels dataset
+
+Training Process
+~~~~~~~~~~~~~~~~
+
+Kelp
+....
+The `LRASPP MobileNetV3-Large <https://arxiv.org/abs/1905.02244>`_ was trained using a stochastic gradient descent optimizer
+with a learning rate of :math:`0.35`, weight decay set to :math:`3 \times 10^{-6}`, for a total of 100 epochs. A `cosine
+annealing learning rate schedule <https://arxiv.org/abs/1608.03983>` was used to improve accuracy. The loss function used was
+`Focal Tversky Loss <https://arxiv.org/abs/1608.03983>`, with parameters :math:`\alpha=0.7, \beta=0.3, \gamma=4.0 / 3.0`.
+
+The model was trained on an AWS p3.8xlarge instance with 4 Nvidia Tesla V100 GPUS at 16 bit precision and required 18 hours and 1 minute.
+At the end of training, the weights with the best performance on the validation dataset were kept. These "best" weights occurred at
+epoch 16, relatively early in the training process.
+
+Full source code for training the kelp model is available at https://github.com/tayden/hakai-ml-train
 
 
 Metrics
