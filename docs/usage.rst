@@ -1,13 +1,33 @@
-Command Line Interface
-======================
+Usage
+=====
 
-Example to run the CLI:
+Input Expectations
+------------------
+
+All interfaces to ``hakai-segmentation`` tool make the following assumptions about input images:
+
+1. The range of values in the input are in the interval [0, 255] and the datatype is Unsigned 8-bit (Often called "uint8" or "Byte" in various some software).
+2. The first three channels of the image are the Red, Green, and Blue bands, in that order.
+3. The *nodata* value for the image is defined in the geotiff metadata. (For images with a black background, this value should be 0, white background would be 255, etc.)
+
+
+Command Line Interface
+----------------------
+
+The ``hakai-segmentation`` package includes one command line tool, ``kom``. It will be registered in the same Conda environment
+that the ``hakai-segmentation`` package is installed to.
+
+Usage Example
+^^^^^^^^^^^^^
 
 .. code-block:: console
 
     $ kom find-kelp ./some/image_with_kelp.tif ./some/place_to_write_output.tif
 
-Get help:
+    $ kom find-mussels ./some/image_with_mussels.tif ./some/place_to_write_output.tif
+
+API
+^^^
 
 .. code-block:: console
 
@@ -67,3 +87,24 @@ Get help with a specific sub command:
 
     NOTES
         You can also use flags syntax for POSITIONAL ARGUMENTS
+
+
+
+Python Library
+--------------
+
+The Python library provide two functions that run classification on an input image and write data to an output location.
+
+Usage Example
+^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    import hakai_segmentation
+    hakai_segmentation.find_kelp("./path/to/kelp_image.tif", "./path/to/output_file_to_write.tif")
+
+API
+^^^
+
+.. automodule:: hakai_segmentation
+    :members:
