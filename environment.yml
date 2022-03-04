@@ -1,8 +1,7 @@
 name: hakai-segmentation
 channels:
-  - pytorch
   - conda-forge
-  - defaults
+  - pytorch
 dependencies:
   - python~=3.7,<3.10
   - conda-forge::fire~=0.4

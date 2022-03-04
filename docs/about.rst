@@ -154,7 +154,7 @@ Performance
 
     * - IoU :sub:`bg`
       - IoU :sub:`mussels`
-      - mIoU :sub:`avg`
+      - mIoU
       - Accuracy
     * - 0.9622
       - 0.7188
