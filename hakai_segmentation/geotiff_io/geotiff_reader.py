@@ -37,20 +37,25 @@ class GeotiffReader(IterableDataset):
         self.crop_size = crop_size
         self.padding = padding
 
-        self.raster = rasterio.open(img_path, 'r')
+        with rasterio.open(img_path, 'r') as raster:
+            self.height = raster.height
+            self.width = raster.width
+            self.nodata = raster.nodata if hasattr(raster, 'nodata') else None
+            self.count = raster.count
+            self.profile = raster.profile
 
         if fill_value is not None:
             self.fill_value = fill_value
-        elif hasattr(self.raster, "nodata") and self.raster.nodata:
-            self.fill_value = self.raster.nodata
+        elif self.nodata is not None:
+            self.fill_value = raster.nodata
         else:
             self.fill_value = 0
 
         self.transform = transform
         self.filter = filter_
 
-        _y0s = range(0, self.raster.height, self.crop_size)
-        _x0s = range(0, self.raster.width, self.crop_size)
+        _y0s = range(0, self.height, self.crop_size)
+        _x0s = range(0, self.width, self.crop_size)
         self.y0x0 = list(itertools.product(_y0s, _x0s))
 
         self.idx = 0
@@ -64,8 +69,10 @@ class GeotiffReader(IterableDataset):
         # Read the image section
         window = ((y0 - self.padding, y0 + self.crop_size + self.padding),
                   (x0 - self.padding, x0 + self.crop_size + self.padding))
-        crop = self.raster.read(window=window, masked=True, boundless=True,
-                                fill_value=self.fill_value)
+
+        with rasterio.open(self.img_path) as raster:
+            crop = raster.read(window=window, masked=True, boundless=True,
+                               fill_value=self.fill_value)
 
         # Fill nodata values
         crop = crop.filled(self.fill_value)
@@ -120,12 +127,3 @@ class GeotiffReader(IterableDataset):
     @property
     def x0(self) -> List[int]:
         return [a[1] for a in self.y0x0]
-
-    def close(self):
-        self.raster.close()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()

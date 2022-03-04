@@ -27,16 +27,20 @@ class GeotiffWriter:
             **kwargs: All other kwargs are passed to the geotiff profile, to override params.
         """
         super().__init__()
-
         self.img_path = img_path
         self.crop_size = crop_size
         self.padding = padding
 
         profile.update(blockxsize=crop_size, blockysize=crop_size, tiled=True, **kwargs)
-        self.raster = rasterio.open(img_path, 'w', **profile)
 
-        _y0s = range(0, self.raster.height, self.crop_size)
-        _x0s = range(0, self.raster.width, self.crop_size)
+        # Create the file and get the indices of the write locations
+        with rasterio.open(self.img_path, 'w', **profile) as raster:
+            self.height = raster.height
+            self.width = raster.width
+            self.profile = raster.profile
+
+        _y0s = range(0, self.height, self.crop_size)
+        _x0s = range(0, self.width, self.crop_size)
         self.y0x0 = list(itertools.product(_y0s, _x0s))
 
     @classmethod
@@ -52,17 +56,17 @@ class GeotiffWriter:
         Returns:
             CropDatasetWriter
         """
-        self = cls(img_path, profile=reader.raster.profile, crop_size=reader.crop_size,
+        self = cls(img_path, profile=reader.profile, crop_size=reader.crop_size,
                    padding=reader.padding, **kwargs)
         self.y0x0 = reader.y0x0
         return self
 
-    def __setitem__(self, idx: int, write_data: np.ndarray):
+    def write_index(self, write_data: np.ndarray, idx: int):
         y0, x0 = self.y0x0[idx]
 
         # Read the image section
-        window = ((y0, min(y0 + self.crop_size, self.raster.height)),
-                  (x0, min(x0 + self.crop_size, self.raster.width)))
+        window = ((y0, min(y0 + self.crop_size, self.height)),
+                  (x0, min(x0 + self.crop_size, self.width)))
 
         # Remove padding information
         write_data = write_data[self.padding:-self.padding, self.padding:-self.padding]
@@ -72,14 +76,9 @@ class GeotiffWriter:
         dw = window[1][1] - window[1][0]
 
         # Write the data
-        write_data = write_data[:dh, :dw].astype(self.raster.profile['dtype'])
-        self.raster.write(write_data, 1, window=window)
+        write_data = write_data[:dh, :dw].astype(self.profile['dtype'])
 
-    def close(self):
-        self.raster.close()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
+        # Always reopen to flush data when needed and avoid memory leak.
+        # See https://github.com/rasterio/rasterio/issues/1281
+        with rasterio.open(self.img_path, 'r+') as writer:
+            writer.write(write_data, 1, window=window)
