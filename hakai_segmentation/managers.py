@@ -68,31 +68,33 @@ class GeotiffSegmentation:
 
     def __call__(self):
         """Run the segmentation task."""
-        self.on_start()
+        with torch.no_grad():
+            self.on_start()
 
-        for batch_idx, batch in enumerate(self._dataloader):
-            self.on_batch_start(batch_idx)
+            for batch_idx, batch in enumerate(self._dataloader):
+                self.on_batch_start(batch_idx)
 
-            crops, indices = batch
-            predictions = self.model(crops)
-            for pred, idx in zip(predictions, indices):
-                label = torch.argmax(pred, dim=0).detach().cpu().numpy()
-                self.writer[int(idx)] = label
-                self.on_chip_write_end(int(idx))
+                crops, indices = batch
+                predictions = self.model(crops)
 
-            self.on_batch_end(batch_idx)
-        self.on_end()
+                for pred, idx in zip(predictions, indices):
+                    label = torch.argmax(pred, dim=0).detach().cpu().numpy()
+                    self.writer.write_index(label, int(idx))
+                    self.on_chip_write_end(int(idx))
+
+                self.on_batch_end(batch_idx)
+            self.on_end()
 
     def on_start(self):
         """Hook that runs before image processing. By default, sets up a tqdm progress bar."""
         # Check data type assumptions
-        if self.reader.raster.nodata is None:
+        if self.reader.nodata is None:
             warnings.warn("Define the correct nodata value on the input raster to speed up processing.", UserWarning)
 
-        dtype = self.reader.raster.dtypes[0]
+        dtype = self.reader.profile['dtype']
         if dtype != 'uint8':
             raise AssertionError(f"Input image has incorrect data type {dtype}. Only uint8 (aka Byte) images are supported.")
-        if self.reader.raster.count < 3:
+        if self.reader.count < 3:
             raise AssertionError("Input image has less than 3 bands. "
                                  "The image should have at least 3 bands, with the first three being in RGB order.")
 
@@ -105,6 +107,7 @@ class GeotiffSegmentation:
 
     def on_end(self):
         """Hook that runs after image processing. By default, tears down the tqdm progress bar."""
+        self.progress.update(len(self.reader) - self.progress.n)
         self.progress.close()
         self.progress = None
 
