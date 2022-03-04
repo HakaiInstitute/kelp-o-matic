@@ -37,7 +37,7 @@ jobs:
       - name: Build package
         run: |
           cd conda
-          conda build -c conda-forge -c pytorch --output-folder . .
+          conda build -c pytorch -c conda-forge --output-folder . .
 
       - name: Publish package
         if: inputs.should-upload
