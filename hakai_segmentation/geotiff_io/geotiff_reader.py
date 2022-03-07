@@ -37,12 +37,12 @@ class GeotiffReader(IterableDataset):
         self.crop_size = crop_size
         self.padding = padding
 
-        self.raster = rasterio.open(img_path, 'r')
-        self.height = self.raster.height
-        self.width = self.raster.width
-        self.nodata = self.raster.nodata if hasattr(self.raster, 'nodata') else None
-        self.count = self.raster.count
-        self.profile = self.raster.profile
+        with rasterio.open(self.img_path, 'r') as raster:
+            self.height = raster.height
+            self.width = raster.width
+            self.nodata = raster.nodata if hasattr(raster, 'nodata') else None
+            self.count = raster.count
+            self.profile = raster.profile
 
         if fill_value is not None:
             self.fill_value = fill_value
@@ -70,8 +70,9 @@ class GeotiffReader(IterableDataset):
         window = ((y0 - self.padding, y0 + self.crop_size + self.padding),
                   (x0 - self.padding, x0 + self.crop_size + self.padding))
 
-        crop = self.raster.read(window=window, boundless=True,
-                                fill_value=self.fill_value)
+        with rasterio.open(self.img_path, 'r') as raster:
+            crop = raster.read(window=window, boundless=True,
+                               fill_value=self.fill_value)
 
         if len(crop.shape) == 3:
             crop = np.moveaxis(crop, 0, 2)  # (c, h, w) => (h, w, c)
@@ -123,6 +124,3 @@ class GeotiffReader(IterableDataset):
     @property
     def x0(self) -> List[int]:
         return [a[1] for a in self.y0x0]
-
-    def __del__(self):
-        self.raster.close()
