@@ -7,6 +7,8 @@
       <excludeFolder url="file://$MODULE_DIR$/dist" />
       <excludeFolder url="file://$MODULE_DIR$/docs/_build" />
       <excludeFolder url="file://$MODULE_DIR$/docs/_static" />
+      <excludeFolder url="file://$MODULE_DIR$/build" />
+      <excludeFolder url="file://$MODULE_DIR$/.pytest_cache" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.9 (hakai-segmentation)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
