@@ -34,10 +34,10 @@ class GeotiffWriter:
         profile.update(blockxsize=crop_size, blockysize=crop_size, tiled=True, **kwargs)
 
         # Create the file and get the indices of the write locations
-        with rasterio.open(self.img_path, 'w', **profile) as raster:
-            self.height = raster.height
-            self.width = raster.width
-            self.profile = raster.profile
+        self.raster = rasterio.open(self.img_path, 'w', **profile)
+        self.height = self.raster.height
+        self.width = self.raster.width
+        self.profile = self.raster.profile
 
         _y0s = range(0, self.height, self.crop_size)
         _x0s = range(0, self.width, self.crop_size)
@@ -77,8 +77,7 @@ class GeotiffWriter:
 
         # Write the data
         write_data = write_data[:dh, :dw].astype(self.profile['dtype'])
+        self.raster.write(write_data, 1, window=window)
 
-        # Always reopen to flush data when needed and avoid memory leak.
-        # See https://github.com/rasterio/rasterio/issues/1281
-        with rasterio.open(self.img_path, 'r+') as writer:
-            writer.write(write_data, 1, window=window)
+    def __del__(self):
+        self.raster.close()

@@ -37,17 +37,17 @@ class GeotiffReader(IterableDataset):
         self.crop_size = crop_size
         self.padding = padding
 
-        with rasterio.open(img_path, 'r') as raster:
-            self.height = raster.height
-            self.width = raster.width
-            self.nodata = raster.nodata if hasattr(raster, 'nodata') else None
-            self.count = raster.count
-            self.profile = raster.profile
+        self.raster = rasterio.open(img_path, 'r')
+        self.height = self.raster.height
+        self.width = self.raster.width
+        self.nodata = self.raster.nodata if hasattr(self.raster, 'nodata') else None
+        self.count = self.raster.count
+        self.profile = self.raster.profile
 
         if fill_value is not None:
             self.fill_value = fill_value
         elif self.nodata is not None:
-            self.fill_value = raster.nodata
+            self.fill_value = self.nodata
         else:
             self.fill_value = 0
 
@@ -70,19 +70,9 @@ class GeotiffReader(IterableDataset):
         window = ((y0 - self.padding, y0 + self.crop_size + self.padding),
                   (x0 - self.padding, x0 + self.crop_size + self.padding))
 
-        with rasterio.open(self.img_path) as raster:
-            crop = raster.read(window=window, masked=True, boundless=True,
-                               fill_value=self.fill_value)
-
-        # Fill nodata values
-        crop = crop.filled(self.fill_value)
-
-        if len(crop.shape) == 3:
-            crop = np.moveaxis(crop, 0, 2)  # (c, h, w) => (h, w, c)
-            if crop.shape[2] == 1:
-                crop = np.squeeze(crop, axis=2)  # (h, w, c) => (h, w)
-
-        return crop
+        crop = self.raster.read(window=window, boundless=True,
+                                fill_value=self.fill_value)
+        return np.moveaxis(crop, 0, 2)  # (c, h, w) => (h, w, c)
 
     def __getitem__(self, idx: int) -> np.ndarray:
         crop = self._get_crop(idx)
@@ -127,3 +117,6 @@ class GeotiffReader(IterableDataset):
     @property
     def x0(self) -> List[int]:
         return [a[1] for a in self.y0x0]
+
+    def __del__(self):
+        self.raster.close()
