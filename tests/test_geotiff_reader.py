@@ -1,6 +1,7 @@
 import numpy as np
 import rasterio
 import torch
+from rasterio.profiles import DefaultGTiffProfile
 from torchvision import transforms
 
 from hakai_segmentation.geotiff_io import GeotiffReader
@@ -13,14 +14,18 @@ def _create_simple_1band_img(tmpdir):
     ])
 
     p = str(tmpdir.join("simple_img.tif"))
+    height, width = simple_img.shape
+
     with rasterio.open(
             p,
             'w',
-            driver='GTiff',
-            height=simple_img.shape[0],
-            width=simple_img.shape[1],
-            count=1,
-            dtype=rasterio.uint8) as dst:
+            **DefaultGTiffProfile(
+                height=height,
+                width=width,
+                count=1,
+                crs='+proj=latlong',
+                transform=rasterio.Affine.identity()
+            )) as dst:
         dst.write(simple_img.astype(rasterio.uint8), 1)
 
     return p
@@ -35,15 +40,19 @@ def _create_simple_3band_img(tmpdir):
         [41, 142, 243]
     ]])
 
-    p = str(tmpdir.join("simple_img.tif"))
+    p = str(tmpdir.join("threeband_img.tif"))
+    height, width, _ = simple_img.shape
+
     with rasterio.open(
             p,
             'w',
-            driver='GTiff',
-            height=simple_img.shape[0],
-            width=simple_img.shape[1],
-            count=3,
-            dtype=rasterio.uint8) as dst:
+            **DefaultGTiffProfile(
+                height=height,
+                width=width,
+                count=3,
+                crs='+proj=latlong',
+                transform=rasterio.Affine.identity()
+            )) as dst:
         for b in range(simple_img.shape[-1]):
             dst.write(simple_img[:, :, b].astype(rasterio.uint8), b + 1)
 
@@ -93,7 +102,7 @@ def test_fill_values(tmpdir):
     p = _create_simple_1band_img(tmpdir)
     ds = GeotiffReader(p, crop_size=2, padding=2)
     # Should default to 0
-    assert ds.nodata is None
+    assert ds.nodata == 0.0
     assert np.all(ds[0] == np.array([
         [0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0],
@@ -110,15 +119,19 @@ def test_fill_values(tmpdir):
     ])
 
     p = str(tmpdir.mkdir("nodata").join("simple_img.tif"))
+    height, width = simple_img.shape
+
     with rasterio.open(
             p,
             'w',
-            driver='GTiff',
-            height=simple_img.shape[0],
-            width=simple_img.shape[1],
-            count=1,
-            nodata=9,
-            dtype=rasterio.uint8) as dst:
+            **DefaultGTiffProfile(
+                count=1,
+                height=height,
+                width=width,
+                nodata=9,
+                crs='+proj=latlong',
+                transform=rasterio.Affine.identity()
+            )) as dst:
         dst.write(simple_img.astype(rasterio.uint8), 1)
 
     ds = GeotiffReader(p, crop_size=2, padding=2)

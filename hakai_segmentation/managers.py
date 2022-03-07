@@ -46,7 +46,7 @@ class GeotiffSegmentation:
             shuffle=False,
             batch_size=batch_size,
             pin_memory=True,
-            num_workers=0,
+            num_workers=1,
         )
 
         self.writer = GeotiffWriter.from_reader(Path(output_path).expanduser().resolve(),
@@ -68,22 +68,22 @@ class GeotiffSegmentation:
 
     def __call__(self):
         """Run the segmentation task."""
-        with torch.no_grad():
-            self.on_start()
+        self.on_start()
 
-            for batch_idx, batch in enumerate(self._dataloader):
-                self.on_batch_start(batch_idx)
+        for batch_idx, batch in enumerate(self._dataloader):
+            self.on_batch_start(batch_idx)
 
-                crops, indices = batch
-                predictions = self.model(crops)
+            crops, indices = batch
+            predictions = self.model(crops)
+            labels = torch.argmax(predictions, dim=1).detach().cpu().numpy()
 
-                for pred, idx in zip(predictions, indices):
-                    label = torch.argmax(pred, dim=0).detach().cpu().numpy()
-                    self.writer.write_index(label, int(idx))
-                    self.on_chip_write_end(int(idx))
+            # Write outputs
+            for label, idx in zip(labels, indices):
+                self.writer.write_index(label, int(idx))
+                self.on_chip_write_end(int(idx))
 
-                self.on_batch_end(batch_idx)
-            self.on_end()
+            self.on_batch_end(batch_idx)
+        self.on_end()
 
     def on_start(self):
         """Hook that runs before image processing. By default, sets up a tqdm progress bar."""
