@@ -60,6 +60,10 @@ find-kelp
             Type: int
             Default: 2
             The batch size of cropped image sections to process together.
+        --no_gpu=NO_GPU
+            Type: bool
+            Default: False
+            Disable Cuda GPU usage and run on CPU only.
 
     NOTES
         You can also use flags syntax for POSITIONAL ARGUMENTS
@@ -108,6 +112,10 @@ find-mussels
             Type: int
             Default: 2
             The batch size of cropped image sections to process together.
+        --no_gpu=NO_GPU
+            Type: bool
+            Default: False
+            Disable Cuda GPU usage and run on CPU only.
 
     NOTES
         You can also use flags syntax for POSITIONAL ARGUMENTS
