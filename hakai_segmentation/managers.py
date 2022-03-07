@@ -46,7 +46,7 @@ class GeotiffSegmentation:
             shuffle=False,
             batch_size=batch_size,
             pin_memory=True,
-            num_workers=0,
+            num_workers=1,
         )
 
         self.writer = GeotiffWriter.from_reader(Path(output_path).expanduser().resolve(),
