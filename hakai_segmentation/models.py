@@ -15,7 +15,8 @@ class _Model(ABC):
         raise NotImplementedError
 
     def __call__(self, batch: 'torch.Tensor') -> 'torch.Tensor':
-        return self.model.forward(batch.to(self.device))
+        with torch.no_grad():
+            return self.model.forward(batch.to(self.device))
 
 
 class _JITModel(_Model, metaclass=ABCMeta):

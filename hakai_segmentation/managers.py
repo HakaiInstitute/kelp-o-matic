@@ -68,24 +68,22 @@ class GeotiffSegmentation:
 
     def __call__(self):
         """Run the segmentation task."""
-        with torch.no_grad():
-            self.on_start()
+        self.on_start()
 
-            for batch_idx, batch in enumerate(self._dataloader):
-                self.on_batch_start(batch_idx)
+        for batch_idx, batch in enumerate(self._dataloader):
+            self.on_batch_start(batch_idx)
 
-                crops, indices = batch
-                predictions = self.model(crops)
-                labels = torch.argmax(predictions, dim=1).detach().cpu().numpy()
+            crops, indices = batch
+            predictions = self.model(crops)
+            labels = torch.argmax(predictions, dim=1).detach().cpu().numpy()
 
-                for label, idx in zip(labels, indices):
-                    self.writer.write_index(label, int(idx))
-                    self.on_chip_write_end(int(idx))
+            # Write outputs
+            for label, idx in zip(labels, indices):
+                self.writer.write_index(label, int(idx))
+                self.on_chip_write_end(int(idx))
 
-                del predictions, labels, batch
-
-                self.on_batch_end(batch_idx)
-            self.on_end()
+            self.on_batch_end(batch_idx)
+        self.on_end()
 
     def on_start(self):
         """Hook that runs before image processing. By default, sets up a tqdm progress bar."""
