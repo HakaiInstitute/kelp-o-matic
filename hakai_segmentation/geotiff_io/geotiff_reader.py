@@ -72,7 +72,13 @@ class GeotiffReader(IterableDataset):
 
         crop = self.raster.read(window=window, boundless=True,
                                 fill_value=self.fill_value)
-        return np.moveaxis(crop, 0, 2)  # (c, h, w) => (h, w, c)
+
+        if len(crop.shape) == 3:
+            crop = np.moveaxis(crop, 0, 2)  # (c, h, w) => (h, w, c)
+            if crop.shape[2] == 1:
+                crop = np.squeeze(crop, axis=2)  # (h, w, c) => (h, w)
+
+        return crop
 
     def __getitem__(self, idx: int) -> np.ndarray:
         crop = self._get_crop(idx)
