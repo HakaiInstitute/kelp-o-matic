@@ -6,8 +6,8 @@ from hakai_segmentation.data import lraspp_kelp_presence_torchscript_path, lrasp
 
 
 class _Model(ABC):
-    def __init__(self):
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    def __init__(self, no_gpu: bool = False):
+        self.device = torch.device('cuda') if torch.cuda.is_available() and not no_gpu else torch.device('cpu')
         self.model = self.load_model()
 
     @abstractmethod
