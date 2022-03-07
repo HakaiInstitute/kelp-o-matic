@@ -29,7 +29,6 @@ def find_mussels(source: str, dest: str,
     :param batch_size: The batch size of cropped image sections to process together.
     :param no_gpu: Disable Cuda GPU usage and run on CPU only.
     """
-
     model = MusselPresenceSegmentationModel(no_gpu=no_gpu)
     GeotiffSegmentation(model, source, dest,
                         crop_size=crop_size, padding=padding, batch_size=batch_size)()

@@ -2,7 +2,7 @@
 from setuptools import setup
 
 PACKAGE_NAME = 'hakai-segmentation'
-VERSION = '0.1.9'
+VERSION = '0.1.8a1'
 
 packages = [
     'hakai_segmentation',
