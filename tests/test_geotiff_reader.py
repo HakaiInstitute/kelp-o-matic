@@ -20,7 +20,8 @@ def _create_simple_1band_img(tmpdir):
             height=simple_img.shape[0],
             width=simple_img.shape[1],
             count=1,
-            dtype=rasterio.uint8) as dst:
+            dtype=rasterio.uint8,
+            crs='+proj=latlong') as dst:
         dst.write(simple_img.astype(rasterio.uint8), 1)
 
     return p
@@ -43,7 +44,8 @@ def _create_simple_3band_img(tmpdir):
             height=simple_img.shape[0],
             width=simple_img.shape[1],
             count=3,
-            dtype=rasterio.uint8) as dst:
+            dtype=rasterio.uint8,
+            crs='+proj=latlong') as dst:
         for b in range(simple_img.shape[-1]):
             dst.write(simple_img[:, :, b].astype(rasterio.uint8), b + 1)
 
@@ -118,7 +120,8 @@ def test_fill_values(tmpdir):
             width=simple_img.shape[1],
             count=1,
             nodata=9,
-            dtype=rasterio.uint8) as dst:
+            dtype=rasterio.uint8,
+            crs='+proj=latlong') as dst:
         dst.write(simple_img.astype(rasterio.uint8), 1)
 
     ds = GeotiffReader(p, crop_size=2, padding=2)
