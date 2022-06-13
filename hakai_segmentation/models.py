@@ -2,12 +2,13 @@ from abc import ABC, ABCMeta, abstractmethod
 
 import torch
 
-from hakai_segmentation.data import lraspp_kelp_presence_torchscript_path, lraspp_mussel_presence_torchscript_path
+from hakai_segmentation.data import lraspp_kelp_presence_torchscript_path, lraspp_kelp_species_torchscript_path,\
+    lraspp_mussel_presence_torchscript_path
 
 
 class _Model(ABC):
-    def __init__(self, no_gpu: bool = False):
-        self.device = torch.device('cuda') if torch.cuda.is_available() and not no_gpu else torch.device('cpu')
+    def __init__(self, use_gpu: bool = True):
+        self.device = torch.device('cuda') if torch.cuda.is_available() and use_gpu else torch.device('cpu')
         self.model = self.load_model()
 
     @abstractmethod
@@ -34,6 +35,8 @@ class _JITModel(_Model, metaclass=ABCMeta):
 class KelpPresenceSegmentationModel(_JITModel):
     torchscript_path = lraspp_kelp_presence_torchscript_path
 
+class KelpSpeciesSegmentationModel(_JITModel):
+    torchscript_path = lraspp_kelp_species_torchscript_path
 
 class MusselPresenceSegmentationModel(_JITModel):
     torchscript_path = lraspp_mussel_presence_torchscript_path

@@ -100,7 +100,6 @@ class GeotiffSegmentation:
 
         # Setup progress bar
         self.progress = tqdm(
-            colour="CYAN",
             total=len(self.reader),
             desc="Processing"
         )
