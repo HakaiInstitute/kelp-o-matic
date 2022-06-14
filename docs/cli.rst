@@ -8,20 +8,17 @@ that the ``hakai-segmentation`` package is installed to.
 
     $ kom --help
 
-    NAME
-        kom
+    Usage: kom [OPTIONS] COMMAND [ARGS]...
 
-    SYNOPSIS
-        kom COMMAND
+    Options:
+      --install-completion  Install completion for the current shell.
+      --show-completion     Show completion for the current shell, to copy it or
+                            customize the installation.
+      --help                Show this message and exit.
 
-    COMMANDS
-        COMMAND is one of the following:
-
-         find-mussels
-           Detect mussels in source image and output the resulting classification raster to dest.
-
-         find-kelp
-           Detect kelp in source image and output the resulting classification raster to dest.
+    Commands:
+      find-kelp     Detect kelp in image at path `source` and output the...
+      find-mussels  Detect mussels in image at path `source` and output the...
 
 find-kelp
 ---------
@@ -30,43 +27,26 @@ find-kelp
 
     $ kom find-kelp --help
 
-    NAME
-        kom find-kelp - Detect kelp in source image and output the resulting classification raster to dest.
+    Usage: kom find-kelp [OPTIONS] SOURCE DEST
 
-    SYNOPSIS
-        kom find-kelp SOURCE DEST <flags>
+      Detect kelp in image at path `source` and output the resulting
+      classification raster to file at path `dest`.
 
-    DESCRIPTION
-        Detect kelp in source image and output the resulting classification raster to dest.
+    Arguments:
+      SOURCE  Input image with Byte data type.  [required]
+      DEST    File path location to save output to.  [required]
 
-    POSITIONAL ARGUMENTS
-        SOURCE
-            Type: str
-            Input image with Byte data type.
-        DEST
-            Type: str
-            File path location to save output to.
-
-    FLAGS
-        --crop_size=CROP_SIZE
-            Type: int
-            Default: 256
-            The size of cropped image square run through the segmentation model.
-        --padding=PADDING
-            Type: int
-            Default: 128
-            The number of context pixels added to each side of the cropped image squares.
-        --batch_size=BATCH_SIZE
-            Type: int
-            Default: 2
-            The batch size of cropped image sections to process together.
-        --no_gpu=NO_GPU
-            Type: bool
-            Default: False
-            Disable Cuda GPU usage and run on CPU only.
-
-    NOTES
-        You can also use flags syntax for POSITIONAL ARGUMENTS
+    Options:
+      --species / --presence  Segment to species or presence/absence level.
+                              [default: presence]
+      --crop-size INTEGER     The size for the cropped image squares run through
+                              the segmentation model.  [default: 256]
+      --padding INTEGER       The number of context pixels added to each side of
+                              the image crops.  [default: 128]
+      --batch-size INTEGER    The batch size of cropped image sections to process
+                              together.  [default: 2]
+      --gpu / --no-gpu        Enable or disable GPU, if available.  [default: gpu]
+      --help                  Show this message and exit.
 
 **Example usage**
 
@@ -82,44 +62,24 @@ find-mussels
 
     $ kom find-mussels --help
 
-    NAME
-        kom find-mussels - Detect mussels in source image and output the resulting classification raster to dest.
+    Usage: kom find-mussels [OPTIONS] SOURCE DEST
 
-    SYNOPSIS
-        kom find-kelp SOURCE DEST <flags>
+      Detect mussels in image at path `source` and output the resulting
+      classification raster to file at path `dest`.
 
-    DESCRIPTION
-        Detect kelp in source image and output the resulting classification raster to dest.
+    Arguments:
+      SOURCE  Input image with Byte data type.  [required]
+      DEST    File path location to save output to.  [required]
 
-    POSITIONAL ARGUMENTS
-        SOURCE
-            Type: str
-            Input image with Byte data type.
-        DEST
-            Type: str
-            File path location to save output to.
-
-    FLAGS
-        --crop_size=CROP_SIZE
-            Type: int
-            Default: 256
-            The size of cropped image square run through the segmentation model.
-        --padding=PADDING
-            Type: int
-            Default: 128
-            The number of context pixels added to each side of the cropped image squares.
-        --batch_size=BATCH_SIZE
-            Type: int
-            Default: 2
-            The batch size of cropped image sections to process together.
-        --no_gpu=NO_GPU
-            Type: bool
-            Default: False
-            Disable Cuda GPU usage and run on CPU only.
-
-    NOTES
-        You can also use flags syntax for POSITIONAL ARGUMENTS
-
+    Options:
+      --crop-size INTEGER   The size for the cropped image squares run through the
+                            segmentation model.  [default: 256]
+      --padding INTEGER     The number of context pixels added to each side of the
+                            image crops.  [default: 128]
+      --batch-size INTEGER  The batch size of cropped image sections to process
+                            together.  [default: 2]
+      --gpu / --no-gpu      Enable or disable GPU, if available.  [default: gpu]
+      --help                Show this message and exit.
 
 **Example usage**
 
