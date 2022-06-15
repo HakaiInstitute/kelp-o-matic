@@ -15,7 +15,7 @@ def find_kelp(
         batch_size: int = typer.Option(2, help="The batch size of cropped image sections to process together."),
         use_gpu: bool = typer.Option(True, "--gpu/--no-gpu", help="Enable or disable GPU, if available.")
 ):
-    """Detect kelp in image at path `source` and output the resulting classification raster to file at path `dest`."""
+    """Detect kelp in image at path SOURCE and output the resulting classification raster to file at path DEST."""
     lib.find_kelp(source=source, dest=dest, species=species,
                   crop_size=crop_size, padding=padding, batch_size=batch_size, use_gpu=use_gpu)
 
@@ -29,7 +29,7 @@ def find_mussels(
         batch_size: int = typer.Option(2, help="The batch size of cropped image sections to process together."),
         use_gpu: bool = typer.Option(True, "--gpu/--no-gpu", help="Enable or disable GPU, if available.")
 ):
-    """Detect mussels in image at path `source` and output the resulting classification raster to file at path `dest`."""
+    """Detect mussels in image at path SOURCE and output the resulting classification raster to file at path DEST."""
     lib.find_mussels(source=source, dest=dest,
                      crop_size=crop_size, padding=padding, batch_size=batch_size, use_gpu=use_gpu)
 
