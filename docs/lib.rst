@@ -1,5 +1,5 @@
 Python Library Reference
-====================
+========================
 
 The Python library provide two functions that run classification on an input image and write data to an output location.
 
