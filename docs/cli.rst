@@ -1,5 +1,5 @@
-Command Line User Guide
-=======================
+Command Line Reference
+======================
 
 The ``hakai-segmentation`` package includes one command line tool, ``kom``. It will be registered in the same Conda environment
 that the ``hakai-segmentation`` package is installed to.
@@ -29,8 +29,8 @@ find-kelp
 
     Usage: kom find-kelp [OPTIONS] SOURCE DEST
 
-      Detect kelp in image at path `source` and output the resulting
-      classification raster to file at path `dest`.
+      Detect kelp in image at path SOURCE and output the resulting
+      classification raster to file at path DEST.
 
     Arguments:
       SOURCE  Input image with Byte data type.  [required]
@@ -52,7 +52,7 @@ find-kelp
 
 .. code-block:: console
 
-    $ kom find-kelp ./some/image_with_kelp.tif ./some/place_to_write_output.tif
+    $ kom find-kelp --presence --gpu ./some/image_with_kelp.tif ./some/place_to_write_output.tif
 
 
 find-mussels
@@ -64,8 +64,8 @@ find-mussels
 
     Usage: kom find-mussels [OPTIONS] SOURCE DEST
 
-      Detect mussels in image at path `source` and output the resulting
-      classification raster to file at path `dest`.
+      Detect mussels in image at path SOURCE and output the resulting
+      classification raster to file at path DEST.
 
     Arguments:
       SOURCE  Input image with Byte data type.  [required]

@@ -73,6 +73,11 @@ class GeotiffSegmentation:
         for batch_idx, batch in enumerate(self._dataloader):
             self.on_batch_start(batch_idx)
 
+            # Reload model once in a while to help clear leaked memory
+            # Related?: https://github.com/pytorch/pytorch/issues/25646
+            if batch_idx > 0 and batch_idx % 10000:
+                self.model.reload()
+
             crops, indices = batch
             predictions = self.model(crops)
             labels = torch.argmax(predictions, dim=1).detach().cpu().numpy()

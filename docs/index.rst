@@ -24,29 +24,53 @@ Segmentation Tools for Remotely Sensed RPAS Imagery
   :alt: Version
   :height: 20px
 
-Features
-========
+----
 
-- Kelp detection in RGB RPAS imagery
-- Mussel detection in RGB RPAS imagery
+Getting Started
+---------------
+
+Please see the :doc:`Beginner Guide <./beginner_guide_index>` if you are new to Anaconda and command line tools.
+
+If you have worked with Anaconda before, start with the more brief :doc:`installation instructions <./installation>`, followed
+by the documentation for the :doc:`CLI <./cli>` and/or :doc:`python library <./lib>` interfaces.
+
+Features
+--------
+
+* Kelp presence/absence detection in RGB RPAS imagery.
+* Kelp macrocystis/nereocystis detection in RGB RPAS imagery.
+* Mussel presence/absence detection in RGB RPAS imagery.
+
+Index
+-----
 
 .. toctree::
-    :maxdepth: 2
-    :caption: Index
+    :maxdepth: 1
 
     installation
     expectations
     cli
     lib
     about
+    beginner_guide_index
 
 Contribute
-==========
+----------
 
-- Issue Tracker: https://github.com/tayden/hakai_segmentation/issues
-- Source Code: https://github.com/tayden/hakai_segmentation
+If you find an issue using the tool, bug report can be files using the following links.
+Comments or questions are also greatly appreciated!
+
+- Issue Tracker: https://github.com/HakaiInstitute/hakai_segmentation/issues
+- Source Code: https://github.com/HakaiInstitute/hakai_segmentation
 
 License
-=======
+-------
 
 The project is licensed under the `MIT license <https://raw.githubusercontent.com/tayden/hakai-segmentation/main/LICENSE.txt>`_.
+
+Authors
+-------
+
+* Taylor Denouden wrote the code and documentation.
+* Luba Reshitnyk assembled the training data to produce the tool.
+* Sarah Schroeder wrote the Beginner Guide.

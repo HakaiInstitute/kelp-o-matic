@@ -1,8 +1,8 @@
 About
 =====
 
-.. TODO: Overview
-.. TODO: ~~~~~~~~
+This document details the datasets used to produce the contained tools and documents the current performance statistics achieved
+during model training.
 
 Metric definitions
 ------------------
@@ -44,6 +44,8 @@ Output classes
 
 - 0 = background
 - 1 = kelp
+- 2 = macrocystis (when using species mode only)
+- 3 = nereocystis (when using species mode only)
 
 Dataset
 .......
@@ -92,6 +94,8 @@ Performance
 
 .. _Kelp Model Performance:
 
+Presence/Absence Model
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. list-table:: Validation split results
     :widths: 25 25 25 25
@@ -118,6 +122,39 @@ Performance
       - 0.5930
       - 0.76077
       - 0.93844
+
+Species Model
+^^^^^^^^^^^^^
+
+.. list-table:: Validation split results
+    :widths: 25 25 25 25 25
+    :header-rows: 1
+
+    * - IoU :sub:`bg`
+      - IoU :sub:`macro`
+      - IoU :sub:`nereo`
+      - mIoU
+      - Accuracy
+    * - 0
+      - 0
+      - 0
+      - 0
+      - 0
+
+.. list-table:: Test split results
+    :widths: 25 25 25 25 25
+    :header-rows: 1
+
+    * - IoU :sub:`bg`
+      - IoU :sub:`macro`
+      - IoU :sub:`nereo`
+      - mIoU
+      - Accuracy
+    * - 0
+      - 0
+      - 0
+      - 0
+      - 0
 
 -------------------------------------------------------------------------------------------------------------------------------
 
