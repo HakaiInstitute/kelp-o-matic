@@ -1,6 +1,6 @@
-from abc import ABC, ABCMeta, abstractmethod
-
+import gc
 import torch
+from abc import ABC, ABCMeta, abstractmethod
 
 from hakai_segmentation.data import lraspp_kelp_presence_torchscript_path, lraspp_kelp_species_torchscript_path,\
     lraspp_mussel_presence_torchscript_path
@@ -14,6 +14,11 @@ class _Model(ABC):
     @abstractmethod
     def load_model(self) -> 'torch.nn.Module':
         raise NotImplementedError
+
+    def reload(self) -> 'torch.nn.Module':
+        del self.model
+        gc.collect()
+        self.model = self.load_model()
 
     def __call__(self, batch: 'torch.Tensor') -> 'torch.Tensor':
         with torch.no_grad():
