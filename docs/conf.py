@@ -19,6 +19,7 @@ __version__ = importlib.metadata.version("hakai_segmentation")
 # -- Project information
 
 project = 'Hakai Segmentation'
+# noinspection PyShadowingBuiltins
 copyright = '2022, Taylor Denouden'
 author = 'Taylor Denouden'
 

@@ -15,7 +15,7 @@ class _Model(ABC):
     def load_model(self) -> 'torch.nn.Module':
         raise NotImplementedError
 
-    def reload(self) -> 'torch.nn.Module':
+    def reload(self):
         del self.model
         gc.collect()
         self.model = self.load_model()
@@ -40,8 +40,10 @@ class _JITModel(_Model, metaclass=ABCMeta):
 class KelpPresenceSegmentationModel(_JITModel):
     torchscript_path = lraspp_kelp_presence_torchscript_path
 
+
 class KelpSpeciesSegmentationModel(_JITModel):
     torchscript_path = lraspp_kelp_species_torchscript_path
+
 
 class MusselPresenceSegmentationModel(_JITModel):
     torchscript_path = lraspp_mussel_presence_torchscript_path

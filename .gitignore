@@ -97,20 +97,6 @@ fabric.properties
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
 
-### VirtualEnv template
-# Virtualenv
-# http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
-.Python
-[Bb]in
-[Ii]nclude
-[Ll]ib
-[Ll]ib64
-[Ll]ocal
-[Ss]cripts
-pyvenv.cfg
-.venv
-pip-selfcheck.json
-
 ### Vim template
 # Swap
 [._]*.s[a-v][a-z]
@@ -124,9 +110,6 @@ pip-selfcheck.json
 Session.vim
 Sessionx.vim
 
-# Temporary
-.netrwhist
-*~
 # Auto-generated tag files
 tags
 # Persistent undo
@@ -223,13 +206,6 @@ docs/_build/
 # PyBuilder
 .pybuilder/
 target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
 
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
