@@ -63,8 +63,7 @@ class GeotiffSegmentation:
         :return: Flag to indicate if crop should be discarded.
         """
         _img = np.clip(img, 0, 255)
-        is_blank = np.all((_img == 0) | (_img == 255))
-        return not is_blank
+        return np.any(_img % 255)
 
     def __call__(self):
         """Run the segmentation task."""
