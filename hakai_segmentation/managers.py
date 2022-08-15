@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Union
 
 import numpy as np
+import rasterio
 import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
@@ -69,24 +70,22 @@ class GeotiffSegmentation:
         """Run the segmentation task."""
         self.on_start()
 
-        for batch_idx, batch in enumerate(self._dataloader):
-            self.on_batch_start(batch_idx)
+        with rasterio.Env():
+            for batch_idx, batch in enumerate(self._dataloader):
+                self.on_batch_start(batch_idx)
 
-            # Reload model once in a while to help clear leaked memory
-            # Related?: https://github.com/pytorch/pytorch/issues/25646
-            if batch_idx > 0 and batch_idx % 10000:
-                self.model.reload()
+                crops, indices = batch
+                predictions = self.model(crops)
+                labels = torch.argmax(predictions, dim=1).detach().cpu().numpy()
 
-            crops, indices = batch
-            predictions = self.model(crops)
-            labels = torch.argmax(predictions, dim=1).detach().cpu().numpy()
+                # Write outputs
+                for label, idx in zip(labels, indices):
+                    self.writer.write_index(label, int(idx))
+                    self.on_chip_write_end(int(idx))
 
-            # Write outputs
-            for label, idx in zip(labels, indices):
-                self.writer.write_index(label, int(idx))
-                self.on_chip_write_end(int(idx))
+                del crops, indices, predictions, labels, batch
 
-            self.on_batch_end(batch_idx)
+                self.on_batch_end(batch_idx)
         self.on_end()
 
     def on_start(self):

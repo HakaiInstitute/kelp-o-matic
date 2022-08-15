@@ -4,7 +4,6 @@ Organization: Hakai Institute
 Date: 2021-02-22
 Description: A Pytorch Dataset for geotiff images that dynamically crops the image.
 """
-
 import itertools
 from pathlib import Path
 from typing import Union
@@ -33,11 +32,11 @@ class GeotiffWriter:
 
         profile.update(blockxsize=crop_size, blockysize=crop_size, tiled=True, **kwargs)
 
-        # Create the file and get the indices of the write locations
-        self.raster = rasterio.open(self.img_path, 'w', **profile)
-        self.height = self.raster.height
-        self.width = self.raster.width
-        self.profile = self.raster.profile
+        # Create the file and get the indices of write locations
+        with rasterio.open(self.img_path, 'w', **profile) as dst:
+            self.height = dst.height
+            self.width = dst.width
+            self.profile = dst.profile
 
         _y0s = range(0, self.height, self.crop_size)
         _x0s = range(0, self.width, self.crop_size)
@@ -56,8 +55,7 @@ class GeotiffWriter:
         Returns:
             CropDatasetWriter
         """
-        self = cls(img_path, profile=reader.profile, crop_size=reader.crop_size,
-                   padding=reader.padding, **kwargs)
+        self = cls(img_path, profile=reader.profile, crop_size=reader.crop_size, padding=reader.padding, **kwargs)
         self.y0x0 = reader.y0x0
         return self
 
@@ -77,7 +75,5 @@ class GeotiffWriter:
 
         # Write the data
         write_data = write_data[:dh, :dw].astype(self.profile['dtype'])
-        self.raster.write(write_data, 1, window=window)
-
-    def __del__(self):
-        self.raster.close()
+        with rasterio.open(self.img_path, 'r+') as dst:
+            dst.write(write_data, 1, window=window)
