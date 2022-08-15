@@ -4,7 +4,6 @@ Organization: Hakai Institute
 Date: 2021-02-22
 Description: A Pytorch Dataset for geotiff images that dynamically crops the image.
 """
-
 import itertools
 from pathlib import Path
 from typing import Callable, List, Optional, Tuple, Union
@@ -28,7 +27,7 @@ class GeotiffReader(IterableDataset):
             fill_value: The value to fill in border regions of nodata areas of the image.
                 Defaults to image nodata value.
             transform: Optional Pytorch style data transform to apply to each cropped section.
-            filter_: Optional function to filter a chip out from the iteratlor.
+            filter_: Optional function to filter a chip out from the iterator.
                 Must have signature `(img: np.array) -> bool`
         """
         super().__init__()
@@ -37,12 +36,12 @@ class GeotiffReader(IterableDataset):
         self.crop_size = crop_size
         self.padding = padding
 
-        self.raster = rasterio.open(img_path, 'r')
-        self.height = self.raster.height
-        self.width = self.raster.width
-        self.nodata = self.raster.nodata if hasattr(self.raster, 'nodata') else None
-        self.count = self.raster.count
-        self.profile = self.raster.profile
+        with rasterio.open(img_path, 'r') as src:
+            self.height = src.height
+            self.width = src.width
+            self.nodata = src.nodata if hasattr(src, 'nodata') else None
+            self.count = src.count
+            self.profile = src.profile
 
         if fill_value is not None:
             self.fill_value = fill_value
@@ -70,13 +69,13 @@ class GeotiffReader(IterableDataset):
         window = ((y0 - self.padding, y0 + self.crop_size + self.padding),
                   (x0 - self.padding, x0 + self.crop_size + self.padding))
 
-        crop = self.raster.read(window=window, boundless=True,
-                                fill_value=self.fill_value)
+        with rasterio.open(self.img_path, 'r') as src:
+            crop = src.read(window=window, boundless=True, fill_value=self.fill_value)
 
         if len(crop.shape) == 3:
             crop = np.moveaxis(crop, 0, 2)  # (c, h, w) => (h, w, c)
             if crop.shape[2] == 1:
-                crop = np.squeeze(crop, axis=2)  # (h, w, c) => (h, w)
+                crop = np.squeeze(crop, axis=2)  # (h, w, 1) => (h, w)
 
         return crop
 
@@ -123,6 +122,3 @@ class GeotiffReader(IterableDataset):
     @property
     def x0(self) -> List[int]:
         return [a[1] for a in self.y0x0]
-
-    def __del__(self):
-        self.raster.close()
