@@ -71,7 +71,7 @@ class GeotiffSegmentation:
         """Run the segmentation task."""
         self.on_start()
 
-        with rasterio.Env(GDAL_CACHEMAX=128_000_000):
+        with rasterio.Env():
             for batch_idx, batch in enumerate(self._dataloader):
                 self.on_batch_start(batch_idx)
 
