@@ -15,7 +15,7 @@ package_data = {
 }
 
 install_requires = [
-    'fire~=0.4',
+    'typer~=0.4',
     'numpy~=1.16',
     'torch~=1.10',
     'rasterio~=1.2',
