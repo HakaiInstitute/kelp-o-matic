@@ -17,7 +17,7 @@ class GeotiffSegmentation:
     """Class for configuring data io and efficient segmentation of Geotiff imagery."""
 
     def __init__(self, model: '_Model', input_path: Union[str, 'Path'], output_path: Union[str, 'Path'], crop_size: int = 256,
-                 padding: int = 128, batch_size: int = 2):
+                 padding: int = 128, batch_size: int = 2, reload_model_on_batch: bool = False):
         """
         Create the segmentation object.
 
@@ -27,8 +27,10 @@ class GeotiffSegmentation:
         :param crop_size: The size of image crop to classify iteratively until the entire image is classified.
         :param padding: The number of context pixels to add to each side of an image crop to improve outputs.
         :param batch_size: The number of crops to classify at a time using the model.
+        :param reload_model_on_batch: Flag to force the model to reload for each batch.
         """
         self.model = model
+        self.reload_model_on_batch = reload_model_on_batch
 
         tran = transforms.Compose([
             transforms.ToTensor(),
@@ -119,7 +121,8 @@ class GeotiffSegmentation:
 
         :param batch_idx: The batch index being processed.
         """
-        pass
+        if self.reload_model_on_batch:
+            self.model.reload()
 
     def on_batch_end(self, batch_idx: int):
         """
