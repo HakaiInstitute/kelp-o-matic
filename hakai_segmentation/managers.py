@@ -4,20 +4,27 @@ from typing import Union
 
 import numpy as np
 import rasterio
-import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm.auto import tqdm
 
 from hakai_segmentation.geotiff_io import GeotiffReader, GeotiffWriter
 from hakai_segmentation.models import _Model
+from hakai_segmentation.utils import all_same
 
 
 class GeotiffSegmentation:
     """Class for configuring data io and efficient segmentation of Geotiff imagery."""
 
-    def __init__(self, model: '_Model', input_path: Union[str, 'Path'], output_path: Union[str, 'Path'], crop_size: int = 256,
-                 padding: int = 128, batch_size: int = 2, reload_model_on_batch: bool = False):
+    def __init__(
+        self,
+        model: "_Model",
+        input_path: Union[str, "Path"],
+        output_path: Union[str, "Path"],
+        crop_size: int = 256,
+        padding: int = 128,
+        batch_size: int = 2,
+    ):
         """
         Create the segmentation object.
 
@@ -27,16 +34,18 @@ class GeotiffSegmentation:
         :param crop_size: The size of image crop to classify iteratively until the entire image is classified.
         :param padding: The number of context pixels to add to each side of an image crop to improve outputs.
         :param batch_size: The number of crops to classify at a time using the model.
-        :param reload_model_on_batch: Flag to force the model to reload for each batch.
         """
         self.model = model
-        self.reload_model_on_batch = reload_model_on_batch
 
-        tran = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Lambda(lambda img: img[:3, :, :]),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-        ])
+        tran = transforms.Compose(
+            [
+                transforms.ToTensor(),
+                transforms.Lambda(lambda img: img[:3, :, :]),
+                transforms.Normalize(
+                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+                ),
+            ]
+        )
         self.reader = GeotiffReader(
             Path(input_path).expanduser().resolve(),
             transform=tran,
@@ -52,13 +61,18 @@ class GeotiffSegmentation:
             num_workers=0,
         )
 
-        self.writer = GeotiffWriter.from_reader(Path(output_path).expanduser().resolve(),
-                                                self.reader, count=1, dtype="uint8", nodata=0)
+        self.writer = GeotiffWriter.from_reader(
+            Path(output_path).expanduser().resolve(),
+            self.reader,
+            count=1,
+            dtype="uint8",
+            nodata=0,
+        )
 
         self.progress = None
 
     @staticmethod
-    def _should_keep(img: 'np.ndarray') -> bool:
+    def _should_keep(img: "np.ndarray") -> bool:
         """
         Determines if an image crop should be classified or discarded.
 
@@ -77,15 +91,14 @@ class GeotiffSegmentation:
                 self.on_batch_start(batch_idx)
 
                 crops, indices = batch
-                predictions = self.model(crops)
-                labels = torch.argmax(predictions, dim=1).detach().cpu().numpy()
+                labels = self.model(crops).detach().cpu().numpy()
 
                 # Write outputs
                 for label, idx in zip(labels, indices):
                     self.writer.write_index(label, int(idx))
                     self.on_chip_write_end(int(idx))
 
-                del crops, indices, predictions, labels, batch
+                del crops, indices, labels, batch
 
                 self.on_batch_end(batch_idx)
         self.on_end()
@@ -94,20 +107,41 @@ class GeotiffSegmentation:
         """Hook that runs before image processing. By default, sets up a tqdm progress bar."""
         # Check data type assumptions
         if self.reader.nodata is None:
-            warnings.warn("Define the correct nodata value on the input raster to speed up processing.", UserWarning)
+            warnings.warn(
+                "Define the correct nodata value on the input raster to speed up processing.",
+                UserWarning,
+            )
 
-        dtype = self.reader.profile['dtype']
-        if dtype != 'uint8':
-            raise AssertionError(f"Input image has incorrect data type {dtype}. Only uint8 (aka Byte) images are supported.")
+        dtype = self.reader.profile["dtype"]
+        if dtype != "uint8":
+            raise AssertionError(
+                f"Input image has incorrect data type {dtype}. Only uint8 (aka Byte) images are supported."
+            )
         if self.reader.count < 3:
-            raise AssertionError("Input image has less than 3 bands. "
-                                 "The image should have at least 3 bands, with the first three being in RGB order.")
+            raise AssertionError(
+                "Input image has less than 3 bands. "
+                "The image should have at least 3 bands, with the first three being in RGB order."
+            )
+
+        if not all_same(self.reader.block_shapes):
+            warnings.warn(
+                "Input image bands have different sized blocks.",
+                UserWarning,
+            )
+
+        crop_shape = self.reader.crop_size + 2 * self.reader.padding
+        y_shape, x_shape = self.reader.block_shapes[0]
+        if crop_shape % y_shape != 0 or crop_shape % x_shape != 0:
+            warnings.warn(
+                f"The specified crop_size and padding are not a multiple of the input image block shape. "
+                f"Performance will be degraded. The detected block shape for this band is ({y_shape}, {x_shape}). "
+                "It is recommended to choose crop_size and padding such that `crop_size + 2*padding` is a multiple of the "
+                "block size. Also check that the block shape is consistent across image bands.",
+                UserWarning,
+            )
 
         # Setup progress bar
-        self.progress = tqdm(
-            total=len(self.reader),
-            desc="Processing"
-        )
+        self.progress = tqdm(total=len(self.reader), desc="Processing")
 
     def on_end(self):
         """Hook that runs after image processing. By default, tears down the tqdm progress bar."""
@@ -121,8 +155,7 @@ class GeotiffSegmentation:
 
         :param batch_idx: The batch index being processed.
         """
-        if self.reload_model_on_batch:
-            self.model.reload()
+        pass
 
     def on_batch_end(self, batch_idx: int):
         """

@@ -15,7 +15,14 @@ from hakai_segmentation.geotiff_io import GeotiffReader
 
 
 class GeotiffWriter:
-    def __init__(self, img_path: Union[str, 'Path'], profile: dict, crop_size: int, padding: int = 0, **kwargs):
+    def __init__(
+        self,
+        img_path: Union[str, "Path"],
+        profile: dict,
+        crop_size: int,
+        padding: int = 0,
+        **kwargs
+    ):
         """Write a tif file in small sections.
 
         Args:
@@ -33,7 +40,7 @@ class GeotiffWriter:
         profile.update(blockxsize=crop_size, blockysize=crop_size, tiled=True, **kwargs)
 
         # Create the file and get the indices of write locations
-        with rasterio.open(self.img_path, 'w', **profile) as dst:
+        with rasterio.open(self.img_path, "w", **profile) as dst:
             self.height = dst.height
             self.width = dst.width
             self.profile = dst.profile
@@ -43,7 +50,9 @@ class GeotiffWriter:
         self.y0x0 = list(itertools.product(_y0s, _x0s))
 
     @classmethod
-    def from_reader(cls, img_path: Union[str, 'Path'], reader: 'GeotiffReader', **kwargs):
+    def from_reader(
+        cls, img_path: Union[str, "Path"], reader: "GeotiffReader", **kwargs
+    ):
         """Create a CropDatasetWriter using a CropDatasetReader instance.
             Defines the geo-referencing, cropping, and size parameters using an existing raster image.
 
@@ -55,7 +64,13 @@ class GeotiffWriter:
         Returns:
             CropDatasetWriter
         """
-        self = cls(img_path, profile=reader.profile, crop_size=reader.crop_size, padding=reader.padding, **kwargs)
+        self = cls(
+            img_path,
+            profile=reader.profile,
+            crop_size=reader.crop_size,
+            padding=reader.padding,
+            **kwargs
+        )
         self.y0x0 = reader.y0x0
         return self
 
@@ -63,17 +78,21 @@ class GeotiffWriter:
         y0, x0 = self.y0x0[idx]
 
         # Read the image section
-        window = ((y0, min(y0 + self.crop_size, self.height)),
-                  (x0, min(x0 + self.crop_size, self.width)))
+        window = (
+            (y0, min(y0 + self.crop_size, self.height)),
+            (x0, min(x0 + self.crop_size, self.width)),
+        )
 
         # Remove padding information
-        write_data = write_data[self.padding:-self.padding, self.padding:-self.padding]
+        write_data = write_data[
+            self.padding : -self.padding, self.padding : -self.padding
+        ]
 
         # Remove data that goes past the boundaries
         dh = window[0][1] - window[0][0]
         dw = window[1][1] - window[1][0]
 
         # Write the data
-        write_data = write_data[:dh, :dw].astype(self.profile['dtype'])
-        with rasterio.open(self.img_path, 'r+') as dst:
+        write_data = write_data[:dh, :dw].astype(self.profile["dtype"])
+        with rasterio.open(self.img_path, "r+") as dst:
             dst.write(write_data, 1, window=window)

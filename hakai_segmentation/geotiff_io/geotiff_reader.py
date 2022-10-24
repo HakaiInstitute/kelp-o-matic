@@ -14,9 +14,15 @@ from torch.utils.data import IterableDataset
 
 
 class GeotiffReader(IterableDataset):
-    def __init__(self, img_path: Union[str, 'Path'], crop_size: int, padding: Optional[int] = 0,
-                 fill_value: Optional[Union[int, float]] = None, transform: Optional[Callable] = None,
-                 filter_: Optional[Callable] = None):
+    def __init__(
+        self,
+        img_path: Union[str, "Path"],
+        crop_size: int,
+        padding: Optional[int] = 0,
+        fill_value: Optional[Union[int, float]] = None,
+        transform: Optional[Callable] = None,
+        filter_: Optional[Callable] = None,
+    ):
         """A Pytorch dataset that returns cropped segments of a tif image file.
 
         Args:
@@ -36,12 +42,13 @@ class GeotiffReader(IterableDataset):
         self.crop_size = crop_size
         self.padding = padding
 
-        with rasterio.open(img_path, 'r') as src:
+        with rasterio.open(img_path, "r") as src:
             self.height = src.height
             self.width = src.width
-            self.nodata = src.nodata if hasattr(src, 'nodata') else None
+            self.nodata = src.nodata if hasattr(src, "nodata") else None
             self.count = src.count
             self.profile = src.profile
+            self.block_shapes = src.block_shapes
 
         if fill_value is not None:
             self.fill_value = fill_value
@@ -66,10 +73,12 @@ class GeotiffReader(IterableDataset):
         y0, x0 = self.y0x0[idx]
 
         # Read the image section
-        window = ((y0 - self.padding, y0 + self.crop_size + self.padding),
-                  (x0 - self.padding, x0 + self.crop_size + self.padding))
+        window = (
+            (y0 - self.padding, y0 + self.crop_size + self.padding),
+            (x0 - self.padding, x0 + self.crop_size + self.padding),
+        )
 
-        with rasterio.open(self.img_path, 'r') as src:
+        with rasterio.open(self.img_path, "r") as src:
             crop = src.read(window=window, boundless=True, fill_value=self.fill_value)
 
         if len(crop.shape) == 3:
@@ -102,7 +111,12 @@ class GeotiffReader(IterableDataset):
         if self.filter is not None:
             # Get crops until one meets the filter criteria
             while True:
-                if self.filter(crop[self.padding:self.crop_size + self.padding, self.padding:self.crop_size + self.padding]):
+                if self.filter(
+                    crop[
+                        self.padding : self.crop_size + self.padding,
+                        self.padding : self.crop_size + self.padding,
+                    ]
+                ):
                     break
                 elif self.idx < len(self):
                     crop = self._get_crop(self.idx)
