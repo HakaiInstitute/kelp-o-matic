@@ -16,8 +16,15 @@ from hakai_segmentation.models import _Model
 class GeotiffSegmentation:
     """Class for configuring data io and efficient segmentation of Geotiff imagery."""
 
-    def __init__(self, model: '_Model', input_path: Union[str, 'Path'], output_path: Union[str, 'Path'], crop_size: int = 256,
-                 padding: int = 128, batch_size: int = 2):
+    def __init__(
+        self,
+        model: "_Model",
+        input_path: Union[str, "Path"],
+        output_path: Union[str, "Path"],
+        crop_size: int = 256,
+        padding: int = 128,
+        batch_size: int = 2,
+    ):
         """
         Create the segmentation object.
 
@@ -30,11 +37,15 @@ class GeotiffSegmentation:
         """
         self.model = model
 
-        tran = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Lambda(lambda img: img[:3, :, :]),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-        ])
+        tran = transforms.Compose(
+            [
+                transforms.ToTensor(),
+                transforms.Lambda(lambda img: img[:3, :, :]),
+                transforms.Normalize(
+                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+                ),
+            ]
+        )
         self.reader = GeotiffReader(
             Path(input_path).expanduser().resolve(),
             transform=tran,
@@ -50,13 +61,18 @@ class GeotiffSegmentation:
             num_workers=0,
         )
 
-        self.writer = GeotiffWriter.from_reader(Path(output_path).expanduser().resolve(),
-                                                self.reader, count=1, dtype="uint8", nodata=0)
+        self.writer = GeotiffWriter.from_reader(
+            Path(output_path).expanduser().resolve(),
+            self.reader,
+            count=1,
+            dtype="uint8",
+            nodata=0,
+        )
 
         self.progress = None
 
     @staticmethod
-    def _should_keep(img: 'np.ndarray') -> bool:
+    def _should_keep(img: "np.ndarray") -> bool:
         """
         Determines if an image crop should be classified or discarded.
 
@@ -92,20 +108,24 @@ class GeotiffSegmentation:
         """Hook that runs before image processing. By default, sets up a tqdm progress bar."""
         # Check data type assumptions
         if self.reader.nodata is None:
-            warnings.warn("Define the correct nodata value on the input raster to speed up processing.", UserWarning)
+            warnings.warn(
+                "Define the correct nodata value on the input raster to speed up processing.",
+                UserWarning,
+            )
 
-        dtype = self.reader.profile['dtype']
-        if dtype != 'uint8':
-            raise AssertionError(f"Input image has incorrect data type {dtype}. Only uint8 (aka Byte) images are supported.")
+        dtype = self.reader.profile["dtype"]
+        if dtype != "uint8":
+            raise AssertionError(
+                f"Input image has incorrect data type {dtype}. Only uint8 (aka Byte) images are supported."
+            )
         if self.reader.count < 3:
-            raise AssertionError("Input image has less than 3 bands. "
-                                 "The image should have at least 3 bands, with the first three being in RGB order.")
+            raise AssertionError(
+                "Input image has less than 3 bands. "
+                "The image should have at least 3 bands, with the first three being in RGB order."
+            )
 
         # Setup progress bar
-        self.progress = tqdm(
-            total=len(self.reader),
-            desc="Processing"
-        )
+        self.progress = tqdm(total=len(self.reader), desc="Processing")
 
     def on_end(self):
         """Hook that runs after image processing. By default, tears down the tqdm progress bar."""

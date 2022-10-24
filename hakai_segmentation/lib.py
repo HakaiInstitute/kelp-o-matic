@@ -1,10 +1,20 @@
 from hakai_segmentation.managers import GeotiffSegmentation
-from hakai_segmentation.models import KelpPresenceSegmentationModel, KelpSpeciesSegmentationModel, \
-    MusselPresenceSegmentationModel
+from hakai_segmentation.models import (
+    KelpPresenceSegmentationModel,
+    KelpSpeciesSegmentationModel,
+    MusselPresenceSegmentationModel,
+)
 
 
-def find_kelp(source: str, dest: str, species: bool = False,
-              crop_size: int = 256, padding: int = 128, batch_size: int = 2, use_gpu: bool = True):
+def find_kelp(
+    source: str,
+    dest: str,
+    species: bool = False,
+    crop_size: int = 256,
+    padding: int = 128,
+    batch_size: int = 2,
+    use_gpu: bool = True,
+):
     """Detect kelp in image at path `source` and output the resulting classification raster to file at path `dest`.
 
     :param source: Input image with Byte data type.
@@ -19,12 +29,19 @@ def find_kelp(source: str, dest: str, species: bool = False,
         model = KelpSpeciesSegmentationModel(use_gpu=use_gpu)
     else:
         model = KelpPresenceSegmentationModel(use_gpu=use_gpu)
-    GeotiffSegmentation(model, source, dest,
-                        crop_size=crop_size, padding=padding, batch_size=batch_size)()
+    GeotiffSegmentation(
+        model, source, dest, crop_size=crop_size, padding=padding, batch_size=batch_size
+    )()
 
 
-def find_mussels(source: str, dest: str,
-                 crop_size: int = 256, padding: int = 128, batch_size: int = 2, use_gpu: bool = True):
+def find_mussels(
+    source: str,
+    dest: str,
+    crop_size: int = 256,
+    padding: int = 128,
+    batch_size: int = 2,
+    use_gpu: bool = True,
+):
     """Detect mussels in image at path `source` and output the resulting classification raster to file at path `dest`.
 
     :param source: Input image with Byte data type.
@@ -35,5 +52,6 @@ def find_mussels(source: str, dest: str,
     :param use_gpu: Disable Cuda GPU usage and run on CPU only.
     """
     model = MusselPresenceSegmentationModel(use_gpu=use_gpu)
-    GeotiffSegmentation(model, source, dest,
-                        crop_size=crop_size, padding=padding, batch_size=batch_size)()
+    GeotiffSegmentation(
+        model, source, dest, crop_size=crop_size, padding=padding, batch_size=batch_size
+    )()
