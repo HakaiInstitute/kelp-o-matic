@@ -19,21 +19,6 @@ class _Model(ABC):
         )
         self.model = self.load_model()
 
-    @abstractmethod
-    def load_model(self) -> "torch.nn.Module":
-        raise NotImplementedError
-
-    def reload(self):
-        del self.model
-        gc.collect()
-        self.model = self.load_model()
-
-    def __call__(self, batch: "torch.Tensor") -> "torch.Tensor":
-        with torch.no_grad():
-            return self.model.forward(batch.to(self.device))
-
-
-class _JITModel(_Model, metaclass=ABCMeta):
     @property
     @abstractmethod
     def torchscript_path(self):
@@ -44,14 +29,35 @@ class _JITModel(_Model, metaclass=ABCMeta):
         model.eval()
         return model
 
+    def reload(self):
+        del self.model
+        gc.collect()
+        self.model = self.load_model()
 
-class KelpPresenceSegmentationModel(_JITModel):
+    def __call__(self, batch: "torch.Tensor") -> "torch.Tensor":
+        with torch.no_grad():
+            return torch.argmax(self.model.forward(batch.to(self.device)), dim=1)
+
+
+class KelpPresenceSegmentationModel(_Model):
     torchscript_path = lraspp_kelp_presence_torchscript_path
 
 
-class KelpSpeciesSegmentationModel(_JITModel):
+class KelpSpeciesSegmentationModel(_Model):
     torchscript_path = lraspp_kelp_species_torchscript_path
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.presence_model = KelpPresenceSegmentationModel(*args, **kwargs)
 
-class MusselPresenceSegmentationModel(_JITModel):
+    def __call__(self, batch: "torch.Tensor") -> "torch.Tensor":
+        with torch.no_grad():
+            batch = batch.to(self.device)
+            presence = self.presence_model(batch)  # 0: bg, 1: kelp
+            species = torch.argmax(self.model.forward(batch), dim=1)  # 0: macro, 1: nereo
+
+            return torch.mul(presence, torch.add(species, 2))  # 0: bg, 2: macro, 3: nereo
+
+
+class MusselPresenceSegmentationModel(_Model):
     torchscript_path = lraspp_mussel_presence_torchscript_path

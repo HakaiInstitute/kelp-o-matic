@@ -91,15 +91,14 @@ class GeotiffSegmentation:
                 self.on_batch_start(batch_idx)
 
                 crops, indices = batch
-                predictions = self.model(crops)
-                labels = torch.argmax(predictions, dim=1).detach().cpu().numpy()
+                labels = self.model(crops).detach().cpu().numpy()
 
                 # Write outputs
                 for label, idx in zip(labels, indices):
                     self.writer.write_index(label, int(idx))
                     self.on_chip_write_end(int(idx))
 
-                del crops, indices, predictions, labels, batch
+                del crops, indices, labels, batch
 
                 self.on_batch_end(batch_idx)
         self.on_end()
