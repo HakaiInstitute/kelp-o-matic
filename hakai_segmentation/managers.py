@@ -103,26 +103,28 @@ class GeotiffSegmentation:
                 self.on_batch_end(batch_idx)
         self.on_end()
 
-    def on_start(self):
-        """Hook that runs before image processing. By default, sets up a tqdm progress bar."""
-        # Check data type assumptions
+    def _no_data_check(self):
         if self.reader.nodata is None:
             warnings.warn(
                 "Define the correct nodata value on the input raster to speed up processing.",
                 UserWarning,
             )
 
+    def _byte_type_check(self):
         dtype = self.reader.profile["dtype"]
         if dtype != "uint8":
             raise AssertionError(
                 f"Input image has incorrect data type {dtype}. Only uint8 (aka Byte) images are supported."
             )
+
+    def _band_count_check(self):
         if self.reader.count < 3:
             raise AssertionError(
                 "Input image has less than 3 bands. "
                 "The image should have at least 3 bands, with the first three being in RGB order."
             )
 
+    def _block_tiles_check(self):
         if not all_same(self.reader.block_shapes):
             warnings.warn(
                 "Input image bands have different sized blocks.",
@@ -131,14 +133,25 @@ class GeotiffSegmentation:
 
         crop_shape = self.reader.crop_size + 2 * self.reader.padding
         y_shape, x_shape = self.reader.block_shapes[0]
-        if crop_shape % y_shape != 0 or crop_shape % x_shape != 0:
+        if y_shape == 1:
             warnings.warn(
-                f"The specified crop_size and padding are not a multiple of the input image block shape. "
-                f"Performance will be degraded. The detected block shape for this band is ({y_shape}, {x_shape}). "
-                "It is recommended to choose crop_size and padding such that `crop_size + 2*padding` is a multiple of the "
-                "block size. Also check that the block shape is consistent across image bands.",
+                f"The input image is not a tiled tif. Processing will be significantly faster for tiled images.",
                 UserWarning,
             )
+        elif crop_shape % y_shape != 0 or crop_shape % x_shape != 0:
+            warnings.warn(
+                "Suboptimal crop_size and padding were specified. Performance will be degraded. "
+                f"The detected block shape for this band is ({y_shape}, {x_shape}). "
+                f"Faster performance may be achieved by setting the crop_size to {y_shape} and the padding to {y_shape // 2}.",
+                UserWarning,
+            )
+
+    def on_start(self):
+        """Hook that runs before image processing. By default, runs image checks and sets up a tqdm progress bar."""
+        self._no_data_check()
+        self._byte_type_check()
+        self._band_count_check()
+        self._block_tiles_check()
 
         # Setup progress bar
         self.progress = tqdm(total=len(self.reader), desc="Processing")
