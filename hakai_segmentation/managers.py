@@ -4,13 +4,13 @@ from typing import Union
 
 import numpy as np
 import rasterio
-import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm.auto import tqdm
 
 from hakai_segmentation.geotiff_io import GeotiffReader, GeotiffWriter
 from hakai_segmentation.models import _Model
+from hakai_segmentation.utils import all_same
 
 
 class GeotiffSegmentation:
@@ -121,6 +121,23 @@ class GeotiffSegmentation:
             raise AssertionError(
                 "Input image has less than 3 bands. "
                 "The image should have at least 3 bands, with the first three being in RGB order."
+            )
+
+        if not all_same(self.reader.block_shapes):
+            warnings.warn(
+                "Input image bands have different sized blocks.",
+                UserWarning,
+            )
+
+        crop_shape = self.reader.crop_size + 2 * self.reader.padding
+        y_shape, x_shape = self.reader.block_shapes[0]
+        if crop_shape % y_shape != 0 or crop_shape % x_shape != 0:
+            warnings.warn(
+                f"The specified crop_size and padding are not a multiple of the input image block shape. "
+                f"Performance will be degraded. The detected block shape for this band is ({y_shape}, {x_shape}). "
+                "It is recommended to choose crop_size and padding such that `crop_size + 2*padding` is a multiple of the "
+                "block size. Also check that the block shape is consistent across image bands.",
+                UserWarning,
             )
 
         # Setup progress bar

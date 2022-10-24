@@ -48,6 +48,7 @@ class GeotiffReader(IterableDataset):
             self.nodata = src.nodata if hasattr(src, "nodata") else None
             self.count = src.count
             self.profile = src.profile
+            self.block_shapes = src.block_shapes
 
         if fill_value is not None:
             self.fill_value = fill_value
