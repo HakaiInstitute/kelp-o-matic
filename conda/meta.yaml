@@ -18,10 +18,10 @@ build:
 
 requirements:
   host:
-    - python ~=3.7,<3.10
+    - python ~=3.7,<3.11
     - pip
   run:
-    - python ~=3.7,<3.10
+    - python ~=3.7,<3.11
     - numpy ~=1.16
     - pytorch ~=1.10
     - rasterio ~=1.2
