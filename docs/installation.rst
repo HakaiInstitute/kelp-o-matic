@@ -15,20 +15,20 @@ that you're using the most up-to-date version of `kelp-o-matic`.
 Conda
 -----
 
-Use the Anaconda Navigator GUI to create a new environment and add the *hakai-institute*, and *conda-forge* channels
+Use the Anaconda Navigator GUI to create a new environment and add the *hakai-institute*, *conda-forge*, and *pytorch* channels
 before searching for and installing the ``kelp-o-matic`` package in your environment.
 
 Alternatively, install using your terminal or the Anaconda prompt (for Windows users) by running the following command:
 
 .. code-block:: bash
 
-    conda install -c conda-forge -c hakai-institute kelp-o-matic
+    conda install -c conda-forge -c pytorch -c hakai-institute kelp-o-matic
 
 You can update the package when new versions become available with:
 
 .. code-block:: bash
 
-    conda update -c conda-forge -c hakai-institute kelp-o-matic
+    conda update -c conda-forge -c pytorch -c hakai-institute kelp-o-matic
 
 PIP
 ---
