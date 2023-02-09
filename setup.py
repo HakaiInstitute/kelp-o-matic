@@ -33,7 +33,7 @@ setup_kwargs = {
     'description': 'Segmentation Tools for Remotely Sensed RPAS Imagery',
     'author': 'Taylor Denouden',
     'author_email': 'taylordenouden@gmail.com',
-    'url': 'https://github.com/hakaiInstitute/hakai-segmentation',
+    'url': 'https://github.com/hakaiInstitute/kelp-o-matic',
     'packages': packages,
     'package_data': package_data,
     'install_requires': install_requires,
