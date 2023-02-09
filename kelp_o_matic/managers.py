@@ -21,9 +21,9 @@ class GeotiffSegmentation:
         model: "_Model",
         input_path: Union[str, "Path"],
         output_path: Union[str, "Path"],
-        crop_size: int = 256,
-        padding: int = 128,
-        batch_size: int = 2,
+        crop_size: int = 512,
+        padding: int = 256,
+        batch_size: int = 1,
     ):
         """
         Create the segmentation object.
