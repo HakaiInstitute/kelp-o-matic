@@ -2,10 +2,10 @@
 Beginner Guide
 **************
 
-The hakai-segmentation tool is a program which will detect floating canopy kelp from high resolution RGB imagery such as RPAS
+The kelp-o-matic tool is a program which will detect floating canopy kelp from high resolution RGB imagery such as RPAS
 (remotely piloted aircraft systems).
 
-This document outlines step-by-step how to execute the hakai-segmentation tool for those with little to no experience with programming.
+This document outlines step-by-step how to execute the kelp-o-matic tool for those with little to no experience with programming.
 
 .. toctree::
     :numbered:
