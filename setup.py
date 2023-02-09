@@ -2,7 +2,7 @@
 from setuptools import setup
 
 PACKAGE_NAME = 'kelp-o-matic'
-VERSION = '0.4.1'
+VERSION = '0.5.0'
 
 packages = [
     'kelp_o_matic',
