@@ -142,7 +142,8 @@ class GeotiffSegmentation:
             warnings.warn(
                 "Suboptimal crop_size and padding were specified. Performance will be degraded. "
                 f"The detected block shape for this band is ({y_shape}, {x_shape}). "
-                f"Faster performance may be achieved by setting the crop_size to {y_shape} and the padding to {y_shape // 2}.",
+                f"Faster performance may be achieved by setting the crop_size and the padding such"
+                f"that (crop_size + 2*padding) is a multiple of {y_shape}.",
                 UserWarning,
             )
 
