@@ -1,8 +1,8 @@
-==================
-Hakai Segmentation
-==================
+============
+Kelp-O-Matic
+============
 
 Segmentation Tools for Remotely Sensed RPAS Imagery
 
-`Go To Documentation <http://hakai-segmentation.readthedocs.io/>`_
+`Go To Documentation <http://kelp-o-matic.readthedocs.io/>`_
 ------------------------------------------------------------

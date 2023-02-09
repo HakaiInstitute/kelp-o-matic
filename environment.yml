@@ -1,4 +1,4 @@
-name: hakai-segmentation
+name: kelp-o-matic
 channels:
   - pytorch
   - conda-forge

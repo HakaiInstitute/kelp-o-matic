@@ -1,7 +1,7 @@
 Set-up and Installation
 =======================
 
-Before you can run the hakai-segmentation tool, you will need to set up some programs which will allow the tool to run. Once
+Before you can run the kelp-o-matic tool, you will need to set up some programs which will allow the tool to run. Once
 set-up is complete the tool can be run very easily from ones terminal.
 
 Install Anaconda
@@ -44,7 +44,7 @@ Create a new environment and give it a name by clicking the create button.
 Give the new environment a name in the dialogue box that pops up, *e.g.* “KelpSegmentation”.
 Select a Python version that begins with "3.9".
 
-..  warning:: ``hakai-segmentation`` currently supports Python versions 3.7, 3.8, and 3.9 only. Installation will not work for other versions.
+..  warning:: ``kelp-o-matic`` currently supports Python versions 3.7, 3.8, and 3.9 only. Installation will not work for other versions.
 
 ----
 
@@ -78,22 +78,22 @@ Click “update channels”.
 Install Packages
 ----------------
 
-Next you will install the “hakai-segmentation” package in your environment.
+Next you will install the “kelp-o-matic” package in your environment.
 
 ..  image:: ./images/install_packages1.png
     :width: 100%
 
-In the Anaconda Navigator with your environment selected and “Not Installed” selected in the drop down menu, type “hakai-segmentation” in the search packages search bar.
+In the Anaconda Navigator with your environment selected and “Not Installed” selected in the drop down menu, type “kelp-o-matic” in the search packages search bar.
 
 ..  image:: ./images/install_packages2.png
     :width: 100%
 
-Type “hakai-segmentation” in the search packages search bar. This is the name of the package you are installing (make sure it is spelled correctly).
+Type “kelp-o-matic” in the search packages search bar. This is the name of the package you are installing (make sure it is spelled correctly).
 
 ..  image:: ./images/install_packages3.png
     :width: 100%
 
-Click the box beside “hakai-segmentation” and then click Apply to install the package.
+Click the box beside “kelp-o-matic” and then click Apply to install the package.
 
 ..  image:: ./images/install_packages4.png
     :width: 100%
@@ -103,7 +103,7 @@ A dialogue box will appear and ask you to install packages, click the apply butt
 ..  image:: ./images/install_packages5.png
     :width: 100%
 
-Now when you select Installed on the drop-down menu the “hakai-segmentation” package should appear.
+Now when you select Installed on the drop-down menu the “kelp-o-matic” package should appear.
 
 **Part 1 set-up is now complete!**
 

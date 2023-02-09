@@ -1,6 +1,6 @@
 import typer
 
-from hakai_segmentation import lib
+from kelp_o_matic import lib
 
 cli = typer.Typer()
 

@@ -1,8 +1,8 @@
 Command Line Reference
 ======================
 
-The ``hakai-segmentation`` package includes one command line tool, ``kom``. It will be registered in the same Conda environment
-that the ``hakai-segmentation`` package is installed to.
+The ``kelp-o-matic`` package includes one command line tool, ``kom``. It will be registered in the same Conda environment
+that the ``kelp-o-matic`` package is installed to.
 
 .. code-block:: console
 

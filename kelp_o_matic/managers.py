@@ -8,9 +8,9 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm.auto import tqdm
 
-from hakai_segmentation.geotiff_io import GeotiffReader, GeotiffWriter
-from hakai_segmentation.models import _Model
-from hakai_segmentation.utils import all_same
+from kelp_o_matic.geotiff_io import GeotiffReader, GeotiffWriter
+from kelp_o_matic.models import _Model
+from kelp_o_matic.utils import all_same
 
 
 class GeotiffSegmentation:

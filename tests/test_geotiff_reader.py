@@ -4,7 +4,7 @@ import torch
 from rasterio.profiles import DefaultGTiffProfile
 from torchvision import transforms
 
-from hakai_segmentation.geotiff_io import GeotiffReader
+from kelp_o_matic.geotiff_io import GeotiffReader
 
 
 def _create_simple_1band_img(tmpdir):

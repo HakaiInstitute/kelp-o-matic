@@ -3,7 +3,7 @@ from abc import ABC, ABCMeta, abstractmethod
 
 import torch
 
-from hakai_segmentation.data import (
+from kelp_o_matic.data import (
     lraspp_kelp_presence_torchscript_path,
     lraspp_kelp_species_torchscript_path,
     lraspp_mussel_presence_torchscript_path,
