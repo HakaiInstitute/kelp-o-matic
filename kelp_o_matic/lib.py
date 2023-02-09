@@ -10,9 +10,9 @@ def find_kelp(
     source: str,
     dest: str,
     species: bool = False,
-    crop_size: int = 256,
-    padding: int = 128,
-    batch_size: int = 2,
+    crop_size: int = 512,
+    padding: int = 256,
+    batch_size: int = 1,
     use_gpu: bool = True,
 ):
     """Detect kelp in image at path `source` and output the resulting classification raster to file at path `dest`.
@@ -37,9 +37,9 @@ def find_kelp(
 def find_mussels(
     source: str,
     dest: str,
-    crop_size: int = 256,
-    padding: int = 128,
-    batch_size: int = 2,
+    crop_size: int = 512,
+    padding: int = 256,
+    batch_size: int = 1,
     use_gpu: bool = True,
 ):
     """Detect mussels in image at path `source` and output the resulting classification raster to file at path `dest`.
