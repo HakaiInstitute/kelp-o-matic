@@ -11,7 +11,7 @@ from typing import Union
 import numpy as np
 import rasterio
 
-from hakai_segmentation.geotiff_io import GeotiffReader
+from kelp_o_matic.geotiff_io import GeotiffReader
 
 
 class GeotiffWriter:

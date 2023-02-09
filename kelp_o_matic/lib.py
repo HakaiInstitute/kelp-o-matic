@@ -1,5 +1,5 @@
-from hakai_segmentation.managers import GeotiffSegmentation
-from hakai_segmentation.models import (
+from kelp_o_matic.managers import GeotiffSegmentation
+from kelp_o_matic.models import (
     KelpPresenceSegmentationModel,
     KelpSpeciesSegmentationModel,
     MusselPresenceSegmentationModel,
