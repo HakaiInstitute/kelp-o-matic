@@ -6,7 +6,7 @@ The Python library provide two functions that run classification on an input ima
 API
 ---
 
-.. automodule:: hakai_segmentation
+.. automodule:: kelp_o_matic
     :members:
 
 
@@ -15,5 +15,5 @@ Example Usage
 
 .. code-block:: python
 
-    import hakai_segmentation
-    hakai_segmentation.find_kelp("./path/to/kelp_image.tif", "./path/to/output_file_to_write.tif")
+    import kelp_o_matic
+    kelp_o_matic.find_kelp("./path/to/kelp_image.tif", "./path/to/output_file_to_write.tif")

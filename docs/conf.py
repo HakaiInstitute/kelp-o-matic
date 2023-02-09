@@ -13,12 +13,12 @@ import sys
 import importlib.metadata
 
 sys.path.insert(0, os.path.abspath('..'))
-__version__ = importlib.metadata.version("hakai_segmentation")
+__version__ = importlib.metadata.version("kelp_o_matic")
 
 
 # -- Project information
 
-project = 'Hakai Segmentation'
+project = 'Kelp-O-Matic'
 # noinspection PyShadowingBuiltins
 copyright = '2022, Taylor Denouden'
 author = 'Taylor Denouden'

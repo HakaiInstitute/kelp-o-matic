@@ -1,6 +1,6 @@
-******************
-Hakai Segmentation
-******************
+************
+Kelp-O-Matic
+************
 
 Segmentation Tools for Remotely Sensed RPAS Imagery
 
@@ -60,8 +60,8 @@ Contribute
 If you find an issue using the tool, bug report can be files using the following links.
 Comments or questions are also greatly appreciated!
 
-- Issue Tracker: https://github.com/HakaiInstitute/hakai_segmentation/issues
-- Source Code: https://github.com/HakaiInstitute/hakai_segmentation
+- Issue Tracker: https://github.com/HakaiInstitute/kelp-o-matic/issues
+- Source Code: https://github.com/HakaiInstitute/kelp-o-matic
 
 License
 -------
