@@ -44,7 +44,7 @@ Create a new environment and give it a name by clicking the create button.
 Give the new environment a name in the dialogue box that pops up, *e.g.* “KelpSegmentation”.
 Select a Python version that begins with "3.9".
 
-..  warning:: ``kelp-o-matic`` currently supports Python versions 3.7, 3.8, and 3.9 only. Installation will not work for other versions.
+..  warning:: ``kelp-o-matic`` currently supports Python versions 3.7, 3.8, 3.9, and 3.10 only. Installation will not work for other versions.
 
 ----
 
