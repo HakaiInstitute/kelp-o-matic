@@ -9,11 +9,6 @@ Segmentation Tools for Remotely Sensed RPAS Imagery
   :alt: Test Status
   :height: 20px
 
-.. image:: https://readthedocs.org/projects/kelp-o-matic/badge/?version=latest
-  :target: https://kelp-o-matic.readthedocs.io/en/latest/?badge=latest
-  :alt: Documentation Status
-  :height: 20px
-
 .. image:: https://anaconda.org/hakai-institute/kelp-o-matic/badges/license.svg
   :target: https://github.com/HakaiInstitute/kelp-o-matic/blob/main/LICENSE.txt
   :alt: License
