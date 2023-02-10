@@ -49,6 +49,8 @@ Index
     about
     beginner_guide_index
 
+.. image:: ./images/manley.gif
+
 Contribute
 ----------
 
