@@ -1,6 +1,15 @@
-![Kelp-O-Matic](./docs/images/kelp_o_matic_smaller.gif "Kelp-O-Matic")
+<p align="center">
+    <img src="./docs/images/kelp_o_matic_smaller.gif" alt="Kelp-O-Matic" />
+</p>
 
-Kelp Segmentation Tools for Aerial Imagery
+<p align="center">
+    <i>Kelp Segmentation Tools for Aerial Imagery</i>
+</p>
 
-# [Read the Docs](http://hakai-segmentation.readthedocs.io/)
+<h1 align="center"> 
+    <a href="http://hakai-segmentation.readthedocs.io/">&#9758; Read the Docs &#9756;</a>
+</h1>
+
+
+
 
