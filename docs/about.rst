@@ -87,7 +87,7 @@ The model was trained on an AWS "p3.8xlarge" instance with 4 Nvidia Tesla V100 G
 At the end of training, the model parameters which achieved the best mIoU score on the validation data split were saved for inference.
 These parameters were used to calculate the final performance statistics for the model (see `Kelp Model Performance`_).
 
-Full source code for training the kelp model is available at https://github.com/tayden/hakai-ml-train.
+Full source code for training the kelp model is available at https://github.com/HakaiInstitute/hakai-ml-train.
 
 Performance
 ...........
@@ -105,10 +105,10 @@ Presence/Absence Model
       - IoU :sub:`kelp`
       - mIoU
       - Accuracy
-    * - 0.9437
-      - 0.6609
-      - 0.8023
-      - 0.9555
+    * - 0.9857
+      - 0.6964
+      - 0.8410
+      - 0.9865
 
 .. list-table:: Test split results
     :widths: 25 25 25 25
@@ -118,10 +118,10 @@ Presence/Absence Model
       - IoU :sub:`kelp`
       - mIoU
       - Accuracy
-    * - 0.9286
-      - 0.5930
-      - 0.76077
-      - 0.93844
+    * - 0.9884
+      - 0.6541
+      - 0.8213
+      - 0.9890
 
 Species Model
 ^^^^^^^^^^^^^
@@ -135,11 +135,11 @@ Species Model
       - IoU :sub:`nereo`
       - mIoU
       - Accuracy
-    * - 0
-      - 0
-      - 0
-      - 0
-      - 0
+    * - 0.9423
+      - 0.7392
+      - 0.4369
+      - 0.7810
+      - 0.9522
 
 .. list-table:: Test split results
     :widths: 25 25 25 25 25
@@ -150,11 +150,11 @@ Species Model
       - IoU :sub:`nereo`
       - mIoU
       - Accuracy
-    * - 0
-      - 0
-      - 0
-      - 0
-      - 0
+    * - 0.9883
+      - 0.7574
+      - 0.5262
+      - 0.7607
+      - 0.9880
 
 -------------------------------------------------------------------------------------------------------------------------------
 
@@ -178,7 +178,7 @@ Training configuration
 The `LRASPP MobileNetV3-Large <https://arxiv.org/abs/1905.02244>`_ model used for mussel detection was trained using identical
 hyperparameters as the Kelp Model. See the `find-kelp Training Configuration`_ for details.
 
-The full source code for training the mussel detection model is also available at https://github.com/tayden/hakai-ml-train.
+The full source code for training the mussel detection model is also available at https://github.com/HakaiInstitute/hakai-ml-train.
 
 Performance
 ...........

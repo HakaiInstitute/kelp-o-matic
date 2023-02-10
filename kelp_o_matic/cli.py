@@ -15,14 +15,14 @@ def find_kelp(
         help="Segment to species or presence/absence level.",
     ),
     crop_size: int = typer.Option(
-        256,
+        512,
         help="The size for the cropped image squares run through the segmentation model.",
     ),
     padding: int = typer.Option(
-        128, help="The number of context pixels added to each side of the image crops."
+        256, help="The number of context pixels added to each side of the image crops."
     ),
     batch_size: int = typer.Option(
-        2, help="The batch size of cropped image sections to process together."
+        1, help="The batch size of cropped image sections to process together."
     ),
     use_gpu: bool = typer.Option(
         True, "--gpu/--no-gpu", help="Enable or disable GPU, if available."
@@ -45,14 +45,14 @@ def find_mussels(
     source: str = typer.Argument(..., help="Input image with Byte data type."),
     dest: str = typer.Argument(..., help="File path location to save output to."),
     crop_size: int = typer.Option(
-        256,
+        512,
         help="The size for the cropped image squares run through the segmentation model.",
     ),
     padding: int = typer.Option(
-        128, help="The number of context pixels added to each side of the image crops."
+        256, help="The number of context pixels added to each side of the image crops."
     ),
     batch_size: int = typer.Option(
-        2, help="The batch size of cropped image sections to process together."
+        1, help="The batch size of cropped image sections to process together."
     ),
     use_gpu: bool = typer.Option(
         True, "--gpu/--no-gpu", help="Enable or disable GPU, if available."
