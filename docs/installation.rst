@@ -22,13 +22,13 @@ Alternatively, install using your terminal or the Anaconda prompt (for Windows u
 
 .. code-block:: bash
 
-    conda install -c pytorch -c conda-forge -c hakai-institute kelp-o-matic
+    conda install -c pytorch -c conda-forge kelp-o-matic
 
 You can update the package when new versions become available with:
 
 .. code-block:: bash
 
-    conda update -c pytorch -c conda-forge -c hakai-institute kelp-o-matic
+    conda update -c pytorch -c conda-forge kelp-o-matic
 
 PIP
 ---
