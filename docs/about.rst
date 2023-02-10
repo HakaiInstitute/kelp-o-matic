@@ -105,10 +105,10 @@ Presence/Absence Model
       - IoU :sub:`kelp`
       - mIoU
       - Accuracy
-    * - 0.9437
-      - 0.6609
-      - 0.8023
-      - 0.9555
+    * - 0.9857
+      - 0.6964
+      - 0.8410
+      - 0.9865
 
 .. list-table:: Test split results
     :widths: 25 25 25 25
@@ -118,10 +118,10 @@ Presence/Absence Model
       - IoU :sub:`kelp`
       - mIoU
       - Accuracy
-    * - 0.9286
-      - 0.5930
-      - 0.76077
-      - 0.93844
+    * - 0.9884
+      - 0.6541
+      - 0.8213
+      - 0.9890
 
 Species Model
 ^^^^^^^^^^^^^
@@ -135,11 +135,11 @@ Species Model
       - IoU :sub:`nereo`
       - mIoU
       - Accuracy
-    * - 0
-      - 0
-      - 0
-      - 0
-      - 0
+    * - 0.9423
+      - 0.7392
+      - 0.4369
+      - 0.7810
+      - 0.9522
 
 .. list-table:: Test split results
     :widths: 25 25 25 25 25
@@ -150,11 +150,11 @@ Species Model
       - IoU :sub:`nereo`
       - mIoU
       - Accuracy
-    * - 0
-      - 0
-      - 0
-      - 0
-      - 0
+    * - 0.9883
+      - 0.7574
+      - 0.5262
+      - 0.7607
+      - 0.9880
 
 -------------------------------------------------------------------------------------------------------------------------------
 

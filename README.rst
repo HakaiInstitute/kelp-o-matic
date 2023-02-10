@@ -4,5 +4,7 @@ Kelp-O-Matic
 
 Segmentation Tools for Remotely Sensed RPAS Imagery
 
-`Go To Documentation <http://hakai-segmentation.readthedocs.io/>`_
+`Read the Docs <http://hakai-segmentation.readthedocs.io/>`_
 ------------------------------------------------------------
+
+.. image:: ./docs/images/manley.gif
