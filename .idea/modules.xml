@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../kelp-o-matic/.idea/kelp-o-matic.iml" filepath="$PROJECT_DIR$/../kelp-o-matic/.idea/kelp-o-matic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/kelp-o-matic.iml" filepath="$PROJECT_DIR$/.idea/kelp-o-matic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../kelp-o-matic-feedstock/.idea/kelp-o-matic-feedstock.iml" filepath="$PROJECT_DIR$/../kelp-o-matic-feedstock/.idea/kelp-o-matic-feedstock.iml" />
     </modules>
   </component>
 </project>
