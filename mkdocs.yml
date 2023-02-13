@@ -1,6 +1,7 @@
 site_name: Kelp-O-Matic
 site_url: https://hakai-segmentation.readthedocs.io
 repo_url: https://github.com/HakaiInstitute/kelp-o-matic
+repo_name: HakaiInstitue/kelp-o-matic
 
 nav:
   - Home: index.md
