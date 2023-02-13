@@ -38,8 +38,8 @@ by the documentation for the [CLI](cli.md) and/or [python library](python_lib.md
 If you find an issue using the tool, bug report can be files using the following links.
 Comments or questions are also greatly appreciated!
 
-- Issue Tracker: https://github.com/HakaiInstitute/kelp-o-matic/issues
-- Source Code: https://github.com/HakaiInstitute/kelp-o-matic
+- [Issue Tracker](https://github.com/HakaiInstitute/kelp-o-matic/issues)
+- [Source Code](https://github.com/HakaiInstitute/kelp-o-matic)
 
 ## License
 
