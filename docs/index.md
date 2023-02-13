@@ -23,7 +23,7 @@ Segmentation Tools for Remotely Sensed RPAS Imagery
 Please see the [Beginner Guide](beginner_guide/index.md) if you are new to Anaconda and command line tools.
 
 If you have worked with Anaconda before, start with the more brief [installation instructions](installation.md), followed
-by the documentation for the [CLI](cli.md) and/or [Python API](python_lib.md) interfaces.
+by the documentation for the [CLI](cli.md) or [Python API](python_lib.md).
 
 ## Features
 
