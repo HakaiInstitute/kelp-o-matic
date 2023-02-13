@@ -26,8 +26,14 @@ watch:
 markdown_extensions:
   - admonition
   - tables
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.caret
+  - pymdownx.tilde
+  - pymdownx.keys
   - pymdownx.arithmatex:
       generic: true
 

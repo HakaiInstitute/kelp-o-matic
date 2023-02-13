@@ -53,11 +53,11 @@ where .tif is the file type.
 
 So, the entire command in the Anaconda prompt is:
 
-```bash
-    kom find-kelp C:\Users\sbs33.DESKTOP-K0SDD1B\Documents\Drone_Images\Kelp_Bed_Orthomosaic_2022.tif C:\Users\sbs33.DESKTOP-K0SDD1B\Documents\Drone_Images\Kelp_Bed_Orthomosaic_2022_output.tif
+```console
+kom find-kelp C:\Users\sbs33.DESKTOP-K0SDD1B\Documents\Drone_Images\Kelp_Bed_Orthomosaic_2022.tif C:\Users\sbs33.DESKTOP-K0SDD1B\Documents\Drone_Images\Kelp_Bed_Orthomosaic_2022_output.tif
 ```
 
-Press enter and wait for the segmentation to run; the time may vary depending on the size of the image.
+Press ++enter++ and wait for the segmentation to run; the time may vary depending on the size of the image.
 
 !!! note
 

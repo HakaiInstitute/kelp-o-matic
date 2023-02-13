@@ -10,9 +10,11 @@ the user interface of the tool. Changes are published to the PyPI and Anaconda r
 [semantic versioning](https://semver.org/). You may want to occasionally run the update commands to ensure
 that you're using the most up-to-date version of `kelp-o-matic`.
 
-## Conda
+## With Anaconda
 
-Use the Anaconda Navigator GUI to create a new environment and add the *hakai-institute*, *conda-forge*, and *pytorch* channels
+### Install 
+
+Use the Anaconda Navigator GUI to create a new environment and add the *conda-forge*, and *pytorch* channels
 before searching for and installing the `kelp-o-matic` package in your environment.
 
 Alternatively, install using your terminal or the Anaconda prompt (for Windows users) by running the following command:
@@ -21,24 +23,28 @@ Alternatively, install using your terminal or the Anaconda prompt (for Windows u
 conda install -c pytorch -c conda-forge kelp-o-matic
 ```
 
+### Update
+
 You can update the package when new versions become available with:
 
 ```bash
 conda update -c pytorch -c conda-forge kelp-o-matic
 ```
 
-## PIP
+## With PIP
 
 !!! warning
     It is highly recommended to install the library with Conda, not with PIP.
 
 You can install `kelp-o-matic` with PIP. Automatic hardware acceleration is only supported with the Conda install.
 
+### Install
+
 ```bash
 pip install kelp-o-matic
 ```
 
-Similarly, to update:
+### Update
 
 ```bash
 pip install --upgrade kelp-o-matic

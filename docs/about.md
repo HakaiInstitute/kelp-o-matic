@@ -14,19 +14,22 @@ important to understand for the sections following.
 
 - Let $A_i$ and $B_i$ be the sets of pixels for a particular class of interest, $i$, from labels $A$ and $B$, respectively.
 
-Accuracy
-    The ratio of counts of pixels correctly classified by the model divided over the total number of pixels.
+`Accuracy`
+
+:   The ratio of counts of pixels correctly classified by the model divided over the total number of pixels.
 
 
-IoU
-    The "intersection over union", also called the "Jaccard Index". Defined as:
+`IoU`
+
+:   The "intersection over union", also called the "Jaccard Index". Defined as:
 
 $$
 IoU_i (A,B) = \frac{|A_i \cap B_i|}{|A_i \cup B_i|}
 $$
 
-Mean IoU
-    The mean of the intersection over union values over all classes. Defined as:
+`Mean IoU (mIoU)`
+
+:   The mean of the intersection over union values over all classes. Defined as:
 
 $$
 mIoU (A,B) = \frac{\sum_{i=1}^{c} IoU_{i}(A,B)}{c}
@@ -38,10 +41,12 @@ $$
 
 ### Output classes
 
-- 0 = background
-- 1 = kelp
-- 2 = macrocystis (when using species mode only)
-- 3 = nereocystis (when using species mode only)
+| Output value | Class                        |
+|-------------:|------------------------------|
+|        **0** | Background                   |
+|        **1** | Kelp *(presence mode)*       |
+|        **2** | Macrocystis *(species mode)* |
+|        **3** | Nereocystis *(species mode)* |
 
 ### Dataset
 
@@ -85,13 +90,13 @@ Full source code for training the kelp model is available at https://github.com/
 
 ##### Validation Split Results
 
-| IoU<sub>bg</sub> | IoU<sub>kelp</sub> | mIoU   | Accuracy |
+| IoU~bg~ | IoU~kelp~ | mIoU   | Accuracy |
 |------------------|--------------------|--------|----------|
 | 0.9857           | 0.6964             | 0.8410 | 0.9865   |
 
 ##### Test split results
 
-| IoU<sub>bg</sub> | IoU<sub>kelp</sub> | mIoU   | Accuracy |
+| IoU~bg~ | IoU~kelp~ | mIoU   | Accuracy |
 |------------------|--------------------|--------|----------|
 | 0.9884           | 0.6541             | 0.8213 | 0.9890   |
 
@@ -99,13 +104,13 @@ Full source code for training the kelp model is available at https://github.com/
 
 ##### Validation split results
 
-| IoU<sub>bg</sub> | IoU<sub>macro</sub> | IoU<sub>nereo</sub> | mIoU   | Accuracy |
+| IoU~bg~ | IoU~macro~ | IoU~nereo~ | mIoU   | Accuracy |
 |------------------|---------------------|---------------------|--------|----------|
 | 0.9423           | 0.7392              | 0.4369              | 0.7810 | 0.9522   |
 
 ##### Test split results
 
-| IoU<sub>bg</sub> | IoU<sub>macro</sub> | IoU<sub>nereo</sub> | mIoU   | Accuracy |
+| IoU~bg~ | IoU~macro~ | IoU~nereo~ | mIoU   | Accuracy |
 |------------------|---------------------|---------------------|--------|----------|
 | 0.9883           | 0.7574              | 0.5262              | 0.7607 | 0.9880   |
 
@@ -115,8 +120,10 @@ Full source code for training the kelp model is available at https://github.com/
 
 ### Output classes
 
-- 0 = background
-- 1 = mussels
+| Output value | Class      |
+|-------------:|------------|
+|        **0** | Background |
+|        **1** | Mussles    |
 
 [//]: # (TODO: ### Dataset)
 
@@ -125,12 +132,12 @@ Full source code for training the kelp model is available at https://github.com/
 The [LRASPP MobileNetV3-Large](https://arxiv.org/abs/1905.02244) model used for mussel detection was trained using identical
 hyperparameters as the Kelp Model. See the [find-kelp Training Configuration](./about.md#training-configuration) for details.
 
-The full source code for training the mussel detection model is also available at https://github.com/HakaiInstitute/hakai-ml-train.
+The full source code for training the mussel detection model is also available on [GitHub](https://github.com/HakaiInstitute/hakai-ml-train).
 
 ### Performance
 
 ##### Validation split results
 
-| IoU<sub>bg</sub> | IoU<sub>mussels</sub> | mIoU   | Accuracy |
+| IoU~bg~ | IoU~mussels~ | mIoU   | Accuracy |
 |------------------|-----------------------|--------|----------|
 | 0.9622           | 0.7188                | 0.8405 | 0.9678   |
