@@ -42,8 +42,8 @@ about:
   license: MIT
   license_file: LICENSE.txt
   summary: "Hakai Segment Tool for GeoTiff RPAS Imagery"
-  doc_url: "https://hakai-segmentation.readthedocs.io"
-  dev_url: "https://github.com/hakaiInstitute/kelp-o-matic"
+  doc_url: "https://kelp-o-matic.readthedocs.io"
+  dev_url: "https://github.com/HakaiInstitute/kelp-o-matic"
 
 extra:
   recipe-maintainers:

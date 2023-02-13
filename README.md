@@ -7,7 +7,7 @@
 </p>
 
 <h1 align="center"> 
-    <a href="http://hakai-segmentation.readthedocs.io/">&#9758; Read the Docs &#9756;</a>
+    <a href="https://kelp-o-matic.readthedocs.io">&#9758; Read the Docs &#9756;</a>
 </h1>
 
 
