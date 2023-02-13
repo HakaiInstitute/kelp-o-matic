@@ -27,6 +27,14 @@ extra:
   analytics:
     provider: google
     property: G-RSSQERRJ3Q
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/HakaiGeospatial
+    - icon: fontawesome/brands/instagram
+      link: https://www.instagram.com/hakaiinstitute
+    - icon: fontawesome/brands/linkedin
+      link: https://ca.linkedin.com/company/hakai-institute
+
 
 watch:
   - kelp_o_matic
@@ -51,7 +59,8 @@ extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 plugins:
-  - search
+  - search:
+      lang: en
   - mkdocstrings:
       handlers:
         python:
