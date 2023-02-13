@@ -19,6 +19,12 @@ theme:
   name: material
   palette:
     primary: teal
+  icon: material/library
+
+extra:
+  analytics:
+    provider: google
+    property: G-RSSQERRJ3Q
 
 watch:
   - kelp_o_matic
