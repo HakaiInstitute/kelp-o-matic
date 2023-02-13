@@ -46,11 +46,43 @@ Options:
   --help                  Show this message and exit.
 ```
 
-Example usage:
+!!! Example
 
-```bash
-$ kom find-kelp --presence --crop-size=3200 ./some/image_with_kelp.tif ./some/place_to_write_output.tif
-```
+    ```bash
+    kom find-kelp --species --crop-size=1024 ./some/image_with_kelp.tif ./some/place_to_write_output.tif
+    ```
+
+???+ tip "Tip: Reduce windowed processing artifacts"
+
+    To reduce artifacts caused by Kelp-O-Matic's moving window classification, use the largest `crop_size` that you can.
+    Try starting with a crop_size around 3200 pixels and reduce it if your computer is unable to load that much data at once and the application crashes.
+
+    We hope to improve Kelp-O-Matic in the future such that the maximum crop size for your computer can be determined automatically.
+    
+    CLI Example:
+
+    ```bash
+    kom --crop-size=3200 your-input-image.tif output-image.tif
+    ```
+
+    <div style="display:flex;">
+        <img alt="Small window output" src="../images/kom-small-window.png" width="50%"/>
+        <img alt="Big window output" src="../images/kom-big-window.png" width="50%"/>
+    </div>
+
+[//]: # (??? info "Info: Misclassifications over land")
+
+[//]: # ()
+[//]: # (    Currently, Kelp-O-Matic is mostly optimized to differentiate between canopy-forming kelp, water, and)
+
+[//]: # (    near-shore land. It is a known issue that inland vegetation is sometimes misclassified as)
+
+[//]: # (    kelp. )
+
+[//]: # ()
+[//]: # (    Please check out our [post-process documentation]&#40;post_process.md&#41; for our recommendations on)
+
+[//]: # (    cleaning up the output classification mask.)
 
 ## find-mussels
 
@@ -77,8 +109,8 @@ Options:
   --help                Show this message and exit.
 ```
 
-Example usage:
+!!! example
 
-```bash
-$ kom find-mussels ./some/image_with_mussels.tif ./some/place_to_write_output.tif
-```
+    ```bash
+    kom find-mussels --crop-size=1024 ./some/image_with_mussels.tif ./some/place_to_write_output.tif
+    ```
