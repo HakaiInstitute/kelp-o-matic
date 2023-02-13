@@ -1,0 +1,51 @@
+site_name: Kelp-O-Matic
+site_url: https://hakai-segmentation.readthedocs.io
+repo_url: https://github.com/HakaiInstitute/kelp-o-matic
+
+nav:
+  - Home: index.md
+  - Installing and Updating: installation.md
+  - Data Expectations: expectations.md
+  - Command Line Reference: cli.md
+  - Python Library Reference: python_lib.md
+  - About: about.md
+  - Beginner Guide:
+      - Home: beginner_guide/index.md
+      - Set-up and Installation: beginner_guide/setup.md
+      - Running the Segmentation Tool: beginner_guide/execution.md
+  - Issue Tracker: 'https://github.com/HakaiInstitute/kelp-o-matic/issues'
+
+theme:
+  name: material
+  palette:
+    primary: teal
+
+watch:
+  - kelp_o_matic
+
+markdown_extensions:
+  - admonition
+  - tables
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.caret
+  - pymdownx.tilde
+  - pymdownx.keys
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: sphinx
