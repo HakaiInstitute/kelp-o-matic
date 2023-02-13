@@ -80,11 +80,11 @@ The loss function used for training was [Focal Tversky Loss](https://arxiv.org/a
 
 The model was trained on an AWS "p3.8xlarge" instance with 4 Nvidia Tesla V100 GPUS and took 18 hours and 1 minute to finish.
 At the end of training, the model parameters which achieved the best mIoU score on the validation data split were saved for inference.
-These parameters were used to calculate the final performance statistics for the model (see [Kelp Model Performance](./about.md#kelp-model-performance).
+It is these parameters that were used to calculate the final performance statistics for the model.
 
-Full source code for training the kelp model is available at https://github.com/HakaiInstitute/hakai-ml-train.
+Full source code for training the kelp model is available on [GitHub](https://github.com/HakaiInstitute/hakai-ml-train).
 
-### Kelp Model Performance
+### Performance
 
 #### Presence/Absence Model
 
