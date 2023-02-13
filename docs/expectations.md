@@ -19,8 +19,8 @@ This is not a strict requirement, but is helpful for skipping classification on 
 speed up processing.
 
 !!! example
-For images with a black background, this value should be 0.
-For white backgrounds, it should be set to 255.
+    For images with a black background, this value should be 0.
+    For white backgrounds, it should be set to 255.
 
 If there is no *nodata* value set, any part of the image that is completely black or completely
 white is classified as "background" by Kelp-O-Matic.
