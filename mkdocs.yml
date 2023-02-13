@@ -19,7 +19,8 @@ theme:
   name: material
   palette:
     primary: teal
-  icon: material/library
+  icon:
+    logo: material/shore
 
 extra:
   analytics:
