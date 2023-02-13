@@ -43,7 +43,7 @@ Comments or questions are also greatly appreciated!
 
 ## License
 
-The project is licensed under the [MIT license](https://raw.githubusercontent.com/tayden/kelp-o-matic/main/LICENSE.txt)
+The project is released under the [MIT license](https://raw.githubusercontent.com/tayden/kelp-o-matic/main/LICENSE.txt)
 
 ## Authors
 
