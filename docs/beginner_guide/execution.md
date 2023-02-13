@@ -6,7 +6,7 @@ Each time you want to run a classification on new imagery follow these steps.
 
 ## Open Anaconda Prompt
 
-![Open Prompt](../images/open_prompt1.png)
+![Open Prompt](images/open_prompt1.png)
 
 Open anaconda prompt by searching “Anaconda Prompt” in search tool bar.
 
@@ -14,11 +14,11 @@ Open anaconda prompt by searching “Anaconda Prompt” in search tool bar.
 
 ## Change Environments
 
-![Change Environments 1](../images/change_environments1.png)
+![Change Environments 1](images/change_environments1.png)
 
 The default environment is called `(base)` which will appear in brackets before each line of text.
 
-![Change Environments 2](../images/change_environments2.png)
+![Change Environments 2](images/change_environments2.png)
 
 To change to the new environment that you created in Part 1, type: `conda activate KelpSegmentation` and press enter.
 In this command, "KelpSegmentation" was the name that you chose for your new environment.
@@ -35,7 +35,7 @@ Now you will see that the environment has changed from `(base)` to `(KelpSegment
 
 ## Run Segmentation Tool
 
-![Run Tool](../images/run_tool.png)
+![Run Tool](images/run_tool.png)
 
 Type `kom find-kelp` and copy and paste the location of the image in which you would like to detect kelp.  Add a space
 and then type or paste the location you would like the output file to be saved on your computer with the name of the
@@ -77,7 +77,7 @@ Press ++enter++ and wait for the segmentation to run; the time may vary dependin
     You can continue doing this as you type in the location to autocomplete the text for long path names.
     It is faster, and less error prone than typing the whole path yourself.
 
-![Complete Segmentation](../images/complete_segmentation.png)
+![Complete Segmentation](images/complete_segmentation.png)
 
 Once the processing bar is at 100%, you can open the results in an image processing or spatial analysis software such as QGIS or ArcGIS.  Review the results for errors and edit as needed.
 
