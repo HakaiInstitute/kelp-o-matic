@@ -13,6 +13,7 @@ nav:
   - Data Expectations: expectations.md
   - Command Line Interface: cli.md
   - Python API: python_lib.md
+  - Post-Processing: post_processing.md
   - About: about.md
   - Issue Tracker: 'https://github.com/HakaiInstitute/kelp-o-matic/issues'
 
@@ -43,6 +44,7 @@ markdown_extensions:
   - admonition
   - tables
   - def_list
+  - footnotes
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.details
@@ -52,6 +54,11 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.arithmatex:
       generic: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 extra_javascript:
   - javascripts/mathjax.js
