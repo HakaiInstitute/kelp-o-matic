@@ -25,15 +25,15 @@ class GeotiffSegmentation:
         padding: int = 256,
         batch_size: int = 1,
     ):
-        """
-        Create the segmentation object.
+        """Create the segmentation object.
 
-        :param model: A callable module that accepts a batch of torch.Tensor data and returns classifications.
-        :param input_path: The path to the input geotiff image.
-        :param output_path: The destination file path for the output segmentation data.
-        :param crop_size: The size of image crop to classify iteratively until the entire image is classified.
-        :param padding: The number of context pixels to add to each side of an image crop to improve outputs.
-        :param batch_size: The number of crops to classify at a time using the model.
+        Args:
+            model: A callable module that accepts a batch of torch.Tensor data and returns classifications.
+            input_path: The path to the input geotiff image.
+            output_path: The destination file path for the output segmentation data.
+            crop_size: The size of image crop to classify iteratively until the entire image is classified.
+            padding: The number of context pixels to add to each side of an image crop to improve outputs.
+            batch_size: The number of crops to classify at a time using the model.
         """
         self.model = model
 
@@ -73,11 +73,13 @@ class GeotiffSegmentation:
 
     @staticmethod
     def _should_keep(img: "np.ndarray") -> bool:
-        """
-        Determines if an image crop should be classified or discarded.
+        """Determines if an image crop should be classified or discarded.
 
-        :param img: The image crop, with padding removed.
-        :return: Flag to indicate if crop should be discarded.
+        Args:
+            img: The image crop, with padding removed.
+
+        Returns:
+             Flag to indicate if crop should be discarded.
         """
         _img = np.clip(img, 0, 255)
         return np.any(_img % 255)
@@ -148,7 +150,10 @@ class GeotiffSegmentation:
             )
 
     def on_start(self):
-        """Hook that runs before image processing. By default, runs image checks and sets up a tqdm progress bar."""
+        """Hook that runs before image processing.
+
+        By default, runs image checks and sets up a tqdm progress bar.
+        """
         self._no_data_check()
         self._byte_type_check()
         self._band_count_check()
@@ -167,7 +172,8 @@ class GeotiffSegmentation:
         """
         Hook that runs for each batch of data, immediately before classification by the model.
 
-        :param batch_idx: The batch index being processed.
+        Args:
+            batch_idx: The batch index being processed.
         """
         pass
 
@@ -175,7 +181,8 @@ class GeotiffSegmentation:
         """
         Hook that runs for each batch of data, immediately after classification by the model.
 
-        :param batch_idx: The batch index being processed.
+        Args:
+            batch_idx: The batch index being processed.
         """
         pass
 
@@ -184,6 +191,7 @@ class GeotiffSegmentation:
         Hook that runs for each crop of data, immediately after classification by the model.
         By default, increments a tqdm progress bar.
 
-        :param index: The index of the image crop that was processed.
+        Args:
+            index: The index of the image crop that was processed.
         """
         self.progress.update(index + 1 - self.progress.n)
