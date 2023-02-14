@@ -1,5 +1,5 @@
 import gc
-from abc import ABC, ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 
 import torch
 
@@ -54,9 +54,11 @@ class KelpSpeciesSegmentationModel(_Model):
         with torch.no_grad():
             batch = batch.to(self.device)
             presence = self.presence_model(batch)  # 0: bg, 1: kelp
-            species = torch.argmax(self.model.forward(batch), dim=1)  # 0: macro, 1: nereo
 
-            return torch.mul(presence, torch.add(species, 2))  # 0: bg, 2: macro, 3: nereo
+            logits = self.model.forward(batch)
+            species = torch.add(torch.argmax(logits, dim=1), 2)  # 2: macro, 3: nereo
+
+            return torch.mul(presence, species)  # 0: bg, 2: macro, 3: nereo
 
 
 class MusselPresenceSegmentationModel(_Model):
