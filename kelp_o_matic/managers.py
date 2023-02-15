@@ -1,3 +1,5 @@
+import logging
+import os
 import warnings
 from pathlib import Path
 from typing import Union, Optional
@@ -11,7 +13,10 @@ from tqdm.auto import tqdm
 
 from kelp_o_matic.geotiff_io import GeotiffReader, GeotiffWriter
 from kelp_o_matic.models import _Model
-from kelp_o_matic.utils import all_same
+from kelp_o_matic.utils import all_same, is_oom_error, garbage_collection_cuda
+
+LOGLEVEL = os.environ.get("LOGLEVEL", "WARNING").upper()
+logging.basicConfig(level=LOGLEVEL)
 
 
 class GeotiffSegmentation:
@@ -146,35 +151,71 @@ class GeotiffSegmentation:
         y_shape, x_shape = self.reader.block_shapes[0]
         if y_shape == 1:
             warnings.warn(
-                f"The input image is not a tiled tif. Processing will be significantly faster for tiled images.",
+                f"The input image is not a tiled tif. "
+                f"Processing will be significantly faster for tiled images.",
                 UserWarning,
             )
 
     def _find_max_crop_size(self) -> int:
-        crop_size = 16384  # Max tested crop size
+        print("Finding optimal `crop_size` parameter")
 
-        while crop_size > 64:
-            effective_crop_size = crop_size + 2 * self.padding
-            crop = torch.zeros(
-                (self.batch_size, 3, effective_crop_size, effective_crop_size),
-                device=self.model.device,
-            )
+        # Initial power of 2 search for crop_size
+        crop_size = self._crop_size_power_search(min_size=32)
+
+        # Binary search to refine crop_size
+        crop_size = self._crop_size_binary_search(
+            min_size=crop_size, max_size=2 * crop_size
+        )
+
+        print(f"Optimal `crop_size` is {crop_size}")
+        return crop_size
+
+    def _crop_size_binary_search(self, min_size: int, max_size: int) -> int:
+        min_, max_ = min_size, max_size
+        while True:
+            crop_size = (max_ + min_) // 2
+            logging.debug(f"Trying {crop_size=}")
             try:
-                # If this succeeds then crop_size is found
-                self.model(crop)
-                break
+                self.model(self._get_sample_crop(crop_size))
+                min_ = crop_size
+                if (max_ - min_) < 16:
+                    break
+
             except RuntimeError as err:
-                msg = str(err)
-                if "out of memory" in msg or "could not create a primitive" in msg:
-                    # Not enough memory
-                    crop_size //= 2
+                if is_oom_error(err):
+                    max_ = crop_size
                 else:
-                    # Some other issue so re-raise error
                     raise err
             finally:
-                del crop
+                garbage_collection_cuda()
 
         return crop_size
+
+    def _crop_size_power_search(self, min_size: int) -> int:
+        crop_size = min_size
+        while True:
+            logging.debug(f"Trying {crop_size=}")
+            try:
+                self.model(self._get_sample_crop(crop_size))
+                crop_size *= 2
+
+            except RuntimeError as err:
+                if is_oom_error(err):
+                    crop_size //= 2
+                    break
+                else:
+                    raise err
+            finally:
+                garbage_collection_cuda()
+
+        return crop_size
+
+    def _get_sample_crop(self, crop_size: int) -> "torch.Tensor":
+        effective_crop_size = crop_size + 2 * self.padding
+        return torch.zeros(
+            (self.batch_size, 3, effective_crop_size, effective_crop_size),
+            device=self.model.device,
+        )
 
     def on_start(self):
         """Hook that runs before image processing.
