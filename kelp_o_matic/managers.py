@@ -157,7 +157,7 @@ class GeotiffSegmentation:
             )
 
     def _find_max_crop_size(self) -> int:
-        print("Finding optimal `crop_size` parameter")
+        logging.info("Finding optimal `crop_size` parameter")
 
         # Initial power of 2 search for crop_size
         crop_size = self._crop_size_power_search(min_size=32)
@@ -167,7 +167,7 @@ class GeotiffSegmentation:
             min_size=crop_size, max_size=2 * crop_size
         )
 
-        print(f"Optimal `crop_size` is {crop_size}")
+        logging.info(f"Using `crop_size={crop_size}`")
         return crop_size
 
     def _crop_size_binary_search(self, min_size: int, max_size: int) -> int:
