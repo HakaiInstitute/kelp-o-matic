@@ -1,4 +1,4 @@
-# Methods for Post-Processing Kelp-O-Matic Output
+# Methods for Post-Processing Kelp-O-Matic Output[^1]
 
 This document describes the methods used for generating analysis ready data on species-level kelp
 extent from outputs from the Kelp-O-Matic tool. Final outputs consist of polygon features (.shp)
