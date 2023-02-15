@@ -37,7 +37,7 @@ class GeotiffWriter:
         self.crop_size = crop_size
         self.padding = padding
 
-        profile.update(blockxsize=crop_size, blockysize=crop_size, tiled=True, **kwargs)
+        profile.update(tiled=True, **kwargs)
 
         # Create the file and get the indices of write locations
         with rasterio.open(self.img_path, "w", **profile) as dst:
