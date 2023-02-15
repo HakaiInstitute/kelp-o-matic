@@ -152,7 +152,7 @@ class GeotiffSegmentation:
 
     def _find_max_crop_size(self) -> int:
         channels = 3
-        crop_size = 12800  # Max tested crop size
+        crop_size = 16384  # Max tested crop size
 
         while crop_size > 64:
             effective_crop_size = crop_size + 2 * self.padding
