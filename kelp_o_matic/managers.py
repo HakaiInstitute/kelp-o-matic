@@ -162,7 +162,7 @@ class GeotiffSegmentation:
         channels = 3
         crop_size = 12800  # Max tested crop size
 
-        while crop_size > 1:
+        while crop_size > 64:
             effective_crop_size = crop_size + 2 * self.padding
             crop = torch.zeros(
                 (self.batch_size, channels, effective_crop_size, effective_crop_size),
