@@ -4,6 +4,7 @@ from typing import Union, Optional
 
 import numpy as np
 import rasterio
+import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm.auto import tqdm
@@ -37,11 +38,15 @@ class GeotiffSegmentation:
             batch_size: The number of crops to classify at a time using the model.
         """
         self.model = model
+        self.input_path = Path(input_path).expanduser().resolve()
+        self.output_path = Path(output_path).expanduser().resolve()
+        self.padding = padding
+        self.batch_size = batch_size
         self.crop_size = (
             crop_size if crop_size is not None else self._find_max_crop_size()
         )
 
-        tran = transforms.Compose(
+        self.tran = transforms.Compose(
             [
                 transforms.ToTensor(),
                 transforms.Lambda(lambda img: img[:3, :, :]),
@@ -51,22 +56,22 @@ class GeotiffSegmentation:
             ]
         )
         self.reader = GeotiffReader(
-            Path(input_path).expanduser().resolve(),
-            transform=tran,
+            self.input_path,
+            transform=self.tran,
             crop_size=self.crop_size,
-            padding=padding,
+            padding=self.padding,
             filter_=self._should_keep,
         )
         self._dataloader = DataLoader(
             self.reader,
             shuffle=False,
-            batch_size=batch_size,
+            batch_size=self.batch_size,
             pin_memory=True,
             num_workers=0,
         )
 
         self.writer = GeotiffWriter.from_reader(
-            Path(output_path).expanduser().resolve(),
+            self.output_path,
             self.reader,
             count=1,
             dtype="uint8",
@@ -153,9 +158,32 @@ class GeotiffSegmentation:
                 UserWarning,
             )
 
-    def _find_max_crop_size(self):
-        # TODO
-        return 512
+    def _find_max_crop_size(self) -> int:
+        channels = 3
+        crop_size = 12800  # Max tested crop size
+
+        while crop_size > 1:
+            effective_crop_size = crop_size + 2 * self.padding
+            crop = torch.zeros(
+                (self.batch_size, channels, effective_crop_size, effective_crop_size),
+                device=self.model.device,
+            )
+            try:
+                # If this succeeds then crop_size is found
+                self.model(crop)
+                break
+            except RuntimeError as err:
+                msg = str(err)
+                if "out of memory" in msg or "could not create a primitive" in msg:
+                    # Not enough memory
+                    crop_size //= 2
+                else:
+                    # Some other issue so re-raise error
+                    raise err
+            finally:
+                del crop
+
+        return crop_size
 
     def on_start(self):
         """Hook that runs before image processing.
