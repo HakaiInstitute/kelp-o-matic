@@ -1,6 +1,6 @@
 import warnings
 from pathlib import Path
-from typing import Union
+from typing import Union, Optional
 
 import numpy as np
 import rasterio
@@ -21,7 +21,7 @@ class GeotiffSegmentation:
         model: "_Model",
         input_path: Union[str, "Path"],
         output_path: Union[str, "Path"],
-        crop_size: int = 512,
+        crop_size: Optional[int] = None,
         padding: int = 256,
         batch_size: int = 1,
     ):
@@ -32,10 +32,14 @@ class GeotiffSegmentation:
             input_path: The path to the input geotiff image.
             output_path: The destination file path for the output segmentation data.
             crop_size: The size of image crop to classify iteratively until the entire image is classified.
+                If `None`, uses the largest crop size possible.
             padding: The number of context pixels to add to each side of an image crop to improve outputs.
             batch_size: The number of crops to classify at a time using the model.
         """
         self.model = model
+        self.crop_size = (
+            crop_size if crop_size is not None else self._find_max_crop_size()
+        )
 
         tran = transforms.Compose(
             [
@@ -49,7 +53,7 @@ class GeotiffSegmentation:
         self.reader = GeotiffReader(
             Path(input_path).expanduser().resolve(),
             transform=tran,
-            crop_size=crop_size,
+            crop_size=self.crop_size,
             padding=padding,
             filter_=self._should_keep,
         )
@@ -148,6 +152,10 @@ class GeotiffSegmentation:
                 f"that (crop_size + 2*padding) is a multiple of {y_shape}.",
                 UserWarning,
             )
+
+    def _find_max_crop_size(self):
+        # TODO
+        return 512
 
     def on_start(self):
         """Hook that runs before image processing.

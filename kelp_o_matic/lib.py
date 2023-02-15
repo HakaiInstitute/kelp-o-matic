@@ -1,3 +1,5 @@
+from typing import Optional
+
 from kelp_o_matic.managers import GeotiffSegmentation
 from kelp_o_matic.models import (
     KelpPresenceSegmentationModel,
@@ -10,7 +12,7 @@ def find_kelp(
     source: str,
     dest: str,
     species: bool = False,
-    crop_size: int = 512,
+    crop_size: Optional[int] = None,
     padding: int = 256,
     batch_size: int = 1,
     use_gpu: bool = True,
@@ -22,6 +24,7 @@ def find_kelp(
         dest: File path location to save output to.
         species: Do species classification instead of presence/absence.
         crop_size: The size of cropped image square run through the segmentation model.
+            If `None`, uses the largest crop size possible.
         padding: The number of context pixels added to each side of the cropped image squares.
         batch_size: The batch size of cropped image sections to process together.
         use_gpu: Disable Cuda GPU usage and run on CPU only.
@@ -38,7 +41,7 @@ def find_kelp(
 def find_mussels(
     source: str,
     dest: str,
-    crop_size: int = 512,
+    crop_size: Optional[int] = None,
     padding: int = 256,
     batch_size: int = 1,
     use_gpu: bool = True,
@@ -49,6 +52,7 @@ def find_mussels(
         source: Input image with Byte data type.
         dest: File path location to save output to.
         crop_size: The size of cropped image square run through the segmentation model.
+            If `None`, uses the largest crop size possible.
         padding: The number of context pixels added to each side of the cropped image squares.
         batch_size: The batch size of cropped image sections to process together.
         use_gpu: Disable Cuda GPU usage and run on CPU only.
