@@ -149,14 +149,6 @@ class GeotiffSegmentation:
                 f"The input image is not a tiled tif. Processing will be significantly faster for tiled images.",
                 UserWarning,
             )
-        elif crop_shape % y_shape != 0 or crop_shape % x_shape != 0:
-            warnings.warn(
-                "Suboptimal crop_size and padding were specified. Performance will be degraded. "
-                f"The detected block shape for this band is ({y_shape}, {x_shape}). "
-                f"Faster performance may be achieved by setting the crop_size and the padding such"
-                f"that (crop_size + 2*padding) is a multiple of {y_shape}.",
-                UserWarning,
-            )
 
     def _find_max_crop_size(self) -> int:
         channels = 3
