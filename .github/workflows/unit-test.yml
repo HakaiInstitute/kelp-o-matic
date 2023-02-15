@@ -18,16 +18,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ "ubuntu-latest", "windows-latest" ]
+        os: [ "ubuntu-latest", "windows-latest", "macos-latest" ]
         python-version: [ "3.7", "3.8", "3.9", "3.10" ]
-        include:
-          - os: ubuntu-latest
-            label: linux-64
-            prefix: /usr/share/miniconda3/envs/my-env
-
-          - os: windows-latest
-            label: win-64
-            prefix: C:\Miniconda3\envs\my-env
 
     runs-on: ${{ matrix.os }}
     defaults:
@@ -45,13 +37,21 @@ jobs:
           activate-environment: my-env
           use-mamba: true
 
-      - name: Set cache date
-        run: echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
+      - name: Get Date
+        id: get-date
+        run: echo "today=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
+        shell: bash
 
-      - uses: actions/cache@v3
+      - name: Cache Conda env
+        uses: actions/cache@v3
         with:
-          path: ${{ matrix.prefix }}
-          key: ${{ matrix.label }}-py${{ matrix.python-version }}-conda-${{ hashFiles('environment.yml') }}-${{ env.DATE }}-${{ env.CACHE_NUMBER }}
+          path: ${{ env.CONDA }}/envs
+          key:
+            conda-${{ runner.os }}--${{ runner.arch }}--py${{ matrix.python-version }}--${{
+            steps.get-date.outputs.today }}-${{hashFiles('environment.yml') }}-${{ env.CACHE_NUMBER}}
+        env:
+          # Increase this value to reset cache if environment.yml has not changed
+          CACHE_NUMBER: 0
         id: cache
 
       - name: Update environment
