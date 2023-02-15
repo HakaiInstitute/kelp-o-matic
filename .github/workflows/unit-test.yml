@@ -29,6 +29,10 @@ jobs:
             label: win-64
             prefix: C:\Miniconda3\envs\my-env
 
+          - os: macos-latest
+            label: macos-64
+            prefix: /usr/local/miniconda3/envs/my-env
+
     runs-on: ${{ matrix.os }}
     defaults:
       run:
