@@ -2,6 +2,7 @@ import logging
 import os
 import warnings
 from pathlib import Path
+from time import sleep
 from typing import Union, Optional
 
 import numpy as np
@@ -156,66 +157,72 @@ class GeotiffSegmentation:
                 UserWarning,
             )
 
+    def _get_sample_crop(
+        self, crop_size: int = None, padding: int = None
+    ) -> "torch.Tensor":
+        if crop_size is None:
+            crop_size = self.crop_size
+        if padding is None:
+            padding = self.padding
+
+        effective_crop_size = crop_size + 2 * padding
+        return torch.zeros(
+            (self.batch_size, 3, effective_crop_size, effective_crop_size),
+            device=self.model.device,
+        )
+
+    def _crop_size_power_search(self, min_size: int) -> int:
+        crop_size = min_size
+        while True:
+            garbage_collection_cuda()
+
+            logging.debug(f"Trying {crop_size=}")
+            try:
+                self.model(self._get_sample_crop(crop_size)).detach()
+                crop_size *= 2
+
+            except RuntimeError as err:
+                if is_oom_error(err):
+                    return crop_size // 2
+
+                raise err
+
+    def _crop_size_binary_search(self, min_size: int, max_size: int) -> int:
+        min_, max_ = min_size, max_size
+        crop_size = min_size
+
+        while (max_ - min_) > 16:
+            garbage_collection_cuda()
+
+            crop_size = (max_ + min_) // 2
+            logging.debug(f"Trying {crop_size=}")
+            try:
+                self.model(self._get_sample_crop(crop_size)).detach()
+                min_ = crop_size
+
+            except RuntimeError as err:
+                if is_oom_error(err):
+                    max_ = crop_size
+                    continue
+                raise err
+
+        return crop_size
+
     def _find_max_crop_size(self) -> int:
         logging.info("Finding optimal `crop_size` parameter")
 
         # Initial power of 2 search for crop_size
         crop_size = self._crop_size_power_search(min_size=32)
+        garbage_collection_cuda()
 
         # Binary search to refine crop_size
         crop_size = self._crop_size_binary_search(
             min_size=crop_size, max_size=2 * crop_size
         )
+        garbage_collection_cuda()
 
         logging.info(f"Using `crop_size={crop_size}`")
         return crop_size
-
-    def _crop_size_binary_search(self, min_size: int, max_size: int) -> int:
-        min_, max_ = min_size, max_size
-        while True:
-            crop_size = (max_ + min_) // 2
-            logging.debug(f"Trying {crop_size=}")
-            try:
-                self.model(self._get_sample_crop(crop_size))
-                min_ = crop_size
-                if (max_ - min_) < 16:
-                    break
-
-            except RuntimeError as err:
-                if is_oom_error(err):
-                    max_ = crop_size
-                else:
-                    raise err
-            finally:
-                garbage_collection_cuda()
-
-        return crop_size
-
-    def _crop_size_power_search(self, min_size: int) -> int:
-        crop_size = min_size
-        while True:
-            logging.debug(f"Trying {crop_size=}")
-            try:
-                self.model(self._get_sample_crop(crop_size))
-                crop_size *= 2
-
-            except RuntimeError as err:
-                if is_oom_error(err):
-                    crop_size //= 2
-                    break
-                else:
-                    raise err
-            finally:
-                garbage_collection_cuda()
-
-        return crop_size
-
-    def _get_sample_crop(self, crop_size: int) -> "torch.Tensor":
-        effective_crop_size = crop_size + 2 * self.padding
-        return torch.zeros(
-            (self.batch_size, 3, effective_crop_size, effective_crop_size),
-            device=self.model.device,
-        )
 
     def on_start(self):
         """Hook that runs before image processing.
