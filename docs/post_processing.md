@@ -54,7 +54,7 @@ instance of ArcMap (version 10.8). These same steps can be done using other GIS 
 Load the output `.tif` file from Kelp-O-Matic into ArcMap. The raster will have the following
 attributes:
 
-| Output value | Class                        |
+| Output value (gridcode)| Class                        |
 |-------------:|------------------------------|
 |        **0** | Background                   |
 |        **1** | Kelp *(presence mode)*       |
@@ -68,7 +68,7 @@ Convert this raster into polygons using the `Raster to Polygon` tool in ArcMap.
 1. Uncheck "simplify polygons"
 2. Leave the other defaults as they are
 
-### Add Attributes to Polygons
+### Add New Attributes to Polygons
 
 1. Add a new "area" field
     1. Right click layer in the table of contents
@@ -102,9 +102,11 @@ Convert this raster into polygons using the `Raster to Polygon` tool in ArcMap.
 5. Save edits
 
 #### Manually delete non-kelp polygons 
+There may be areas where KoM classifier falsely detected kelp and these polygons need to be removed manually. 
      
 1. Select using the edit tool or “Select by Lasso” tool
 2. Delete the selected polygon(s)
+3. Save edits.
 
 #### Add kelp not detected by KoM
 
@@ -115,14 +117,21 @@ recommended.
 
 ![Missed Kelp](./images/post-processing/image2.png)
 
-### Update Attributes
+### Review Species Attributes
 
-#### Fill in the species attribute
+#### There may be some areas where the KoM classifier misclassified the species in a given area. These polygons can be edited manually. If you're just interested in presence/absence don't worry about this step.
 
-1. Select all polygon features by each species class using the attribute table and “select by attribute”.
-2. From the Editor toolbar select `Merge`. Creates a multipart feature for each species.
-3. Populate the “species” attribute in the attribute table where you type in "Macrocystis pyrifera" and "
-   Nereocystis luetkeana" for each respective species features (if they are present)
+1. Select all polygon features classified as giant kelp by opening the attribute table and “select by attribute”. Select features representing giant kelp by typing: `"gridcode" = 2`. At the bottom of the attribute table click on the "Show selected records" tab.
+2. Right click the "species" field you created earlier. Select "Field Calculator".
+3. In the text box enter "Macrocystis pyrifera" (with quotes included) and click OK. This will fill out that attribute for all the selected polygons.
+
+Repeat steps 1 - 3 for bull kelp by using `"gridcode" = 3` and "Nereocystis luetkeana". 
+
+4. Review all the polygon species classification and manually change ones that the KoM classifier misclassified by changing the text in the "species" field for that polygon feature.
+5. Save edits.
+6. Delete the "gridcode" attribute once you are done.
+7. Save edits. 
+
 
 ### Export Data
 
