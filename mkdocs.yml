@@ -9,6 +9,7 @@ nav:
     - Index: beginner_guide/index.md
     - Set-up and Installation: beginner_guide/setup.md
     - Running the Segmentation Tool: beginner_guide/execution.md
+    - Post-Processing: beginner_guide/post_processing.md
   - Installation: installation.md
   - Data Expectations: expectations.md
   - Command Line Interface: cli.md
@@ -43,6 +44,7 @@ markdown_extensions:
   - admonition
   - tables
   - def_list
+  - footnotes
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.details
@@ -52,6 +54,11 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.arithmatex:
       generic: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 extra_javascript:
   - javascripts/mathjax.js
