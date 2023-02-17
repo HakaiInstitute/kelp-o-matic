@@ -32,9 +32,9 @@ graph TB
 ## Detailed Workflow
 
 This section assumes that you have obtained output from the Kelp-O-Matic (.tif) and have a new
-instance of ArcMap (version 10.8).
+instance of ArcMap (version 10.8). These same steps can be done using other GIS software (e.g. QGIS)
 
-???+ tip "Tip: Keyboard Shortcuts"
+??? tip "Tip: ArcMap Keyboard Shortcuts"
 
     Keyboard shortcuts can make the editing process much faster. To enable some, go to `Customize > Customize Mode > Keyboard…`.
     
@@ -80,8 +80,8 @@ Convert this raster into polygons using the `Raster to Polygon` tool in ArcMap.
     1. Right click the "area" header in the attribute table, select `Calculate Geometry...`
         1. Property = "area"
         2. Units = "square meters"
-        3. Coordinate system = "use coordinate system of the data source"
-        4. Click "OK"
+        3. Coordinate system = choose an appropriate projection that preserves area (e.g. NAD83 BC Albers Equal Area EPSG = 3005)
+        4. Click "OK"  
 3. Add a new "species" field
     1. Right click layer in the table of contents
     2. Select `Open attribute table > Table options > Add field`
@@ -94,16 +94,15 @@ Convert this raster into polygons using the `Raster to Polygon` tool in ArcMap.
 #### Delete small polygons that are unlikely to be kelp
 
 1. Start editing this feature polygon layer
-    2. In the Editor toolbar click `Editor > start editing`. Select the feature layer you will be
-       editing
+2. In the Editor toolbar click `Editor > start editing`. Select the feature layer you will be editing
 2. Right click layer in the table of contents, Select `Open attribute table`.
    Click `Select by attribute`
 3. Select features < 0.2 m2 by typing: `"area" < 0.2`
 4. Right click highlighted features in attribute table and click `Delete Selected`
 5. Save edits
 
-#### Manually delete non-kelp polygons
-
+#### Manually delete non-kelp polygons 
+     
 1. Select using the edit tool or “Select by Lasso” tool
 2. Delete the selected polygon(s)
 
