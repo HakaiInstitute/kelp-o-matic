@@ -54,12 +54,12 @@ instance of ArcMap (version 10.8). These same steps can be done using other GIS 
 Load the output `.tif` file from Kelp-O-Matic into ArcMap. The raster will have the following
 attributes:
 
-| Output value (gridcode)| Class                        |
-|-------------:|------------------------------|
-|        **0** | Background                   |
-|        **1** | Kelp *(presence mode)*       |
-|        **2** | Macrocystis *(species mode)* |
-|        **3** | Nereocystis *(species mode)* |
+| Output value (gridcode) | Class                        |
+|------------------------:|------------------------------|
+|                   **0** | Background                   |
+|                   **1** | Kelp *(presence mode)*       |
+|                   **2** | Macrocystis *(species mode)* |
+|                   **3** | Nereocystis *(species mode)* |
 
 ### Convert to Polygons
 
@@ -77,11 +77,12 @@ Convert this raster into polygons using the `Raster to Polygon` tool in ArcMap.
         2. Type = "float"
         3. Click `OK`
 2. Calculate the area for each polygon
-    1. Right click the "area" header in the attribute table, select `Calculate Geometry...`
+    1. Right-click the "area" header in the attribute table, select `Calculate Geometry...`
         1. Property = "area"
         2. Units = "square meters"
-        3. Coordinate system = choose an appropriate projection that preserves area (e.g. NAD83 BC Albers Equal Area EPSG = 3005)
-        4. Click "OK"  
+        3. Coordinate system = choose an appropriate projection that preserves area (e.g. NAD83 BC
+           Albers Equal Area EPSG = 3005)
+        4. Click "OK"
 3. Add a new "species" field
     1. Right click layer in the table of contents
     2. Select `Open attribute table > Table options > Add field`
@@ -94,7 +95,8 @@ Convert this raster into polygons using the `Raster to Polygon` tool in ArcMap.
 #### Delete small polygons that are unlikely to be kelp
 
 1. Start editing this feature polygon layer
-2. In the Editor toolbar click `Editor > start editing`. Select the feature layer you will be editing
+    1. In the Editor toolbar click `Editor > start editing`. Select the feature layer you will be
+       editing
 2. Right click layer in the table of contents, Select `Open attribute table`.
    Click `Select by attribute`
 3. Select features < 0.2 m2 by typing: `"area" < 0.2`
@@ -103,8 +105,9 @@ Convert this raster into polygons using the `Raster to Polygon` tool in ArcMap.
 
 #### Manually delete non-kelp polygons
 
-There may be areas where KoM classifier falsely detected kelp and these polygons need to be removed manually. 
-     
+There may be areas where KoM classifier falsely detected kelp and these polygons need to be removed
+manually.
+
 1. Select using the edit tool or “Select by Lasso” tool
 2. Delete the selected polygon(s)
 3. Save edits.
@@ -120,19 +123,24 @@ recommended.
 
 ### Review Species Attributes
 
-There may be some areas where the KoM classifier misclassified the species in a given area. These polygons can be edited manually. If you're just interested in presence/absence don't worry about this step.
+There may be some areas where the KoM classifier misclassified the species in a given area. These
+polygons can be edited manually. If you're just interested in presence/absence don't worry about
+this step.
 
-1. Select all polygon features classified as giant kelp by opening the attribute table and “select by attribute”. Select features representing giant kelp by typing: `"gridcode" = 2`. At the bottom of the attribute table click on the "Show selected records" tab.
-2. Right click the "species" field you created earlier. Select "Field Calculator".
-3. In the text box enter "Macrocystis pyrifera" (with quotes included) and click OK. This will fill out that attribute for all the selected polygons.
+1. Select all polygon features classified as giant kelp by opening the attribute table and “select
+   by attribute”. Select features representing giant kelp by typing: `"gridcode" = 2`. At the bottom
+   of the attribute table click on the "Show selected records" tab.
+2. Right-click the "species" field you created earlier. Select "Field Calculator".
+3. In the text box enter "Macrocystis pyrifera" (with quotes included) and click OK. This will fill
+   out that attribute for all the selected polygons.
 
-Repeat steps 1 - 3 for bull kelp by using `"gridcode" = 3` and "Nereocystis luetkeana". 
+Repeat steps 1 - 3 for bull kelp by using `"gridcode" = 3` and "Nereocystis luetkeana".
 
-4. Review all the polygon species classification and manually change ones that the KoM classifier misclassified by changing the text in the "species" field for that polygon feature.
-5. Save edits.
-6. Delete the "gridcode" attribute once you are done.
-7. Save edits. 
-
+1. Review all the polygon species classification and manually change ones that the KoM classifier
+   misclassified by changing the text in the "species" field for that polygon feature.
+2. Save edits.
+3. Delete the "gridcode" attribute once you are done.
+4. Save edits.
 
 ### Export Data
 
