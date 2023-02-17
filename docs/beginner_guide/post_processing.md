@@ -101,7 +101,8 @@ Convert this raster into polygons using the `Raster to Polygon` tool in ArcMap.
 4. Right click highlighted features in attribute table and click `Delete Selected`
 5. Save edits
 
-#### Manually delete non-kelp polygons 
+#### Manually delete non-kelp polygons
+
 There may be areas where KoM classifier falsely detected kelp and these polygons need to be removed manually. 
      
 1. Select using the edit tool or “Select by Lasso” tool
@@ -119,7 +120,7 @@ recommended.
 
 ### Review Species Attributes
 
-#### There may be some areas where the KoM classifier misclassified the species in a given area. These polygons can be edited manually. If you're just interested in presence/absence don't worry about this step.
+There may be some areas where the KoM classifier misclassified the species in a given area. These polygons can be edited manually. If you're just interested in presence/absence don't worry about this step.
 
 1. Select all polygon features classified as giant kelp by opening the attribute table and “select by attribute”. Select features representing giant kelp by typing: `"gridcode" = 2`. At the bottom of the attribute table click on the "Show selected records" tab.
 2. Right click the "species" field you created earlier. Select "Field Calculator".
