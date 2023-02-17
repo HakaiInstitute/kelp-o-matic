@@ -7,6 +7,7 @@ This document outlines step-by-step how to execute the kelp-o-matic tool for tho
 
 1. [Set-up and Installation](./setup.md)
 2. [Running the Segmentation tool](./execution.md)
+3. [Post-Processing Results](./post_processing.md)
 
 ----
 
