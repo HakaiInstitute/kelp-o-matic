@@ -8,7 +8,7 @@ These instructions assume a basic level of experience with the ArcMAP GIS interf
 please contact [Luba Reshitnyk](email:luba.reshitnyk@hakai.org) at
 the [Hakai Institute](https://hakai.org).
 
-![Overview](./images/post-processing/image1.png)
+![Overview](./images/post_processing1.png)
 
 [^1]: Created by Luba Reshitnyk, February 2023
 
@@ -115,7 +115,7 @@ figure below) manually digitize these features using the Freehand Tool. You will
 classify these new regions to species (change value in the attribute table). A 1:100 scale is
 recommended.
 
-![Missed Kelp](./images/post-processing/image2.png)
+![Missed Kelp](./images/post_processing2.png)
 
 ### Review Species Attributes
 
