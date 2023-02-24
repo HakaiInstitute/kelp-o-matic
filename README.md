@@ -1,4 +1,4 @@
-<div style="overflow: hidden; display: flex; justify-content:flex-start; gap:10px;">
+<div style="overflow: hidden; display: flex; justify-content:center; gap:10px;">
 <a href="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/unit-test.yml">
     <img alt="🧪 Unit Tests" src="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/unit-test.yml/badge.svg" height="20px" />
 </a>
