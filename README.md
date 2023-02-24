@@ -4,11 +4,11 @@
 </a>
 
 <a href="https://github.com/HakaiInstitute/kelp-o-matic/blob/main/LICENSE.txt">
-    <img alt="License" src="https://anaconda.org/hakai-institute/kelp-o-matic/badges/license.svg" height="20px" />
+    <img alt="License" src="https://anaconda.org/conda-forge/kelp-o-matic/badges/license.svg" height="20px" />
 </a>
 
-<a href="https://anaconda.org/Hakai-Institute/kelp-o-matic">
-    <img alt="Version" src="https://anaconda.org/hakai-institute/kelp-o-matic/badges/version.svg" height="20px" />
+<a href="https://anaconda.org/conda-forge/kelp-o-matic">
+    <img alt="Version" src="https://anaconda.org/conda-forge/kelp-o-matic/badges/version.svg" height="20px" />
 </a>
 
 <a href="https://zenodo.org/badge/latestdoi/462897183">
@@ -27,7 +27,3 @@
 <h1 align="center"> 
     <a href="https://kelp-o-matic.readthedocs.io">&#9758; Read the Docs &#9756;</a>
 </h1>
-
-
-
-
