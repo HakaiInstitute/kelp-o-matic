@@ -160,12 +160,21 @@ flowchart TD
 The following definitions describe the metrics used during training and evaluation of the deep
 neural networks. They are important to understand for the sections following.
 
+**Definitions in terms of pixel sets:**
+
 - Let $A$ equal the set of human-labelled pixels.
-
 - Let $B$ be defined as the set of pixel labels predicted by the model.
-
 - Let $A_i$ and $B_i$ be the sets of pixels for a particular class of interest, $i$, from labels $A$
   and $B$, respectively.
+
+**Definitions in terms of true and false postive/negative classes:**
+
+For class $i$:
+
+- Let $TP_i$ be the true positives.
+- Let $FP_i$ be the false positives.
+- Let $TN_i$ be the true negatives.
+- Let $FN_i$ be the false negatives.
 
 **IoU**
 
