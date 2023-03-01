@@ -141,3 +141,72 @@ The full source code for training the mussel detection model is also available o
 | IoU~bg~ | IoU~mussels~ | mIoU   | Accuracy |
 |------------------|-----------------------|--------|----------|
 | 0.9622           | 0.7188                | 0.8405 | 0.9678   |
+
+
+## Process Flowcharts
+
+### Data preparation
+
+```mermaid
+flowchart TD
+    subgraph Data Preparation
+    subgraph Labelling
+    A[/"UAV Orthomosaic (RGB)"/] --> B[Manual kelp classification] 
+    B --> C[/"Presence/Absence Dataset\n(not kelp = 0, kelp = 1)"/]
+    B --> D[/"Species Dataset\n(not kelp = 0, Macrocystis = 2,\n Nereocystis = 3)"/]
+    end
+    C --> E{{"Tiling\n(512x512 pixel tiles, 50% overlap)"}}
+    D --> E1{{"Tiling\n(512x512 pixel tiles, 50% overlap)"}}
+    E --> F{{"Discard tiles with no kelp\nOR where >50% is no data"}}
+    E1 --> F1{{"Discard tiles with no kelp\nOR where >50% is no data"}}
+    subgraph PADataset [P/A Dataset]
+    G[("Training ~80%")] 
+    H[("Validation ~10%")]
+    I[("Testing ~10%")]
+    end
+    subgraph SpeciesDataset [Species Dataset]
+    G1[("Training ~80%")] 
+    H1[("Validation ~10%")]
+    I1[("Testing ~10%")]
+    end
+    F --> PADataset
+    F1 --> SpeciesDataset
+    end
+```
+
+### Model training
+
+```mermaid
+flowchart TD
+    subgraph Training [CNN Training Loop]
+    P(["Start"])
+    P --> B2["Get next training dataset batch"]
+    G2[("Training")] -.-> B2
+    subgraph Augmentation [Data Augmentation]
+    J["Randomly rotation in [0, 45] deg"]
+    J --> K["Random horizontal and/or vertical flip"]
+    K --> L["Random jitter of brightness"]
+    L --> M["Random jitter of contrast"]
+    M --> N["Random jitter of saturation"]
+    end
+    B2 --> J
+    N --> Q["Forward pass through CNN"]
+    Q --> R["Calculate error of CNN relative to hand-labelled images"]
+    R --> S["Update CNN parameters with backpropagation"]
+    S --> B3{"Last batch?"}
+    B3 -->|No| B2
+    subgraph Validation
+    H2[("Validation")] -.-> V["Calculate average model error on all batches"]
+    end
+    B3 -->|Yes| Validation
+    Validation --> W{"Validation error is stabilized?\n(model converged)"}
+    W --> |No| reset["Next training epoch"] --> B2
+    W -->|Yes| X["Finished training\nSave CNN model"]
+    subgraph Testing
+    I3[("Testing")] -.-> Y["Calculate model performance on all batches"]
+    Y --> Z("Save model performance metrics") 
+    end
+    X --> Testing
+    Testing --> End([End])
+    end
+```
