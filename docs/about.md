@@ -155,10 +155,11 @@ flowchart TD
     B --> C[/"Presence/Absence Dataset\n(not kelp = 0, kelp = 1)"/]
     B --> D[/"Species Dataset\n(not kelp = 0, Macrocystis = 2,\n Nereocystis = 3)"/]
     end
-    C --> E{{"Tiling\n(512x512 pixel tiles, 50% overlap)"}}
-    D --> E1{{"Tiling\n(512x512 pixel tiles, 50% overlap)"}}
-    E --> F{{"Discard tiles with no kelp\nOR where >50% is no data"}}
-    E1 --> F1{{"Discard tiles with no kelp\nOR where >50% is no data"}}
+    subgraph Filtering [Prepare image tiles]
+    E{{"Tile image and label\n(512x512 pixel tiles, 50% overlap)"}}
+    E --> F{{"Discard image and labels tiles with no kelp\nOR where >50% is no data"}}
+    end
+    C & D--> Filtering
     subgraph PADataset [P/A Dataset]
     G[("Training ~80%")] 
     H[("Validation ~10%")]
@@ -169,8 +170,7 @@ flowchart TD
     H1[("Validation ~10%")]
     I1[("Testing ~10%")]
     end
-    F --> PADataset
-    F1 --> SpeciesDataset
+    Filtering --> PADataset & SpeciesDataset
     end
 ```
 
@@ -180,28 +180,26 @@ flowchart TD
 flowchart TD
     subgraph Training [CNN Training Loop]
     P(["Start"])
-    P --> B2["Get next training dataset batch"]
+    P --> B2["Get next batch of training tiles"]
     G2[("Training")] -.-> B2
     subgraph Augmentation [Data Augmentation]
     J["Randomly rotation in [0, 45] deg"]
     J --> K["Random horizontal and/or vertical flip"]
-    K --> L["Random jitter of brightness"]
-    L --> M["Random jitter of contrast"]
-    M --> N["Random jitter of saturation"]
+    K --> L["Randomly jitter brightness,\ncontrast, and saturation"]
     end
-    B2 --> J
-    N --> Q["Forward pass through CNN"]
+    B2 --> Augmentation
+    L --> Q["Forward pass through CNN"]
     Q --> R["Calculate error of CNN relative to hand-labelled images"]
     R --> S["Update CNN parameters with backpropagation"]
-    S --> B3{"Last batch?"}
-    B3 -->|No| B2
+    S --> B3{"More training tiles\nto process?"}
+    B3 -->|Yes| B2
     subgraph Validation
     H2[("Validation")] -.-> V["Calculate average model error on all batches"]
     end
-    B3 -->|Yes| Validation
+    B3 -->|No| Validation
     Validation --> W{"Validation error is stabilized?\n(model converged)"}
     W --> |No| reset["Next training epoch"] --> B2
-    W -->|Yes| X["Finished training\nSave CNN model"]
+    W -->|Yes| X["Finished training,\nsave CNN model"]
     subgraph Testing
     I3[("Testing")] -.-> Y["Calculate model performance on all batches"]
     Y --> Z("Save model performance metrics") 
