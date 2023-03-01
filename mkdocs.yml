@@ -6,7 +6,7 @@ repo_name: HakaiInstitue/kelp-o-matic
 nav:
   - Home: index.md
   - Beginner Guide:
-    - Index: beginner_guide/index.md
+    - beginner_guide/index.md
     - Set-up and Installation: beginner_guide/setup.md
     - Running the Segmentation Tool: beginner_guide/execution.md
     - Post-Processing: beginner_guide/post_processing.md
@@ -23,6 +23,8 @@ theme:
     primary: teal
   icon:
     logo: material/shore
+  features:
+    - navigation.indexes
 
 extra:
   analytics:
@@ -52,6 +54,10 @@ markdown_extensions:
   - pymdownx.caret
   - pymdownx.tilde
   - pymdownx.keys
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.superfences:
