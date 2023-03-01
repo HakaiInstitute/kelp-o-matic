@@ -167,25 +167,37 @@ neural networks. They are important to understand for the sections following.
 - Let $A_i$ and $B_i$ be the sets of pixels for a particular class of interest, $i$, from labels $A$
   and $B$, respectively.
 
-**Accuracy**
-
-:   The ratio of counts of pixels correctly classified by the model divided over the total number of
-pixels.
-
 **IoU**
 
 :   The "intersection over union", also called the "Jaccard Index". Defined as:
 
 $$
-IoU_i (A,B) = \frac{|A_i \cap B_i|}{|A_i \cup B_i|}
+IoU_i (A,B) = \frac{|A_i \cap B_i|}{|A_i \cup B_i|} = \frac{TP_i}{TP_i + FP_i + FN_i}
 $$
 
-**IoU~$\mu$~**
+**Precision**
 
-:   The mean of the intersection over union values over all classes. Defined as:
+:   The ratio of correct predictions for a class to the count of predictions of that class:
 
 $$
-IoU~\mu~ (A,B) = \frac{\sum_{i=1}^{c} IoU_{i}(A,B)}{c}
+Precision_i = \frac{|A_i \cap B_i|}{|A_i|} = \frac{TP_i}{TP_i + FP_i}
+$$
+
+**Recall**
+
+:   The ratio of correct predictions for a class to the count of actual instances of that class:
+
+$$
+Recall_i = \frac{|A_i \cap B_i|}{|B_i|} = \frac{TP_i}{TP_i + FN_i}
+$$
+
+**Accuracy**
+
+:   The ratio of counts of pixels correctly classified by the model divided over the total number of
+pixels.
+
+$$
+Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
 $$
 
 ### Summary statistics
