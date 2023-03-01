@@ -1,7 +1,7 @@
 # About
 
-This document gives information about interpreting the Kelp-O-Matic model outputs, and gives 
-details on the dataset pre-processing workflow, model training, and final performance achieved for 
+This document gives information about interpreting the Kelp-O-Matic model outputs, and gives
+details on the dataset pre-processing workflow, model training, and final performance achieved for
 both the kelp and mussel detection models.
 
 ## Model Outputs
@@ -43,7 +43,7 @@ These sets of tiles where then divided into training, validation, and test split
 Source code for data preparation is available on GitHub
 at [:material-github: hakai-ml-dataprep](https://github.com/tayden/hakai-ml-dataprep).
 
-#### Pre-processing overview
+### Pre-processing overview
 
 ```mermaid
 flowchart TD
@@ -72,26 +72,27 @@ flowchart TD
     end
 ```
 
-#### Dataset summaries
+### Dataset summaries
 
-##### Kelp (presence/absence)
-| Split    | # Scenes |  Tiles | Total pixels | Kelp pixels | Area (km^2^) | Res~max~ (m) | Res~min~ (m) | Res~$\mu$~ (m) | Res~$\sigma$~ (m) |
-|:---------|---------:|-------:|-------------:|------------:|-------------:|-------------:|-------------:|---------------:|------------------:|
-| Train    |       20 |  79410 |  20816855040 |  1869305638 |       962.39 |       0.1040 |       0.0230 |         0.0487 |            0.0253 |
-| Val.     |        4 |  15805 |   4143185920 |   147658714 |       124.80 |       0.0420 |       0.0230 |         0.0296 |            0.0085 |
-| Test     |        6 |  46304 |  12046802177 |   319847006 |       409.72 |       0.0680 |       0.0230 |         0.0385 |            0.0161 |
-| $\Sigma$ |       30 | 141519 |  37006843137 |  2336811358 |      1496.92 |              |              |                |                   |
+**Kelp (presence/absence)**
 
-##### Kelp (species)
+| Split    | Scenes |  Tiles | Pixels~kelp~ | Pixels~total~ | Area (km^2^) | Res~max~ (m) | Res~min~ (m) | Res~$\mu$~ (m) | Res~$\sigma$~ (m) |
+|:---------|-------:|-------:|-------------:|--------------:|-------------:|-------------:|-------------:|---------------:|------------------:|
+| Train    |     20 |  79410 |   1869305638 |   20816855040 |       962.39 |       0.1040 |       0.0230 |         0.0487 |            0.0253 |
+| Val.     |      4 |  15805 |    147658714 |    4143185920 |       124.80 |       0.0420 |       0.0230 |         0.0296 |            0.0085 |
+| Test     |      6 |  46304 |    319847006 |   12046802177 |       409.72 |       0.0680 |       0.0230 |         0.0385 |            0.0161 |
+| $\Sigma$ |     30 | 141519 |   2336811358 |   37006843137 |      1496.92 |              |              |                |                   |
 
-| Split    | # Scenes |  Tiles | Total pixels | Macro pixels | Nereo pixels |  Area (km^2^) | Res~max~ (m) | Res~min~ (m) | Res~$\mu$~ (m) | Res~$\sigma$~ (m) |
-|:---------|---------:|-------:|-------------:|-------------:|-------------:|--------------:|-------------:|-------------:|---------------:|------------------:|
-| Train    |       17 | 336740 |  88008624978 |    605462674 |   1158650042 | 4034113286.55 |       0.1040 |       0.0230 |         0.0488 |            0.0266 |
-| Val.     |        4 |  15805 |   4110229732 |    127410722 |     20244320 |  123909899.85 |       0.0420 |       0.0230 |         0.0296 |            0.0085 |
-| Test     |        6 |  46304 |  12046802177 |    143277498 |    176569508 |  409722875.67 |       0.0680 |       0.0230 |         0.0385 |            0.0161 |
-| $\Sigma$ |       27 | 398849 | 104165656887 |    876150894 |   1355463870 |    4567746062 |              |              |                |                   |
+**Kelp (species)**
 
-##### Mussels (presence/absence)
+| Split    | Scenes |  Tiles | Pixels~macro~ | Pixels~nereo~ | Pixels~total~ |  Area (km^2^) | Res~max~ (m) | Res~min~ (m) | Res~$\mu$~ (m) | Res~$\sigma$~ (m) |
+|:---------|-------:|-------:|--------------:|--------------:|--------------:|--------------:|-------------:|-------------:|---------------:|------------------:|
+| Train    |     17 | 336740 |     605462674 |    1158650042 |   88008624978 | 4034113286.55 |       0.1040 |       0.0230 |         0.0488 |            0.0266 |
+| Val.     |      4 |  15805 |     127410722 |      20244320 |    4110229732 |  123909899.85 |       0.0420 |       0.0230 |         0.0296 |            0.0085 |
+| Test     |      6 |  46304 |     143277498 |     176569508 |   12046802177 |  409722875.67 |       0.0680 |       0.0230 |         0.0385 |            0.0161 |
+| $\Sigma$ |     27 | 398849 |     876150894 |    1355463870 |  104165656887 |    4567746062 |              |              |                |                   |
+
+**Mussels (presence/absence)**
 
 !!! todo
 
@@ -107,7 +108,7 @@ $\alpha=0.7, \beta=0.3, \gamma=4.0 / 3.0$.
 
 The model was trained on an AWS p3.8xlarge instance with 4 Nvidia Tesla V100 GPUS and took 18
 hours to finish. At the end of training, the model parameters which achieved the best
-IoU~$\mu$~ score on the validation data split were saved for inference. It is these parameters that 
+IoU~$\mu$~ score on the validation data split were saved for inference. It is these parameters that
 were used to calculate the final performance statistics for the model on the test split.
 
 Source code for model training is available on GitHub
@@ -166,13 +167,12 @@ neural networks. They are important to understand for the sections following.
 - Let $A_i$ and $B_i$ be the sets of pixels for a particular class of interest, $i$, from labels $A$
   and $B$, respectively.
 
-`Accuracy`
+**Accuracy**
 
 :   The ratio of counts of pixels correctly classified by the model divided over the total number of
 pixels.
 
-
-`IoU`
+**IoU**
 
 :   The "intersection over union", also called the "Jaccard Index". Defined as:
 
@@ -180,19 +180,17 @@ $$
 IoU_i (A,B) = \frac{|A_i \cap B_i|}{|A_i \cup B_i|}
 $$
 
-`Mean IoU (mIoU)`
+**IoU~$\mu$~**
 
 :   The mean of the intersection over union values over all classes. Defined as:
 
 $$
-mIoU (A,B) = \frac{\sum_{i=1}^{c} IoU_{i}(A,B)}{c}
+IoU~\mu~ (A,B) = \frac{\sum_{i=1}^{c} IoU_{i}(A,B)}{c}
 $$
 
 ### Summary statistics
 
-#### Kelp (presence/absence)
-
-
+**Kelp (presence/absence)**
 
 === "Test split"
 
@@ -206,21 +204,21 @@ $$
     |---------|-----------|------------|----------|
     | 0.9857  | 0.6964    | 0.8410     | 0.9865   |
 
-#### Kelp (species)
+**Kelp (species)**
 
 === "Test split"
 
-    | IoU~bg~ | IoU~macro~ | IoU~nereo~ | mIoU   | Accuracy |
+    | IoU~bg~ | IoU~macro~ | IoU~nereo~ | IoU~$\mu$~   | Accuracy |
     |---------|------------|------------|--------|----------|
     | 0.9883  | 0.7574     | 0.5262     | 0.7607 | 0.9880   |
 
 === "Validation split"
 
-    | IoU~bg~ | IoU~macro~ | IoU~nereo~ | mIoU   | Accuracy |
+    | IoU~bg~ | IoU~macro~ | IoU~nereo~ | IoU~$\mu$~   | Accuracy |
     |---------|------------|------------|--------|----------|
     | 0.9423  | 0.7392     | 0.4369     | 0.7810 | 0.9522   |
 
-#### Mussels (presence/absence)
+**Mussels (presence/absence)**
 
 !!! todo
 
@@ -228,6 +226,6 @@ $$
 
 === "Validation split"
 
-    | IoU~bg~ | IoU~mussels~ | mIoU   | Accuracy |
+    | IoU~bg~ | IoU~mussels~ | IoU~$\mu$~   | Accuracy |
     |---------|--------------|--------|----------|
     | 0.9622  | 0.7188       | 0.8405 | 0.9678   |
