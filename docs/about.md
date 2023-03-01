@@ -9,7 +9,9 @@ both the kelp and mussel detection models.
 Each of the Kelp-O-Matic models outputs a mask raster with integer pixel values that represent the
 following classes:
 
-### Kelp model output classes
+### Kelp
+
+These are the outputs from the `find-kelp` routine:
 
 | Output value | Class                        |
 |-------------:|------------------------------|
@@ -18,7 +20,9 @@ following classes:
 |        **2** | Macrocystis *(species mode)* |
 |        **3** | Nereocystis *(species mode)* |
 
-### Mussel model output classes
+### Mussels
+
+These are the outputs from the `find-mussels` routine:
 
 | Output value | Class      |
 |-------------:|------------|
@@ -87,7 +91,7 @@ flowchart TD
 | Test     |        6 |  46304 |  12046802177 |    143277498 |    176569508 |  409722875.67 |       0.0680 |       0.0230 |         0.0385 |            0.0161 |
 | $\Sigma$ |       27 | 398849 | 104165656887 |    876150894 |   1355463870 |    4567746062 |              |              |                |                   |
 
-##### Mussel (presence/absence)
+##### Mussels (presence/absence)
 
 !!! todo
 
@@ -188,40 +192,42 @@ $$
 
 #### Kelp (presence/absence)
 
-##### Validation split
 
-| IoU~bg~ | IoU~kelp~ | IoU~$\mu$~ | Accuracy |
-|---------|-----------|------------|----------|
-| 0.9857  | 0.6964    | 0.8410     | 0.9865   |
 
-##### Test split
+=== "Test split"
 
-| IoU~bg~ | IoU~kelp~ | IoU~$\mu$~ | Accuracy |
-|---------|-----------|------------|----------|
-| 0.9884  | 0.6541    | 0.8213     | 0.9890   |
+    | IoU~bg~ | IoU~kelp~ | IoU~$\mu$~ | Accuracy |
+    |---------|-----------|------------|----------|
+    | 0.9884  | 0.6541    | 0.8213     | 0.9890   |
+
+=== "Validation split"
+
+    | IoU~bg~ | IoU~kelp~ | IoU~$\mu$~ | Accuracy |
+    |---------|-----------|------------|----------|
+    | 0.9857  | 0.6964    | 0.8410     | 0.9865   |
 
 #### Kelp (species)
 
-##### Validation split
+=== "Test split"
 
-| IoU~bg~ | IoU~macro~ | IoU~nereo~ | mIoU   | Accuracy |
-|---------|------------|------------|--------|----------|
-| 0.9423  | 0.7392     | 0.4369     | 0.7810 | 0.9522   |
+    | IoU~bg~ | IoU~macro~ | IoU~nereo~ | mIoU   | Accuracy |
+    |---------|------------|------------|--------|----------|
+    | 0.9883  | 0.7574     | 0.5262     | 0.7607 | 0.9880   |
 
-##### Test split
+=== "Validation split"
 
-| IoU~bg~ | IoU~macro~ | IoU~nereo~ | mIoU   | Accuracy |
-|---------|------------|------------|--------|----------|
-| 0.9883  | 0.7574     | 0.5262     | 0.7607 | 0.9880   |
+    | IoU~bg~ | IoU~macro~ | IoU~nereo~ | mIoU   | Accuracy |
+    |---------|------------|------------|--------|----------|
+    | 0.9423  | 0.7392     | 0.4369     | 0.7810 | 0.9522   |
 
-#### Mussel (presence/absence)
+#### Mussels (presence/absence)
 
 !!! todo
 
     The mussel model is a work in progress. This section will be updated in the future.
 
-##### Validation split
+=== "Validation split"
 
-| IoU~bg~ | IoU~mussels~ | mIoU   | Accuracy |
-|---------|--------------|--------|----------|
-| 0.9622  | 0.7188       | 0.8405 | 0.9678   |
+    | IoU~bg~ | IoU~mussels~ | mIoU   | Accuracy |
+    |---------|--------------|--------|----------|
+    | 0.9622  | 0.7188       | 0.8405 | 0.9678   |

@@ -47,14 +47,13 @@ markdown_extensions:
   - tables
   - def_list
   - footnotes
-  - pymdownx.tasklist:
-      custom_checkbox: true
   - pymdownx.details
-  - pymdownx.superfences
   - pymdownx.caret
   - pymdownx.tilde
   - pymdownx.keys
   - attr_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
@@ -65,6 +64,8 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
 
 extra_javascript:
   - javascripts/mathjax.js
