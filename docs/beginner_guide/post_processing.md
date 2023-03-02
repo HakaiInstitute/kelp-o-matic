@@ -145,3 +145,7 @@ Repeat steps 1 - 3 for bull kelp by using `"gridcode" = 3` and "Nereocystis luet
 ### Export Data
 
 That's it! You can now export your data a shapefile and give it an appropriate name.
+
+----
+
+*Authors: Luba Reshitnyk and Taylor Denouden*
