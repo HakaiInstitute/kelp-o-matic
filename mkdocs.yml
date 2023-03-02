@@ -44,21 +44,20 @@ watch:
 
 markdown_extensions:
   - admonition
-  - tables
+  - attr_list
   - def_list
   - footnotes
-  - pymdownx.details
+  - md_in_html
   - pymdownx.caret
-  - pymdownx.tilde
+  - pymdownx.details
   - pymdownx.keys
-  - attr_list
-  - pymdownx.tasklist:
-      custom_checkbox: true
+  - pymdownx.tilde
+  - tables
+  - pymdownx.arithmatex:
+      generic: true
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
-  - pymdownx.arithmatex:
-      generic: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -66,6 +65,8 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
 
 extra_javascript:
   - javascripts/mathjax.js
