@@ -10,42 +10,45 @@ the user interface of the tool. Changes are published to the PyPI and Anaconda r
 [semantic versioning](https://semver.org/). You may want to occasionally run the update commands to ensure
 that you're using the most up-to-date version of `kelp-o-matic`.
 
-## With Anaconda
+## Commands
 
-### Install 
+=== "Conda"
 
-Use the Anaconda Navigator GUI to create a new environment and add the *conda-forge*, and *pytorch* channels
-before searching for and installing the `kelp-o-matic` package in your environment.
+    ### Install
+    
+    ??? help "Installing in Anaconda Navigator"
+    
+        1. Use the Anaconda Navigator GUI and create a new environment.
+        2. Add the `pytorch` and `conda-forge` channels.
+        3. Search for and install the `kelp-o-matic` package in your environment. 
 
-Alternatively, install using your terminal or the Anaconda prompt (for Windows users) by running the following command:
+        If you need more help, please see the [Beginner Guide](beginner_guide/index.md).
 
-```bash
-conda install -c pytorch -c conda-forge kelp-o-matic
-```
+    ```bash
+    conda install -c pytorch -c conda-forge kelp-o-matic
+    ```
+    
+    ### Update
+    
+    ```bash
+    conda update -c pytorch -c conda-forge kelp-o-matic
+    ```
 
-### Update
+=== "PIP"
+    
+    ### Install
 
-You can update the package when new versions become available with:
+    ??? warning "We suggest using Conda to install Kelp-O-Matic"
+        It is highly recommended to install the library with Conda, not with PIP.
 
-```bash
-conda update -c pytorch -c conda-forge kelp-o-matic
-```
-
-## With PIP
-
-!!! warning
-    It is highly recommended to install the library with Conda, not with PIP.
-
-You can install `kelp-o-matic` with PIP. Automatic hardware acceleration is only supported with the Conda install.
-
-### Install
-
-```bash
-pip install kelp-o-matic
-```
-
-### Update
-
-```bash
-pip install --upgrade kelp-o-matic
-```
+        Automatic hardware acceleration is only supported with the Conda installation.
+ 
+    ```bash
+    pip install kelp-o-matic
+    ```
+    
+    ### Update
+    
+    ```bash
+    pip install --upgrade kelp-o-matic
+    ```
