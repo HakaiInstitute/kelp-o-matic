@@ -42,9 +42,9 @@ the [CLI](cli.md) or [Python API](python_lib.md).
 
 ## Contribute
 
-If you find an issue while using Kelp-O-Matic, please file a bug report using the following link:
-
-[Issue Tracker :material-github:](https://github.com/HakaiInstitute/kelp-o-matic/issues)
+Please file a bug report using our 
+[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/kelp-o-matic/issues) if 
+you encounter any problems.
 
 Comments and questions are also appreciated!
 
