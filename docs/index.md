@@ -55,9 +55,13 @@ the [MIT license](https://raw.githubusercontent.com/tayden/kelp-o-matic/main/LIC
 
 ## Contact
 
-[![Hakai](images/hakai_logo.png){ loading=lazy; width="300"; align=right }](https://hakai.org/)
-
 This project was co-created at the [Hakai Institute](https://hakai.org) by:
 
-- [**Taylor Denouden**](mailto:taylor.denouden@hakai.org) (Machine Learning + Software)
-- [**Luba Reshitnyk**](mailto:luba.reshitnyk@hakai.org) (Scientific Application + Data)
+- [**Taylor Denouden**](mailto:taylor.denouden@hakai.org) *(Machine Learning, Software Development)*
+- [**Luba Reshitnyk**](mailto:luba.reshitnyk@hakai.org) *(Scientific Application, Data Collation and Labelling)*
+
+[//]: # (<div style="margin-top: 50px; overflow: hidden; display: flex; justify-content:center; gap:10px;">)
+
+[//]: # (<img alt="Hakai" src="./images/hakai_logo.png" width="50%" />)
+
+[//]: # (</div>)
