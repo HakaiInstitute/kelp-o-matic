@@ -3,10 +3,10 @@ channels:
   - pytorch
   - conda-forge
 dependencies:
-  - python~=3.7,<3.10
-  - conda-forge::typer~=0.4.1
-  - conda-forge::numpy~=1.16
-  - conda-forge::rasterio~=1.2
-  - conda-forge::tqdm~=4.62
-  - pytorch::pytorch~=1.10
-  - pytorch::torchvision~=0.11
+  - python~=3.7,<3.11
+  - conda-forge::typer~=0.7.0
+  - conda-forge::numpy~=1.24.2
+  - conda-forge::rasterio~=1.3.6
+  - conda-forge::tqdm~=4.65.0
+  - pytorch::pytorch~=2.0.0
+  - pytorch::torchvision~=0.15.0
