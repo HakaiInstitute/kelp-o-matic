@@ -33,7 +33,7 @@ Give the new environment a name in the dialogue box that pops up, *e.g.* "KelpSe
 Select a Python version that begins with "3.9".
 
 !!! warning 
-    `kelp-o-matic` currently supports Python versions 3.7, 3.8, 3.9, and 3.10. 
+    `kelp-o-matic` currently supports Python versions 3.8, 3.9, 3.10, and 3.11. 
     Installation will not work for other versions.
 
 ***
