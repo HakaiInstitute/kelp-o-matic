@@ -25,24 +25,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Setup Conda
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniforge@v2
         with:
-          python-version: "3.9"
+          python-version: "3.11"
+          mamba-version: "*"
+          channels: pytorch,nvidia,conda-forge,defaults
+          channel-priority: true
           auto-update-conda: true
           activate-environment: my-env
 
       - name: Install build packages
-        run: conda install -y anaconda-client conda-build conda-verify
+        shell: bash -el {0}
+        run: mamba install -y anaconda-client conda-build conda-verify
 
       - name: Build package
+        shell: bash -el {0}
         run: |
           cd conda
-          conda build -c pytorch -c conda-forge --output-folder . .
+          mamba build --output-folder . .
 
       - name: Publish package
         if: inputs.should-upload
         env:
           ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+        shell: bash -el {0}
         run: |
           cd conda
           anaconda upload --label main noarch/*.tar.bz2
