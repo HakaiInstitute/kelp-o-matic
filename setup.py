@@ -15,12 +15,12 @@ package_data = {
 }
 
 install_requires = [
-    'typer~=0.4',
-    'numpy~=1.16',
-    'torch~=1.10',
-    'rasterio~=1.2',
-    'torchvision~=0.11',
-    'tqdm~=4.62'
+    'numpy~=1.24',
+    'rasterio~=1.3',
+    'torchvision~=0.15',
+    'torch~=2.0',
+    'tqdm~=4.65',
+    'typer~=0.7',
 ]
 
 entry_points = {
@@ -38,7 +38,7 @@ setup_kwargs = {
     'package_data': package_data,
     'install_requires': install_requires,
     'entry_points': entry_points,
-    'python_requires': '~=3.7,<3.11',
+    'python_requires': '~=3.8,<3.12',
 }
 
 setup(**setup_kwargs)
