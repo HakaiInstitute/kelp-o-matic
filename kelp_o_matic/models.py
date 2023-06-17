@@ -1,7 +1,7 @@
 import gc
+import importlib.resources as importlib_resources
 from abc import ABC, abstractmethod
 
-import importlib_resources
 import torch
 
 from kelp_o_matic.data import (
@@ -26,8 +26,8 @@ class _Model(ABC):
         raise NotImplementedError
 
     def load_model(self) -> "torch.nn.Module":
-        with importlib_resources.as_file(self.torchscript_path) as torchscript:
-            model = torch.jit.load(torchscript, map_location=self.device)
+        with importlib_resources.as_file(self.torchscript_path) as ts:
+            model = torch.jit.load(ts, map_location=self.device)
         model.eval()
         return model
 

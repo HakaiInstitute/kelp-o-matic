@@ -3,7 +3,7 @@ channels:
   - pytorch
   - conda-forge
 dependencies:
-  - python~=3.8,<3.12
+  - python~=3.8,<=3.11
   - conda-forge::typer~=0.7.0
   - conda-forge::numpy~=1.24.2
   - conda-forge::rasterio~=1.3.6
