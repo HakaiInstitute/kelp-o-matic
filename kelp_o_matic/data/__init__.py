@@ -1,5 +1,5 @@
 import importlib.resources as importlib_resources
-c
+
 _base = importlib_resources.files(__name__)
 
 lraspp_kelp_presence_torchscript_path = (
