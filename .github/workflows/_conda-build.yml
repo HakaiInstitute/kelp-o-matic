@@ -24,15 +24,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Setup Conda
+      - name: Setup Mambaforge
         uses: conda-incubator/setup-miniconda@v2
         with:
           python-version: "3.10"
           mamba-version: "*"
-          channels: pytorch,nvidia,conda-forge,defaults
+          channels: conda-forge,defaults
           channel-priority: true
           auto-update-conda: true
           activate-environment: my-env
+          miniforge-variant: Mambaforge
+          use-mamba: true
 
       - name: Install build packages
         run: mamba install -y anaconda-client conda-build conda-verify
