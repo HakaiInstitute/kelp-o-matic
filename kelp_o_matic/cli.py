@@ -16,7 +16,7 @@ def find_kelp(
     ),
     crop_size: int = typer.Option(
         512,
-        help="The size for the cropped image squares run through the segmentation model.",
+        help="The data window size to run through the segmentation model.",
     ),
     padding: int = typer.Option(
         256, help="The number of context pixels added to each side of the image crops."
@@ -28,7 +28,10 @@ def find_kelp(
         True, "--gpu/--no-gpu", help="Enable or disable GPU, if available."
     ),
 ):
-    """Detect kelp in image at path SOURCE and output the resulting classification raster to file at path DEST."""
+    """
+    Detect kelp in image at path SOURCE and output the resulting classification raster
+    to file at path DEST.
+    """
     lib.find_kelp(
         source=source,
         dest=dest,
@@ -46,7 +49,7 @@ def find_mussels(
     dest: str = typer.Argument(..., help="File path location to save output to."),
     crop_size: int = typer.Option(
         512,
-        help="The size for the cropped image squares run through the segmentation model.",
+        help="The data window size to run through the segmentation model.",
     ),
     padding: int = typer.Option(
         256, help="The number of context pixels added to each side of the image crops."
@@ -58,7 +61,10 @@ def find_mussels(
         True, "--gpu/--no-gpu", help="Enable or disable GPU, if available."
     ),
 ):
-    """Detect mussels in image at path SOURCE and output the resulting classification raster to file at path DEST."""
+    """
+    Detect mussels in image at path SOURCE and output the resulting classification
+    raster to file at path DEST.
+    """
     lib.find_mussels(
         source=source,
         dest=dest,

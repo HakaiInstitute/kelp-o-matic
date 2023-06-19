@@ -30,7 +30,7 @@ class GeotiffWriter:
             profile: Profile to pass to rasterio with crs and geo-transform information.
             crop_size: The size of each section being written.
             padding: Padding data to remove from each write data section.
-            **kwargs: All other kwargs are passed to the geotiff profile, to override params.
+            **kwargs: All other kwargs are passed to the geotiff rasterio profile.
         """
         super().__init__()
         self.img_path = img_path
@@ -54,12 +54,14 @@ class GeotiffWriter:
         cls, img_path: Union[str, "Path"], reader: "GeotiffReader", **kwargs
     ):
         """Create a CropDatasetWriter using a CropDatasetReader instance.
-            Defines the geo-referencing, cropping, and size parameters using an existing raster image.
+            Defines the geo-referencing, cropping, and size parameters using an
+            existing raster image.
 
         Args:
             img_path: Path to the file you want to create.
-            reader: An instance of a CropDatasetReader from which to copy geo-referencing parameters.
-            **kwargs: All other kwargs are passed to the geotiff profile, to override params.
+            reader: An instance of a CropDatasetReader from which to copy
+                geo-referencing parameters.
+            **kwargs: All other kwargs are passed to the geotiff rasterio profile.
 
         Returns:
             CropDatasetWriter
