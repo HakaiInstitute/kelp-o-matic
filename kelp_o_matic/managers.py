@@ -28,11 +28,14 @@ class GeotiffSegmentation:
         """Create the segmentation object.
 
         Args:
-            model: A callable module that accepts a batch of torch.Tensor data and returns classifications.
+            model: A callable module that accepts a batch of torch.Tensor data and
+                returns classifications.
             input_path: The path to the input geotiff image.
             output_path: The destination file path for the output segmentation data.
-            crop_size: The size of image crop to classify iteratively until the entire image is classified.
-            padding: The number of context pixels to add to each side of an image crop to improve outputs.
+            crop_size: The size of image crop to classify iteratively until the entire
+                image is classified.
+            padding: The number of context pixels to add to each side of an image crop
+                to improve outputs.
             batch_size: The number of crops to classify at a time using the model.
         """
         self.model = model
@@ -108,7 +111,7 @@ class GeotiffSegmentation:
     def _no_data_check(self):
         if self.reader.nodata is None:
             warnings.warn(
-                "Define the correct nodata value on the input raster to speed up processing.",
+                "Define a nodata value on the input raster to speed up processing.",
                 UserWarning,
             )
 
@@ -116,14 +119,16 @@ class GeotiffSegmentation:
         dtype = self.reader.profile["dtype"]
         if dtype != "uint8":
             raise AssertionError(
-                f"Input image has incorrect data type {dtype}. Only uint8 (aka Byte) images are supported."
+                f"Input image has incorrect data type {dtype}. "
+                f"Only uint8 (aka Byte) images are supported."
             )
 
     def _band_count_check(self):
         if self.reader.count < 3:
             raise AssertionError(
                 "Input image has less than 3 bands. "
-                "The image should have at least 3 bands, with the first three being in RGB order."
+                "The image should have at least 3 bands, with the first three in RGB "
+                "order."
             )
 
     def _block_tiles_check(self):
@@ -137,15 +142,17 @@ class GeotiffSegmentation:
         y_shape, x_shape = self.reader.block_shapes[0]
         if y_shape == 1:
             warnings.warn(
-                f"The input image is not a tiled tif. Processing will be significantly faster for tiled images.",
+                "The input image is not a tiled tif. Processing will be significantly "
+                "faster for tiled images.",
                 UserWarning,
             )
         elif crop_shape % y_shape != 0 or crop_shape % x_shape != 0:
             warnings.warn(
-                "Suboptimal crop_size and padding were specified. Performance will be degraded. "
-                f"The detected block shape for this band is ({y_shape}, {x_shape}). "
-                f"Faster performance may be achieved by setting the crop_size and the padding such"
-                f"that (crop_size + 2*padding) is a multiple of {y_shape}.",
+                "Suboptimal crop_size and padding were specified. Performance will be "
+                "degraded. The detected block shape for this band is "
+                f"({y_shape}, {x_shape}). Faster performance may be achieved by "
+                "setting the crop_size and the padding such that "
+                f"(crop_size + 2*padding) is a multiple of {y_shape}.",
                 UserWarning,
             )
 
@@ -163,14 +170,17 @@ class GeotiffSegmentation:
         self.progress = tqdm(total=len(self.reader), desc="Processing")
 
     def on_end(self):
-        """Hook that runs after image processing. By default, tears down the tqdm progress bar."""
+        """
+        Hook that runs after image processing.
+        By default, tears down the tqdm progress bar.
+        """
         self.progress.update(len(self.reader) - self.progress.n)
         self.progress.close()
         self.progress = None
 
     def on_batch_start(self, batch_idx: int):
         """
-        Hook that runs for each batch of data, immediately before classification by the model.
+        Hook that runs for each batch of data, immediately before classification.
 
         Args:
             batch_idx: The batch index being processed.
@@ -179,7 +189,7 @@ class GeotiffSegmentation:
 
     def on_batch_end(self, batch_idx: int):
         """
-        Hook that runs for each batch of data, immediately after classification by the model.
+        Hook that runs for each batch of data, immediately after classification.
 
         Args:
             batch_idx: The batch index being processed.
@@ -188,7 +198,7 @@ class GeotiffSegmentation:
 
     def on_chip_write_end(self, index: int):
         """
-        Hook that runs for each crop of data, immediately after classification by the model.
+        Hook that runs for each crop of data, immediately after classification.
         By default, increments a tqdm progress bar.
 
         Args:

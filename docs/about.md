@@ -49,7 +49,7 @@ at [:material-github: hakai-ml-dataprep](https://github.com/tayden/hakai-ml-data
 flowchart TD
     subgraph Data Preparation
     subgraph Labelling
-    A[/"UAV Orthomosaic (RGB)"/] --> B[Manual kelp classification] 
+    A[/"UAV Orthomosaic (RGB)"/] --> B[Manual kelp classification]
     B --> C[/"Presence/Absence Dataset\n(not kelp = 0, kelp = 1)"/]
     B --> D[/"Species Dataset\n(not kelp = 0, Macrocystis = 2,\n Nereocystis = 3)"/]
     end
@@ -59,12 +59,12 @@ flowchart TD
     end
     C & D--> Filtering
     subgraph PADataset [P/A Dataset]
-    G[("Training ~80%")] 
+    G[("Training ~80%")]
     H[("Validation ~10%")]
     I[("Testing ~10%")]
     end
     subgraph SpeciesDataset [Species Dataset]
-    G1[("Training ~80%")] 
+    G1[("Training ~80%")]
     H1[("Validation ~10%")]
     I1[("Testing ~10%")]
     end
@@ -81,7 +81,7 @@ flowchart TD
 | Train      |     20 | 829404 | 216770596954 |    3738528864 |     11680.54 |       0.1040 |       0.0230 |         0.0487 |            0.0253 |
 | Validation |      4 |  31610 |   8220459464 |     295310084 |       253.79 |       0.0420 |       0.0230 |         0.0296 |            0.0085 |
 | Test       |      6 |  92608 |  24093604354 |     639694012 |       819.45 |       0.0680 |       0.0230 |         0.0385 |            0.0161 |
-| *Sum*      |     30 | 953622 | 249084660772 |    4673532960 |    12,753.78 | 
+| *Sum*      |     30 | 953622 | 249084660772 |    4673532960 |    12,753.78 |
 
 **Kelp (species)**
 
@@ -146,7 +146,7 @@ flowchart TD
     W -->|Yes| X["Finished training,\nsave CNN model"]
     subgraph Testing
     I3[("Testing")] -.-> Y["Calculate model performance on all batches"]
-    Y --> Z("Save model performance metrics") 
+    Y --> Z("Save model performance metrics")
     end
     X --> Testing
     Testing --> End([End])

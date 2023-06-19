@@ -37,9 +37,9 @@ instance of ArcMap (version 10.8). These same steps can be done using other GIS 
 ??? tip "Tip: ArcMap Keyboard Shortcuts"
 
     Keyboard shortcuts can make the editing process much faster. To enable some, go to `Customize > Customize Mode > Keyboard…`.
-    
+
     Some useful shortcuts include:
-        
+
     1. Edit tool (set to ++ctrl+e++)
         1. This lets you toggle to the editor tool.
     2. Delete (set to ++ctrl+d++)

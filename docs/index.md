@@ -42,8 +42,8 @@ the [CLI](cli.md) or [Python API](python_lib.md).
 
 ## Contribute
 
-Please file a bug report using our 
-[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/kelp-o-matic/issues) if 
+Please file a bug report using our
+[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/kelp-o-matic/issues) if
 you encounter any problems.
 
 Comments and questions are also appreciated!
