@@ -1,33 +1,30 @@
-{% set data = load_setup_py_data(setup_file='../setup.py', from_recipe_dir=True) %}
-{% set name = data.get('name') %}
-{% set version = data.get('version') %}
-
 package:
-  name: "{{ name|lower }}"
-  version: "{{ version }}"
+  name: kelp_o_matic
+  version: {{ environ.get('GIT_DESCRIBE_TAG', '0.0.0') }}
 
 source:
-  path: ../
+  git_url: ../
 
 build:
   noarch: python
   number: 0
   entry_points:
     - kom = kelp_o_matic.cli:cli
-  script: "{{ PYTHON }} -m pip install . -vv"
+  script: {{ PYTHON }} -m pip install . -vv
 
 requirements:
   host:
-    - python ~=3.8,<=3.11
+    - python ~=3.9,<4.0
+    - poetry-core
     - pip
   run:
-    - python ~=3.7,<3.11
-    - numpy ~=1.24
-    - pytorch ~=2.0
-    - rasterio ~=1.3
-    - torchvision ~=0.15
-    - tqdm ~=4.65
-    - typer ~=0.7
+    - python ~=3.9,<4.0
+    - numpy ~=1.24.2
+    - pytorch ~=2.0.0, !=2.0.1
+    - rasterio ~=1.3.7
+    - torchvision ~=0.15.0
+    - tqdm ~=4.65.0
+    - typer ~=0.9.0
   run_constrained:
     - pytorch-cuda ~= 11.7
 
@@ -37,7 +34,10 @@ test:
     - kelp_o_matic.data
     - kelp_o_matic.geotiff_io
   commands:
+    - pip check
     - kom --help
+  requires:
+    - pip
 
 about:
   home: "https://github.com/hakaiInstitute/kelp-o-matic"

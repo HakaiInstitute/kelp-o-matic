@@ -58,7 +58,7 @@ Options:
     Try starting with a crop_size around 3200 pixels and reduce it if your computer is unable to load that much data at once and the application crashes.
 
     We hope to improve Kelp-O-Matic in the future such that the maximum crop size for your computer can be determined automatically.
-    
+
     CLI Example:
 
     ```bash

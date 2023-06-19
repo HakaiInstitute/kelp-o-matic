@@ -27,12 +27,14 @@ class GeotiffReader(IterableDataset):
 
         Args:
             img_path: The path to the image file to make the dataset from.
-            crop_size: The desired edge length for each cropped section. Returned images will be square.
-            padding: The amount of padding to add around each crop section from the adjacent image areas.
-                Defaults to 0.
-            fill_value: The value to fill in border regions of nodata areas of the image.
-                Defaults to image nodata value.
-            transform: Optional Pytorch style data transform to apply to each cropped section.
+            crop_size: The desired edge length for each cropped section.
+                Returned images will be square.
+            padding: The amount of padding to add around each crop section from adjacent
+                image areas. Defaults to 0.
+            fill_value: The value to fill in border regions of nodata areas of the
+                image. Defaults to image nodata value.
+            transform: Optional Pytorch style data transform to apply to each cropped
+                section.
             filter_: Optional function to filter a chip out from the iterator.
                 Must have signature `(img: np.array) -> bool`
         """

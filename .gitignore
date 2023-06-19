@@ -271,3 +271,5 @@ conda/linux-64/
 conda/channeldata.json
 
 conda/index.html
+
+.idea/
