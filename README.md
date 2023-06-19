@@ -1,5 +1,5 @@
 <div align="center" style="overflow: hidden; display: flex; justify-content:center; gap:10px;">
-<a href="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/unit-test.yml">
+<a href="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/test.yml">
     <img alt="🧪 Tests" src="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/test.yml/badge.svg" height="20px" />
 </a>
 
