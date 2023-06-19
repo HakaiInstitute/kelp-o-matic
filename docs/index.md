@@ -4,7 +4,7 @@
 
 <div style="overflow: hidden; display: flex; justify-content:flex-start; gap:10px;">
     <a href="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/unit-test.yml">
-        <img alt="🧪 Unit Tests" src="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/unit-test.yml/badge.svg" height="20px" />
+        <img alt="🧪 Test" src="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/test.yml/badge.svg" height="20px" />
     </a>
 
     <a href="https://github.com/HakaiInstitute/kelp-o-matic/blob/main/LICENSE.txt">
