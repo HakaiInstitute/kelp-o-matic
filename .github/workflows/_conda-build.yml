@@ -27,7 +27,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ github.event.inputs.os }}
+    runs-on: ${{ inputs.os }}
     defaults:
       run:
         shell: bash -el {0}
@@ -37,7 +37,7 @@ jobs:
       - name: Setup Mambaforge
         uses: conda-incubator/setup-miniconda@v2
         with:
-          python-version: ${{ github.event.inputs.python-version }}
+          python-version: ${{ inputs.python-version }}
           mamba-version: "*"
           channels: conda-forge,defaults
           channel-priority: true
