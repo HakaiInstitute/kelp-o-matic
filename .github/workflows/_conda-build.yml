@@ -11,13 +11,23 @@ on:
         required: false
         default: false
         description: Flag to upload to Anaconda
+      python-version:
+        type: string
+        required: false
+        default: "3.10"
+        description: Python version to use
+      os:
+        type: string
+        required: false
+        default: "ubuntu-latest"
+        description: System to use
     secrets:
       ANACONDA_TOKEN:
         required: true
 
 jobs:
   build:
-    runs-on: "ubuntu-latest"
+    runs-on: ${{ github.event.inputs.os }}
     defaults:
       run:
         shell: bash -el {0}
@@ -27,7 +37,7 @@ jobs:
       - name: Setup Mambaforge
         uses: conda-incubator/setup-miniconda@v2
         with:
-          python-version: "3.10"
+          python-version: ${{ github.event.inputs.python-version }}
           mamba-version: "*"
           channels: conda-forge,defaults
           channel-priority: true

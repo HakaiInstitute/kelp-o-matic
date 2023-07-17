@@ -3,6 +3,8 @@ name: '🔨 Test Build'
 on:
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -10,6 +12,14 @@ concurrency:
 
 jobs:
   build:
+    strategy:
+      matrix:
+          python-version: ["3.9", "3.10", "3.11"]
+          os: ["ubuntu-latest", "windows-latest"]
     uses: ./.github/workflows/_conda-build.yml
+    with:
+      should-upload: false
+      python-version: ${{ matrix.python-version }}
+      os: ${{ matrix.os }}
     secrets:
       ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
