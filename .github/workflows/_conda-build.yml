@@ -34,6 +34,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Get tag
+        id: tag
+        run: |
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Update version
+        run: |
+          sed -i "s/0.0.0/${{ env.tag }}/g" kelp_o_matic/__init__.py
+
       - name: Setup Mambaforge
         uses: conda-incubator/setup-miniconda@v2
         with:
