@@ -19,19 +19,19 @@ that you're using the most up-to-date version of `kelp-o-matic`.
     ??? help "Installing in Anaconda Navigator"
 
         1. Use the Anaconda Navigator GUI and create a new environment.
-        2. Add the `pytorch` and `conda-forge` channels.
+        2. Add the `pytorch`, `nvidia`, and `conda-forge` channels.
         3. Search for and install the `kelp-o-matic` package in your environment.
 
         If you need more help, please see the [Beginner Guide](beginner_guide/index.md).
 
     ```bash
-    conda install -c pytorch -c conda-forge kelp-o-matic
+    conda install -c pytorch -c nvidia -c conda-forge kelp-o-matic
     ```
 
     ### Update
 
     ```bash
-    conda update -c pytorch -c conda-forge kelp-o-matic
+    conda update -c pytorch -c nvidia -c conda-forge kelp-o-matic
     ```
 
 === "PIP"
