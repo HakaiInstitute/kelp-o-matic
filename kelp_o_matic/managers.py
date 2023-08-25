@@ -12,7 +12,7 @@ from kelp_o_matic.models import _Model
 from kelp_o_matic.utils import all_same
 
 
-class GeotiffSegmentation:
+class GeotiffSegmentationManager:
     """Class for configuring data io and efficient segmentation of Geotiff imagery."""
 
     def __init__(
