@@ -1,6 +1,6 @@
 import typer
 
-from kelp_o_matic import lib
+from kelp_o_matic import lib, __version__
 
 cli = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]})
 
@@ -73,6 +73,21 @@ def find_mussels(
         batch_size=batch_size,
         use_gpu=use_gpu,
     )
+
+
+def version_callback(value: bool) -> None:
+    if value:
+        typer.echo(f"Kelp-O-Matic {__version__}")
+        raise typer.Exit()
+
+
+@cli.callback()
+def main(
+    version: bool = typer.Option(
+        None, "--version", "-v", callback=version_callback, is_eager=True
+    ),
+):
+    return
 
 
 if __name__ == "__main__":
