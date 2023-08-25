@@ -1,8 +1,42 @@
 import typer
+from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn
+from rich import print
 
-from kelp_o_matic import lib, __version__
+from kelp_o_matic import GeotiffSegmentationManager, __version__
+from kelp_o_matic.models import (
+    KelpPresenceSegmentationModel,
+    KelpSpeciesSegmentationModel,
+    MusselPresenceSegmentationModel,
+)
 
 cli = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]})
+
+
+class _CLISegmentationManager(GeotiffSegmentationManager):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.progress = Progress(
+            SpinnerColumn("earth"), *Progress.get_default_columns(), TimeElapsedColumn()
+        )
+        self.processing_task = self.progress.add_task(
+            description="Processing", total=len(self.reader)
+        )
+
+    def __call__(self):
+        with self.progress:
+            super().__call__()
+
+    def on_start(self):
+        device_emoji = ":rocket:" if self.model.device.type == "cuda" else ":snail:"
+        print(f"Running with [magenta]{self.model.device} {device_emoji}")
+
+    def on_chip_write_end(self, index: int):
+        self.progress.update(self.processing_task, completed=index)
+
+    def on_end(self):
+        self.progress.update(self.processing_task, completed=len(self.reader))
+        print("[bold italic green]:tada: Segmentation complete! :tada:[/]")
 
 
 @cli.command()
@@ -32,15 +66,15 @@ def find_kelp(
     Detect kelp in image at path SOURCE and output the resulting classification raster
     to file at path DEST.
     """
-    lib.find_kelp(
-        source=source,
-        dest=dest,
-        species=species,
-        crop_size=crop_size,
-        padding=padding,
-        batch_size=batch_size,
-        use_gpu=use_gpu,
+    model = (
+        KelpSpeciesSegmentationModel(use_gpu=use_gpu)
+        if species
+        else KelpPresenceSegmentationModel(use_gpu=use_gpu)
     )
+    manager = _CLISegmentationManager(
+        model, source, dest, crop_size=crop_size, padding=padding, batch_size=batch_size
+    )
+    manager()
 
 
 @cli.command()
@@ -65,14 +99,11 @@ def find_mussels(
     Detect mussels in image at path SOURCE and output the resulting classification
     raster to file at path DEST.
     """
-    lib.find_mussels(
-        source=source,
-        dest=dest,
-        crop_size=crop_size,
-        padding=padding,
-        batch_size=batch_size,
-        use_gpu=use_gpu,
+    model = MusselPresenceSegmentationModel(use_gpu=use_gpu)
+    manager = _CLISegmentationManager(
+        model, source, dest, crop_size=crop_size, padding=padding, batch_size=batch_size
     )
+    manager()
 
 
 def version_callback(value: bool) -> None:
