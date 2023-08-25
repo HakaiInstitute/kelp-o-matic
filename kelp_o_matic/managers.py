@@ -1,10 +1,9 @@
+import warnings
 from pathlib import Path
 from typing import Union
 
 import numpy as np
 import rasterio
-from rich import print
-from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
@@ -72,13 +71,6 @@ class GeotiffSegmentation:
             nodata=0,
         )
 
-        self.progress = Progress(
-            SpinnerColumn(), *Progress.get_default_columns(), TimeElapsedColumn()
-        )
-        self.processing_task = self.progress.add_task(
-            description="Processing", total=len(self.reader)
-        )
-
     @staticmethod
     def _should_keep(img: "np.ndarray") -> bool:
         """Determines if an image crop should be classified or discarded.
@@ -94,31 +86,31 @@ class GeotiffSegmentation:
 
     def __call__(self):
         """Run the segmentation task."""
-        with self.progress:
-            self.on_start()
+        self.on_start()
+        self._run_checks()
 
-            with rasterio.Env():
-                for batch_idx, batch in enumerate(self._dataloader):
-                    self.on_batch_start(batch_idx)
+        with rasterio.Env():
+            for batch_idx, batch in enumerate(self._dataloader):
+                self.on_batch_start(batch_idx)
 
-                    crops, indices = batch
-                    labels = self.model(crops).detach().cpu().numpy()
+                crops, indices = batch
+                labels = self.model(crops).detach().cpu().numpy()
 
-                    # Write outputs
-                    for label, idx in zip(labels, indices):
-                        self.writer.write_index(label, int(idx))
-                        self.on_chip_write_end(int(idx))
+                # Write outputs
+                for label, idx in zip(labels, indices):
+                    self.writer.write_index(label, int(idx))
+                    self.on_chip_write_end(int(idx))
 
-                    del crops, indices, labels, batch
+                del crops, indices, labels, batch
 
-                    self.on_batch_end(batch_idx)
-            self.on_end()
+                self.on_batch_end(batch_idx)
+        self.on_end()
 
     def _no_data_check(self):
         if self.reader.nodata is None:
-            print(
-                "[italic yellow]:warning: Define a nodata value on the input raster to "
-                "speed up processing.[/]"
+            warnings.warn(
+                "Define a nodata value on the input raster to speed up processing.",
+                UserWarning,
             )
 
     def _byte_type_check(self):
@@ -139,44 +131,40 @@ class GeotiffSegmentation:
 
     def _block_tiles_check(self):
         if not all_same(self.reader.block_shapes):
-            print(
-                "[bold italic red]:skull: Input image bands have different sized "
-                "blocks."
-            )
+            warnings.warn("Input image bands have different sized blocks.", UserWarning)
 
         crop_shape = self.reader.crop_size + 2 * self.reader.padding
         y_shape, x_shape = self.reader.block_shapes[0]
         if y_shape == 1:
-            print(
-                "[bold italic red]:skull: The input image is not a tiled tif. "
-                "Processing will be significantly faster for tiled images.[/]"
+            warnings.warn(
+                "The input image is not a tiled tif. Processing will be "
+                "significantly faster for tiled images.",
+                UserWarning,
             )
         elif crop_shape % y_shape != 0 or crop_shape % x_shape != 0:
-            print(
-                "[italic yellow]:warning: Suboptimal crop_size and padding were "
-                "specified. Performance will be degraded. The detected block shape for "
-                "this band is [bold cyan]({y_shape}, {x_shape})[/bold cyan]. Faster "
-                "performance may be achieved by setting the crop_size and the padding "
-                "such that [green](crop_size + 2*padding)[/green] is a multiple of "
-                "[cyan]{y_shape}[/cyan].[/]"
+            warnings.warn(
+                "Suboptimal crop_size and padding were specified. Performance "
+                "will be degraded. The detected block shape for this band is "
+                "({y_shape}, {x_shape}). Faster performance may be achieved by setting "
+                "the crop_size and the padding such that (crop_size + 2*padding) is a "
+                "multiple of {y_shape}.",
+                UserWarning,
             )
 
-    def on_start(self):
-        """Hook that runs before image processing.
-
-        By default, runs image checks and sets up a tqdm progress bar.
-        """
+    def _run_checks(self):
+        """Run image checks."""
         self._no_data_check()
         self._byte_type_check()
         self._band_count_check()
         self._block_tiles_check()
 
+    def on_start(self):
+        """Hook that runs before image processing."""
+        pass
+
     def on_end(self):
-        """
-        Hook that runs after image processing.
-        """
-        self.progress.update(self.processing_task, completed=len(self.reader))
-        print("[bold italic green]:tada: Segmentation complete! :tada:[/]")
+        """Hook that runs after image processing."""
+        pass
 
     def on_batch_start(self, batch_idx: int):
         """
@@ -199,9 +187,8 @@ class GeotiffSegmentation:
     def on_chip_write_end(self, index: int):
         """
         Hook that runs for each crop of data, immediately after classification.
-        By default, increments a tqdm progress bar.
 
         Args:
             index: The index of the image crop that was processed.
         """
-        self.progress.update(self.processing_task, completed=index)
+        pass
