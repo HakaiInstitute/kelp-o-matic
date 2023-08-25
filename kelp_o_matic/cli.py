@@ -1,8 +1,7 @@
 import typer
-from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn
-from rich import print
 
-from kelp_o_matic import GeotiffSegmentationManager, __version__
+from kelp_o_matic import __version__
+from kelp_o_matic.managers import RichSegmentationManager
 from kelp_o_matic.models import (
     KelpPresenceSegmentationModel,
     KelpSpeciesSegmentationModel,
@@ -10,33 +9,6 @@ from kelp_o_matic.models import (
 )
 
 cli = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]})
-
-
-class _CLISegmentationManager(GeotiffSegmentationManager):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.progress = Progress(
-            SpinnerColumn("earth"), *Progress.get_default_columns(), TimeElapsedColumn()
-        )
-        self.processing_task = self.progress.add_task(
-            description="Processing", total=len(self.reader)
-        )
-
-    def __call__(self):
-        with self.progress:
-            super().__call__()
-
-    def on_start(self):
-        device_emoji = ":rocket:" if self.model.device.type == "cuda" else ":snail:"
-        print(f"Running with [magenta]{self.model.device} {device_emoji}")
-
-    def on_chip_write_end(self, index: int):
-        self.progress.update(self.processing_task, completed=index)
-
-    def on_end(self):
-        self.progress.update(self.processing_task, completed=len(self.reader))
-        print("[bold italic green]:tada: Segmentation complete! :tada:[/]")
 
 
 @cli.command()
@@ -71,7 +43,7 @@ def find_kelp(
         if species
         else KelpPresenceSegmentationModel(use_gpu=use_gpu)
     )
-    manager = _CLISegmentationManager(
+    manager = RichSegmentationManager(
         model, source, dest, crop_size=crop_size, padding=padding, batch_size=batch_size
     )
     manager()
@@ -100,7 +72,7 @@ def find_mussels(
     raster to file at path DEST.
     """
     model = MusselPresenceSegmentationModel(use_gpu=use_gpu)
-    manager = _CLISegmentationManager(
+    manager = RichSegmentationManager(
         model, source, dest, crop_size=crop_size, padding=padding, batch_size=batch_size
     )
     manager()

@@ -4,6 +4,8 @@ from typing import Union
 
 import numpy as np
 import rasterio
+from rich import print
+from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
@@ -192,3 +194,32 @@ class GeotiffSegmentationManager:
             index: The index of the image crop that was processed.
         """
         pass
+
+
+class RichSegmentationManager(GeotiffSegmentationManager):
+    """Run the segmentation with Rich progress bars and logging."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.progress = Progress(
+            SpinnerColumn("earth"), *Progress.get_default_columns(), TimeElapsedColumn()
+        )
+        self.processing_task = self.progress.add_task(
+            description="Processing", total=len(self.reader)
+        )
+
+    def __call__(self):
+        with self.progress:
+            super().__call__()
+
+    def on_start(self):
+        device_emoji = ":rocket:" if self.model.device.type == "cuda" else ":snail:"
+        print(f"Running with [magenta]{self.model.device} {device_emoji}")
+
+    def on_chip_write_end(self, index: int):
+        self.progress.update(self.processing_task, completed=index)
+
+    def on_end(self):
+        self.progress.update(self.processing_task, completed=len(self.reader))
+        print("[bold italic green]:tada: Segmentation complete! :tada:[/]")

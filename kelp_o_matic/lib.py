@@ -1,4 +1,4 @@
-from kelp_o_matic.managers import GeotiffSegmentationManager
+from kelp_o_matic.managers import RichSegmentationManager
 from kelp_o_matic.models import (
     KelpPresenceSegmentationModel,
     KelpSpeciesSegmentationModel,
@@ -32,7 +32,7 @@ def find_kelp(
         model = KelpSpeciesSegmentationModel(use_gpu=use_gpu)
     else:
         model = KelpPresenceSegmentationModel(use_gpu=use_gpu)
-    GeotiffSegmentationManager(
+    RichSegmentationManager(
         model, source, dest, crop_size=crop_size, padding=padding, batch_size=batch_size
     )()
 
@@ -58,6 +58,6 @@ def find_mussels(
         use_gpu: Disable Cuda GPU usage and run on CPU only.
     """
     model = MusselPresenceSegmentationModel(use_gpu=use_gpu)
-    GeotiffSegmentationManager(
+    RichSegmentationManager(
         model, source, dest, crop_size=crop_size, padding=padding, batch_size=batch_size
     )()
