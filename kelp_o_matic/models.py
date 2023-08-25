@@ -3,6 +3,7 @@ import importlib.resources as importlib_resources
 from abc import ABC, abstractmethod
 
 import torch
+from rich import print
 
 from kelp_o_matic.data import (
     lraspp_kelp_presence_torchscript_path,
@@ -13,12 +14,14 @@ from kelp_o_matic.data import (
 
 class _Model(ABC):
     def __init__(self, use_gpu: bool = True):
-        self.device = (
-            torch.device("cuda")
-            if torch.cuda.is_available() and use_gpu
-            else torch.device("cpu")
-        )
+        is_cuda = torch.cuda.is_available() and use_gpu
+        self.device = torch.device("cuda") if is_cuda else torch.device("cpu")
         self.model = self.load_model()
+        print(
+            f"{':rocket:' if is_cuda else ':snail:'}"
+            f" Running with [magenta]{self.device} "
+            f"{':rocket:' if is_cuda else ':snail:'}"
+        )
 
     @property
     @abstractmethod
