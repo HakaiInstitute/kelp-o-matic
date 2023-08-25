@@ -2,7 +2,7 @@ import typer
 
 from kelp_o_matic import lib, __version__
 
-cli = typer.Typer()
+cli = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]})
 
 
 @cli.command()
