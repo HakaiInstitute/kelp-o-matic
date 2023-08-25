@@ -13,11 +13,8 @@ from kelp_o_matic.data import (
 
 class _Model(ABC):
     def __init__(self, use_gpu: bool = True):
-        self.device = (
-            torch.device("cuda")
-            if torch.cuda.is_available() and use_gpu
-            else torch.device("cpu")
-        )
+        is_cuda = torch.cuda.is_available() and use_gpu
+        self.device = torch.device("cuda") if is_cuda else torch.device("cpu")
         self.model = self.load_model()
 
     @property

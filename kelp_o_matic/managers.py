@@ -4,16 +4,17 @@ from typing import Union
 
 import numpy as np
 import rasterio
+from rich import print
+from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from tqdm.auto import tqdm
 
 from kelp_o_matic.geotiff_io import GeotiffReader, GeotiffWriter
 from kelp_o_matic.models import _Model
 from kelp_o_matic.utils import all_same
 
 
-class GeotiffSegmentation:
+class GeotiffSegmentationManager:
     """Class for configuring data io and efficient segmentation of Geotiff imagery."""
 
     def __init__(
@@ -72,8 +73,6 @@ class GeotiffSegmentation:
             nodata=0,
         )
 
-        self.progress = None
-
     @staticmethod
     def _should_keep(img: "np.ndarray") -> bool:
         """Determines if an image crop should be classified or discarded.
@@ -85,11 +84,12 @@ class GeotiffSegmentation:
              Flag to indicate if crop should be discarded.
         """
         _img = np.clip(img, 0, 255)
-        return np.any(_img % 255)
+        return bool(np.any(_img % 255))
 
     def __call__(self):
         """Run the segmentation task."""
         self.on_start()
+        self._run_checks()
 
         with rasterio.Env():
             for batch_idx, batch in enumerate(self._dataloader):
@@ -133,50 +133,40 @@ class GeotiffSegmentation:
 
     def _block_tiles_check(self):
         if not all_same(self.reader.block_shapes):
-            warnings.warn(
-                "Input image bands have different sized blocks.",
-                UserWarning,
-            )
+            warnings.warn("Input image bands have different sized blocks.", UserWarning)
 
         crop_shape = self.reader.crop_size + 2 * self.reader.padding
         y_shape, x_shape = self.reader.block_shapes[0]
         if y_shape == 1:
             warnings.warn(
-                "The input image is not a tiled tif. Processing will be significantly "
-                "faster for tiled images.",
+                "The input image is not a tiled tif. Processing will be "
+                "significantly faster for tiled images.",
                 UserWarning,
             )
         elif crop_shape % y_shape != 0 or crop_shape % x_shape != 0:
             warnings.warn(
-                "Suboptimal crop_size and padding were specified. Performance will be "
-                "degraded. The detected block shape for this band is "
-                f"({y_shape}, {x_shape}). Faster performance may be achieved by "
-                "setting the crop_size and the padding such that "
-                f"(crop_size + 2*padding) is a multiple of {y_shape}.",
+                "Suboptimal crop_size and padding were specified. Performance "
+                "will be degraded. The detected block shape for this band is "
+                "({y_shape}, {x_shape}). Faster performance may be achieved by setting "
+                "the crop_size and the padding such that (crop_size + 2*padding) is a "
+                "multiple of {y_shape}.",
                 UserWarning,
             )
 
-    def on_start(self):
-        """Hook that runs before image processing.
-
-        By default, runs image checks and sets up a tqdm progress bar.
-        """
+    def _run_checks(self):
+        """Run image checks."""
         self._no_data_check()
         self._byte_type_check()
         self._band_count_check()
         self._block_tiles_check()
 
-        # Setup progress bar
-        self.progress = tqdm(total=len(self.reader), desc="Processing")
+    def on_start(self):
+        """Hook that runs before image processing."""
+        pass
 
     def on_end(self):
-        """
-        Hook that runs after image processing.
-        By default, tears down the tqdm progress bar.
-        """
-        self.progress.update(len(self.reader) - self.progress.n)
-        self.progress.close()
-        self.progress = None
+        """Hook that runs after image processing."""
+        pass
 
     def on_batch_start(self, batch_idx: int):
         """
@@ -199,9 +189,37 @@ class GeotiffSegmentation:
     def on_chip_write_end(self, index: int):
         """
         Hook that runs for each crop of data, immediately after classification.
-        By default, increments a tqdm progress bar.
 
         Args:
             index: The index of the image crop that was processed.
         """
-        self.progress.update(index + 1 - self.progress.n)
+        pass
+
+
+class RichSegmentationManager(GeotiffSegmentationManager):
+    """Run the segmentation with Rich progress bars and logging."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.progress = Progress(
+            SpinnerColumn("earth"), *Progress.get_default_columns(), TimeElapsedColumn()
+        )
+        self.processing_task = self.progress.add_task(
+            description="Processing", total=len(self.reader)
+        )
+
+    def __call__(self):
+        with self.progress:
+            super().__call__()
+
+    def on_start(self):
+        device_emoji = ":rocket:" if self.model.device.type == "cuda" else ":snail:"
+        print(f"Running with [magenta]{self.model.device} {device_emoji}")
+
+    def on_chip_write_end(self, index: int):
+        self.progress.update(self.processing_task, completed=index)
+
+    def on_end(self):
+        self.progress.update(self.processing_task, completed=len(self.reader))
+        print("[bold italic green]:tada: Segmentation complete! :tada:[/]")
