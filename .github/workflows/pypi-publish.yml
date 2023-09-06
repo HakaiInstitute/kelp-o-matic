@@ -18,8 +18,7 @@ jobs:
 
     - name: Get tag
       id: tag
-      run: |
-        echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      run: echo "tag=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
 
     - name: Set up Python
       uses: actions/setup-python@v4
