@@ -1,13 +1,13 @@
 # About
 
-This document gives information about interpreting the Kelp-O-Matic model outputs, and gives
-details on the dataset pre-processing workflow, model training, and final performance achieved for
-both the kelp and mussel detection models.
+This document gives information about interpreting the Kelp-O-Matic model outputs, and
+gives details on the dataset pre-processing workflow, model training, and final
+performance achieved for both the kelp and mussel detection models.
 
 ## Model Outputs
 
-Each of the Kelp-O-Matic models outputs a mask raster with integer pixel values that represent the
-following classes:
+Each of the Kelp-O-Matic models outputs a mask raster with integer pixel values that
+represent the following classes:
 
 ### Kelp
 
@@ -31,14 +31,16 @@ These are the outputs from the `find-mussels` routine:
 
 ## Dataset Preparation
 
-The datasets used to train the kelp segmentation model were a number of scenes collected using DJI
-Phantom remotely-piloted aircraft systems (RPAS). A total of 28 image mosaic scenes were used. The
-resolution of each image varied between 0.023m and 0.428m, with an average of 0.069m and standard
-deviation of 0.087m. These images were collected over a period from 2018 to 2021, all during summer.
+The datasets used to train the kelp segmentation model were a number of scenes collected
+using DJI Phantom remotely-piloted aircraft systems (RPAS). A total of 28 image mosaic
+scenes were used. The resolution of each image varied between 0.023m and 0.428m, with
+an average of 0.069m and standard deviation of 0.087m. These images were collected over
+a period from 2018 to 2021, all during summer.
 
-For model training, each dataset was divided into 512 pixels square cropped sections, with 50%
-overlap between adjacent tiles. To balance the dataset, tiles containing no kelp where discarded.
-These sets of tiles where then divided into training, validation, and test splits.
+For model training, each dataset was divided into 512 pixels square cropped sections,
+with 50% overlap between adjacent tiles. To balance the dataset, tiles containing no
+kelp where discarded. These sets of tiles where then divided into training, validation,
+and test splits.
 
 Source code for data preparation is available on GitHub
 at [:material-github: hakai-ml-dataprep](https://github.com/tayden/hakai-ml-dataprep).
@@ -100,16 +102,18 @@ flowchart TD
 
 ## Model Training
 
-The LRASPP MobileNetV3-Large[^1] model was trained using a stochastic gradient descent optimizer
-with the learning rate set to $0.35$, and L2 weight decay set to $3 \times 10^{-6}$. The model was
-trained for a total of 100 epochs. A cosine annealing learning rate schedule[^2] was used to improve
-accuracy. The loss function used for training was Focal Tversky Loss[^3], with parameters
+The LRASPP MobileNetV3-Large[^1] model was trained using a stochastic gradient descent
+optimizer with the learning rate set to $0.35$, and L2 weight decay set to
+$3 \times 10^{-6}$. The model was trained for a total of 100 epochs. A cosine annealing
+learning rate schedule[^2] was used to improve accuracy. The loss function used for
+training was Focal Tversky Loss[^3], with parameters
 $\alpha=0.7, \beta=0.3, \gamma=4.0 / 3.0$.
 
-The model was trained on an AWS p3.8xlarge instance with 4 Nvidia Tesla V100 GPUS and took 18
-hours to finish. At the end of training, the model parameters which achieved the best
-IoU~$\mu$~ score on the validation data split were saved for inference. It is these parameters that
-were used to calculate the final performance statistics for the model on the test split.
+The model was trained on an AWS p3.8xlarge instance with 4 Nvidia Tesla V100 GPUS and
+took 18 hours to finish. At the end of training, the model parameters which achieved
+the best IoU~$\mu$~ score on the validation data split were saved for inference. It is
+these parameters that were used to calculate the final performance statistics for the
+model on the test split.
 
 Source code for model training is available on GitHub
 at [:material-github: hakai-ml-train](https://github.com/tayden/hakai-ml-train).
@@ -157,15 +161,15 @@ flowchart TD
 
 ### Metric definitions
 
-The following definitions describe the metrics used during training and evaluation of the deep
-neural networks. They are important to understand for the sections following.
+The following definitions describe the metrics used during training and evaluation of
+the deep neural networks. They are important to understand for the sections following.
 
 **Definitions in terms of pixel sets:**
 
 - Let $A$ equal the set of human-labelled pixels.
 - Let $B$ be defined as the set of pixel labels predicted by the model.
-- Let $A_i$ and $B_i$ be the sets of pixels for a particular class of interest, $i$, from labels $A$
-  and $B$, respectively.
+- Let $A_i$ and $B_i$ be the sets of pixels for a particular class of interest, $i$,
+  from labels $A$ and $B$, respectively.
 
 **Definitions in terms of true and false postive/negative classes:**
 
@@ -186,7 +190,8 @@ $$
 
 **Precision**
 
-:   The ratio of correct predictions for a class to the count of predictions of that class:
+:   The ratio of correct predictions for a class to the count of predictions of that
+class:
 
 $$
 Precision_i = \frac{|A_i \cap B_i|}{|A_i|} = \frac{TP_i}{TP_i + FP_i}
@@ -194,7 +199,8 @@ $$
 
 **Recall**
 
-:   The ratio of correct predictions for a class to the count of actual instances of that class:
+:   The ratio of correct predictions for a class to the count of actual instances of
+that class:
 
 $$
 Recall_i = \frac{|A_i \cap B_i|}{|B_i|} = \frac{TP_i}{TP_i + FN_i}
@@ -202,8 +208,8 @@ $$
 
 **Accuracy**
 
-:   The ratio of counts of pixels correctly classified by the model divided over the total number of
-pixels.
+:   The ratio of counts of pixels correctly classified by the model divided over the
+total number of pixels.
 
 $$
 Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
@@ -217,24 +223,24 @@ $$
 
     | Class    |    IoU | Precision | Recall | Accuracy |
     |:---------|-------:|----------:|-------:|---------:|
-    | Kelp     | 0.6593 |    0.8145 | 0.7804 |          |
-    | Not Kelp | 0.9885 |    0.9939 | 0.9945 |          |
+    | Kelp     | 0.6593 |    0.8145 | 0.7804 |        - |
+    | Not Kelp | 0.9885 |    0.9939 | 0.9945 |        - |
     | *Mean*   | 0.8239 |    0.9042 | 0.8875 |   0.9892 |
 
 === "Validation split"
 
     | Class    |    IoU | Precision | Recall | Accuracy |
     |:---------|-------:|----------:|-------:|---------:|
-    | Kelp     | 0.6964 |    0.7585 | 0.8917 |          |
-    | Not Kelp | 0.9857 |    0.9969 | 0.9886 |          |
+    | Kelp     | 0.6964 |    0.7585 | 0.8917 |        - |
+    | Not Kelp | 0.9857 |    0.9969 | 0.9886 |        - |
     | *Mean*   | 0.8410 |    0.8777 | 0.9402 |   0.9865 |
 
 === "Train split"
 
     | Class    |    IoU | Precision | Recall | Accuracy |
     |:---------|-------:|----------:|-------:|---------:|
-    | Kelp     | 0.7786 |    0.8510 | 0.8980 |          |
-    | Not Kelp | 0.9716 |    0.9889 | 0.9822 |          |
+    | Kelp     | 0.7786 |    0.8510 | 0.8980 |        - |
+    | Not Kelp | 0.9716 |    0.9889 | 0.9822 |        - |
     | *Mean*   | 0.8751 |    0.9200 | 0.9401 |   0.9757 |
 
 **Kelp (species)**
@@ -243,27 +249,27 @@ $$
 
     | Class    |    IoU | Precision | Recall | Accuracy |
     |:---------|-------:|----------:|-------:|---------:|
-    | Macro    | 0.7574 |    0.8558 | 0.8697 |          |
-    | Nereo    | 0.5336 |    0.7279 | 0.6716 |          |
-    | Not Kelp | 0.9885 |    0.9939 | 0.9945 |          |
+    | Macro    | 0.7574 |    0.8558 | 0.8697 |        - |
+    | Nereo    | 0.5336 |    0.7279 | 0.6716 |        - |
+    | Not Kelp | 0.9885 |    0.9939 | 0.9945 |        - |
     | *Mean*   | 0.7645 |    0.8657 | 0.8410 |   0.9881 |
 
 === "Validation split"
 
     | Class    |    IoU | Precision | Recall | Accuracy |
     |:---------|-------:|----------:|-------:|---------:|
-    | Macro    | 0.7392 |    0.7942 | 0.9126 |          |
-    | Nereo    | 0.4369 |    0.5128 | 0.7696 |          |
-    | Not Kelp | 0.9423 |    0.9848 | 0.9562 |          |
+    | Macro    | 0.7392 |    0.7942 | 0.9126 |        - |
+    | Nereo    | 0.4369 |    0.5128 | 0.7696 |        - |
+    | Not Kelp | 0.9423 |    0.9848 | 0.9562 |        - |
     | *Mean*   | 0.7810 |    0.8367 | 0.9055 |   0.9522 |
 
 === "Train split"
 
     | Class    |    IoU | Precision | Recall | Accuracy |
     |:---------|-------:|----------:|-------:|---------:|
-    | Macro    | 0.8133 |    0.8845 | 0.9075 |          |
-    | Nereo    | 0.5722 |    0.6741 | 0.7141 |          |
-    | Not Kelp | 0.9579 |    0.9828 | 0.9742 |          |
+    | Macro    | 0.8133 |    0.8845 | 0.9075 |        - |
+    | Nereo    | 0.5722 |    0.6741 | 0.7141 |        - |
+    | Not Kelp | 0.9579 |    0.9828 | 0.9742 |        - |
     | *Mean*   | 0.8118 |    0.8719 | 0.8855 |   0.9649 |
 
 **Mussels (presence/absence)**
@@ -276,14 +282,14 @@ $$
 
     | Class       |    IoU | Precision | Recall | Accuracy |
     |:------------|-------:|----------:|-------:|---------:|
-    | Mussels     | 0.7032 |           |      - |          |
-    | Not Mussels | 0.9691 |         - |      - |          |
-    | *Mean*      | 0.8362 |    0.9721 | 0.9721 |   0.9721 |
+    | Mussels     | 0.7684 |    0.8594 | 0.8777 |        - |
+    | Not Mussels | 0.9805 |    0.9917 | 0.9886 |        - |
+    | *Mean*      | 0.8745 |    0.9721 | 0.9721 |   0.9331 |
 
 === "Train split"
 
     | Class       |    IoU | Precision | Recall | Accuracy |
     |:------------|-------:|----------:|-------:|---------:|
-    | Mussels     | 0.8029 |         - |      - |          |
-    | Not Mussels | 0.9634 |         - |      - |          |
-    | *Mean*      | 0.8832 |    0.9684 | 0.9684 |   0.9684 |
+    | Mussels     | 0.8344 |    0.8636 | 0.9595 |        - |
+    | Not Mussels | 0.9770 |    0.9892 | 0.9874 |        - |
+    | *Mean*      | 0.9057 |    0.9264 | 0.9735 |   0.9062 |
