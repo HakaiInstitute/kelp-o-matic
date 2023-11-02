@@ -14,34 +14,46 @@ that you're using the most up-to-date version of `kelp-o-matic`.
 
 === "Conda"
 
-    ### Install
-
     ??? help "Installing in Anaconda Navigator"
 
         1. Use the Anaconda Navigator GUI and create a new environment.
         2. Add the `pytorch`, `nvidia`, and `conda-forge` channels.
-        3. Search for and install the `kelp-o-matic` package in your environment.
+        3. Search for and install the `torch`, `torchvision`, and `kelp-o-matic` package in your environment. 
+            For GPU support, also install the `pytorch-cuda` package.'
 
         If you need more help, please see the [Beginner Guide](beginner_guide/index.md).
 
+    ### Pre-requisites
+    
+    ##### PyTorch
+    
+    Install `pytorch` and `torchvision` for your operating system using the 
+    [official installation instructions here](https://pytorch.org/). 
+    Make sure you select "CUDA" as the compute platform if you have an NVIDIA GPU you'd like to use to improve performance.
+    
+    ### Install
+    
     ```bash
-    conda install -c pytorch -c nvidia -c conda-forge kelp-o-matic
+    conda install -c conda-forge kelp-o-matic
     ```
 
     ### Update
 
     ```bash
-    conda update -c pytorch -c nvidia -c conda-forge kelp-o-matic
+    conda update -c conda-forge kelp-o-matic
     ```
 
 === "PIP"
+    
+    ### Pre-requisites
 
+    ##### PyTorch
+    
+    Install `pytorch` and `torchvision` for your operating system using the 
+    [official installation instructions here](https://pytorch.org/). 
+    Make sure you select "CUDA" as the compute platform if you have an NVIDIA GPU you'd like to use to improve performance.
+    
     ### Install
-
-    ??? warning "We suggest using Conda to install Kelp-O-Matic"
-        It is highly recommended to install the library with Conda, not with PIP.
-
-        Automatic hardware acceleration is only supported with the Conda installation.
 
     ```bash
     pip install kelp-o-matic

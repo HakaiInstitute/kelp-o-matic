@@ -1,6 +1,6 @@
 # Set-up and Installation
 
-Before you can run the kelp-o-matic tool, you will need to set up some programs which will allow the tool to run. Once
+Before you can run the Kelp-O-Matic tool, you will need to set up some programs which will allow the tool to run. Once
 set-up is complete the tool can be run very easily from ones terminal.
 
 ## Install Anaconda
@@ -12,86 +12,95 @@ Follow the prompts to install the most recent version of Anaconda for your opera
 
 ***
 
+## Open Anaconda Prompt
+
+![Open Prompt](images/open_prompt1.png)
+
+Open anaconda prompt by searching “Anaconda Prompt” in search tool bar.
+
+***
+
 ## Create New Environment
 
-![Open Anaconda](images/open_anaconda.png)
+In the prompt window, create a new Anaconda environment by typing the following command:
 
-Once Anaconda is installed, open Anaconda Navigator by typing “Anaconda Navigator” in the start menu.
+```console
+conda create -n KelpSegmentation python=3.10
+```
 
+This will create an isolated Python environment for packages and their dependencies to be installed in. The name of the
+environment is `KelpSegmentation` in this example, but you can choose any name you like. This command also installs Python version 3.10 into your new environment.
 
-![Click on "Environments"]( images/create_environment1.png)
+??? question "Why do we use a new environment?"
 
-In the tab on the left, click on Environments.
+    Using a new Conda environment is a good practice to get into when installing Python packages. It ensures that the software
+    you install does not conflict with other software on your computer, as well as makes it easy to remove when you don't want it anymore.
 
-![Click "Create" to make a new environment](images/create_environment2.png)
+## Change Environments
 
-Create a new environment and give it a name by clicking the create button.
+Now, we're going to activate the environment we just created. By default, the Anaconda Prompt always starts in the `(base)` environment.
+You can tell this is the case, because `(base)` will appear in brackets before each line of text.
 
-![Type name and click "create"](images/create_environment3.png)
+![Change Environments 1](images/change_environments1.png)
 
-Give the new environment a name in the dialogue box that pops up, *e.g.* "KelpSegmentation".
-Select a Python version that begins with "3.9".
+Let's change into the environment we just created. To do this, type into the prompt:
 
-!!! warning
-    `kelp-o-matic` currently supports Python versions 3.9, 3.10, and 3.11.
-    Installation will not work for other versions.
-
-***
-
-## Add Channels
-
-![Click on "Channels"](images/add_channels1.png)
-
-With the new environment selected in the environment tab, click the channels button.
-
-![List of added channels](images/add_channels2.png)
-
-In the dialogue box that pops up click the “Add…” button.
-
-![Type name of channel to add](images/add_channels3.png)
-
-Add the channels "conda-forge" and "pytorch" by typing the name of each channel in the space and then click update channels.
+```console
+conda activate KelpSegmentation
+```
 
 !!! note
-    The "hakai-institute" channel, shown in the image, is no longer required. However, it won't cause any issues if you've added it already.
 
-!!! warning
-    Watch your spelling! Anaconda won't be able to find the packages you need to install if the channel names are misspelled.
+    If you used a different name for your environment, be sure to replace `conda activate KelpSegmentation` with
+    `conda activate <your-environment-name-here>`
 
-![Update channels](images/add_channels4.png)
+    You can see a list of all installed environments by typing and entering the command: `conda env list`.
 
-Click "update channels".
+![Change Environments 2](images/change_environments2.png)
+
+You should see that the environment has changed from `(base)` to `(KelpSegmentation)` in the prompt.
 
 ***
 
-## Install Packages
+## Install packages
 
-Next you will install the `kelp-o-matic` package in your environment.
+Now that we're in the new environment, we can install the packages that the Kelp-O-Matic tool needs to run, followed by Kelp-O-Matic itself.
 
-![Select "not-installed"](images/install_packages1.png)
+At this stage, you can directly reference the [installation instructions](../installation.md) if you find that easier, or continue with the following instructions.
 
-In the Anaconda Navigator with your environment selected and “Not Installed” selected in the drop down menu, type “kelp-o-matic” in the search packages search bar.
+### Install PyTorch
 
-![Type "kelp-o-matic"](images/install_packages2.png)
+Kelp-O-Matic relies on PyTorch to run. PyTorch is a machine learning library for Python. 
+PyTorch can be installed to use your CPU only, or can make use of an NVIDIA GPUs you may have in your machine to accelerate processing.
 
-Type `kelp-o-matic` in the search packages search bar. This is the name of the package you are installing (make sure it is spelled correctly).
+The most up-to-date and reliable instructions for installing PyTorch can be found on the [PyTorch website](https://pytorch.org).
+Typically, the installation commands are:
 
-![Select "kelp-o-matic" package](images/install_packages3.png)
+##### GPU
+```console
+conda install pytorch torchvision pytorch-cuda=11.8 -c pytorch -c nvidia
+```
 
-Click the box beside `kelp-o-matic` and then click Apply to install the package.
+##### CPU
 
-![Click "apply"](images/install_packages4.png)
+```console
+conda install pytorch torchvision cpuonly -c pytorch
+```
 
-A dialogue box will appear and ask you to install packages, click the apply button.
+### Install Kelp-O-Matic
 
-!["kelp-o-matic" appears in installed](images/install_packages5.png)
+Now that PyTorch is installed, we can install Kelp-O-Matic itself. To do so, run the command:
 
-Now when you select Installed on the drop-down menu the `kelp-o-matic` package should appear.
+```console
+conda install -c conda-forge kelp-o-matic
+```
 
 **Part 1 set-up is now complete!**
 
 You are now ready to run the Kelp-O-Matic tool. Now that the setup steps are completed, you will not
 have to repeat them again unless installing on a different computer.
+
+Continue to [Part 2: Running the Segmentation tool](./execution.md)
 
 ***
 
