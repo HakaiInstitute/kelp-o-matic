@@ -83,6 +83,7 @@ Once the processing bar is at 100%, you can open the results in an image process
 
 **Part 2 Kelp Segmentation is now complete!**
 
+Continue to [Part 3](./post_processing.md) to learn how to post-process the results.
 ***
 
 *Authors: Sarah Schroeder and Taylor Denouden*
