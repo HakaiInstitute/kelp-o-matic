@@ -43,7 +43,7 @@ jobs:
         run: |
           poetry update
           poetry run pip install --upgrade setuptools
-          poetry install --extras "gpu"
+          poetry install
 
       - name: Run tests
         run: poetry run pytest
