@@ -21,7 +21,7 @@ def find_kelp(
         help="Segment to species or presence/absence level.",
     ),
     crop_size: int = typer.Option(
-        512,
+        1024,
         help="The data window size to run through the segmentation model.",
     ),
     use_gpu: bool = typer.Option(
@@ -46,7 +46,7 @@ def find_mussels(
     source: str = typer.Argument(..., help="Input image with Byte data type."),
     dest: str = typer.Argument(..., help="File path location to save output to."),
     crop_size: int = typer.Option(
-        512,
+        1024,
         help="The data window size to run through the segmentation model.",
     ),
     use_gpu: bool = typer.Option(

@@ -10,7 +10,7 @@ def find_kelp(
     source: str,
     dest: str,
     species: bool = False,
-    crop_size: int = 512,
+    crop_size: int = 1024,
     use_gpu: bool = True,
 ):
     """
@@ -36,7 +36,7 @@ def find_kelp(
 def find_mussels(
     source: str,
     dest: str,
-    crop_size: int = 512,
+    crop_size: int = 1024,
     use_gpu: bool = True,
 ):
     """
