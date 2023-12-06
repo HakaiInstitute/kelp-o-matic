@@ -22,8 +22,6 @@ def find_kelp(
         dest: File path location to save output to.
         species: Do species classification instead of presence/absence.
         crop_size: The size of cropped image square run through the segmentation model.
-        padding: The number of context pixels added to each side of the cropped image.
-        batch_size: The batch size of cropped image sections to process together.
         use_gpu: Disable Cuda GPU usage and run on CPU only.
     """
     if species:
@@ -47,8 +45,6 @@ def find_mussels(
         source: Input image with Byte data type.
         dest: File path location to save output to.
         crop_size: The size of cropped image square run through the segmentation model.
-        padding: The number of context pixels added to each side of the cropped image.
-        batch_size: The batch size of cropped image sections to process together.
         use_gpu: Disable Cuda GPU usage and run on CPU only.
     """
     model = MusselPresenceSegmentationModel(use_gpu=use_gpu)

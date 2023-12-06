@@ -37,11 +37,7 @@ Options:
   --species / --presence  Segment to species or presence/absence level.
                           [default: presence]
   --crop-size INTEGER     The size for the cropped image squares run through
-                          the segmentation model.  [default: 512]
-  --padding INTEGER       The number of context pixels added to each side of
-                          the image crops.  [default: 256]
-  --batch-size INTEGER    The batch size of cropped image sections to process
-                          together.  [default: 1]
+                          the segmentation model.  [default: 1024]
   --gpu / --no-gpu        Enable or disable GPU, if available.  [default: gpu]
   --help                  Show this message and exit.
 ```
@@ -100,11 +96,7 @@ Arguments:
 
 Options:
   --crop-size INTEGER   The size for the cropped image squares run through the
-                        segmentation model.  [default: 512]
-  --padding INTEGER     The number of context pixels added to each side of the
-                        image crops.  [default: 256]
-  --batch-size INTEGER  The batch size of cropped image sections to process
-                        together.  [default: 1]
+                        segmentation model.  [default: 1024]
   --gpu / --no-gpu      Enable or disable GPU, if available.  [default: gpu]
   --help                Show this message and exit.
 ```

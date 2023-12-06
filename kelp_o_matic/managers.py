@@ -32,9 +32,6 @@ class GeotiffSegmentationManager:
             output_path: The destination file path for the output segmentation data.
             crop_size: The size of image crop to classify iteratively until the entire
                 image is classified.
-            padding: The number of context pixels to add to each side of an image crop
-                to improve outputs.
-            batch_size: The number of crops to classify at a time using the model.
         """
         self.model = model
 
