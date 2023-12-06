@@ -22,8 +22,6 @@ class GeotiffSegmentationManager:
             input_path: Union[str, "Path"],
             output_path: Union[str, "Path"],
             crop_size: int = 512,
-            padding: int = 256,
-            batch_size: int = 1,
     ):
         """Create the segmentation object.
 
@@ -44,13 +42,13 @@ class GeotiffSegmentationManager:
             Path(input_path).expanduser().resolve(),
             transform=self.model.transform,
             crop_size=crop_size,
-            padding=padding,
+            padding=crop_size//2,
             filter_=self._should_keep,
         )
         self._dataloader = DataLoader(
             self.reader,
             shuffle=False,
-            batch_size=batch_size,
+            batch_size=1,
             pin_memory=True,
             num_workers=0,
         )

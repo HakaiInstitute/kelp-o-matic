@@ -11,8 +11,6 @@ def find_kelp(
     dest: str,
     species: bool = False,
     crop_size: int = 512,
-    padding: int = 256,
-    batch_size: int = 1,
     use_gpu: bool = True,
 ):
     """
@@ -32,17 +30,13 @@ def find_kelp(
         model = KelpSpeciesSegmentationModel(use_gpu=use_gpu)
     else:
         model = KelpPresenceSegmentationModel(use_gpu=use_gpu)
-    RichSegmentationManager(
-        model, source, dest, crop_size=crop_size, padding=padding, batch_size=batch_size
-    )()
+    RichSegmentationManager(model, source, dest, crop_size=crop_size)()
 
 
 def find_mussels(
     source: str,
     dest: str,
     crop_size: int = 512,
-    padding: int = 256,
-    batch_size: int = 1,
     use_gpu: bool = True,
 ):
     """
@@ -58,6 +52,4 @@ def find_mussels(
         use_gpu: Disable Cuda GPU usage and run on CPU only.
     """
     model = MusselPresenceSegmentationModel(use_gpu=use_gpu)
-    RichSegmentationManager(
-        model, source, dest, crop_size=crop_size, padding=padding, batch_size=batch_size
-    )()
+    RichSegmentationManager(model, source, dest, crop_size=crop_size)()
