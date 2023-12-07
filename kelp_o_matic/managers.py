@@ -2,13 +2,13 @@ import warnings
 from pathlib import Path
 from typing import Union
 
-import numpy as np
 import rasterio
+import torch
 from rich import print
 from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn
-from torch.utils.data import DataLoader
 
 from kelp_o_matic.geotiff_io import GeotiffReader, GeotiffWriter
+from kelp_o_matic.hann import TorchMemoryRegister, BartlettHannKernel
 from kelp_o_matic.models import _Model
 from kelp_o_matic.utils import all_same
 
@@ -34,42 +34,25 @@ class GeotiffSegmentationManager:
                 image is classified.
         """
         self.model = model
+        self.crop_size = crop_size
+        self.input_path = str(Path(input_path).expanduser().resolve())
+        self.output_path = str(Path(output_path).expanduser().resolve())
 
         self.reader = GeotiffReader(
-            Path(input_path).expanduser().resolve(),
-            transform=self.model.transform,
+            self.input_path,
             crop_size=crop_size,
-            padding=crop_size//2,
-            filter_=self._should_keep,
+            stride=crop_size // 2,
         )
-        self._dataloader = DataLoader(
-            self.reader,
-            shuffle=False,
-            batch_size=1,
-            pin_memory=True,
-            num_workers=0,
-        )
-
         self.writer = GeotiffWriter.from_reader(
-            Path(output_path).expanduser().resolve(),
+            self.output_path,
             self.reader,
             count=1,
             dtype="uint8",
             nodata=0,
         )
-
-    @staticmethod
-    def _should_keep(img: "np.ndarray") -> bool:
-        """Determines if an image crop should be classified or discarded.
-
-        Args:
-            img: The image crop, with padding removed.
-
-        Returns:
-             Flag to indicate if crop should be discarded.
-        """
-        _img = np.clip(img, 0, 255)
-        return bool(np.any(_img % 255))
+        self.kernel = BartlettHannKernel(crop_size, self.model.device)
+        self.register = TorchMemoryRegister(self.input_path, self.model.register_depth,
+                                            crop_size, self.model.device)
 
     def __call__(self):
         """Run the segmentation task."""
@@ -77,20 +60,33 @@ class GeotiffSegmentationManager:
         self._run_checks()
 
         with rasterio.Env():
-            for batch_idx, batch in enumerate(self._dataloader):
-                self.on_batch_start(batch_idx)
+            for index, batch in enumerate(self.reader):
+                crop, read_window = batch
 
-                crops, indices = batch
-                labels = self.model(crops).detach().cpu().numpy()
+                if self.model.transform:
+                    crop = self.model.transform(crop)
+
+                if torch.all(crop == 0):
+                    logits = self.model.shortcut(self.reader.crop_size)
+                else:
+                    # Zero pad to correct shape
+                    _, h, w = crop.shape
+                    crop = torch.nn.functional.pad(crop, (0, self.crop_size - w, 0, self.crop_size - h), value=0)
+                    logits = self.model(crop.unsqueeze(0))[0]
+
+                logits = self.kernel(
+                    logits,
+                    top=self.reader.is_top_window(read_window),
+                    bottom=self.reader.is_bottom_window(read_window),
+                    left=self.reader.is_left_window(read_window),
+                    right=self.reader.is_right_window(read_window),
+                )
+                write_logits, write_window = self.register.step(logits, read_window)
+                labels = self.model.post_process(write_logits)
 
                 # Write outputs
-                for label, idx in zip(labels, indices):
-                    self.writer.write_index(label, int(idx))
-                    self.on_chip_write_end(int(idx))
-
-                del crops, indices, labels, batch
-
-                self.on_batch_end(batch_idx)
+                self.writer.write_window(labels, write_window)
+                self.on_tile_write(index)
         self.on_end()
 
     def _no_data_check(self):
@@ -120,7 +116,7 @@ class GeotiffSegmentationManager:
         if not all_same(self.reader.block_shapes):
             warnings.warn("Input image bands have different sized blocks.", UserWarning)
 
-        crop_shape = self.reader.crop_size + 2 * self.reader.padding
+        crop_shape = self.reader.crop_size
         y_shape, x_shape = self.reader.block_shapes[0]
         if y_shape == 1:
             warnings.warn(
@@ -153,30 +149,12 @@ class GeotiffSegmentationManager:
         """Hook that runs after image processing."""
         pass
 
-    def on_batch_start(self, batch_idx: int):
-        """
-        Hook that runs for each batch of data, immediately before classification.
-
-        Args:
-            batch_idx: The batch index being processed.
-        """
-        pass
-
-    def on_batch_end(self, batch_idx: int):
+    def on_tile_write(self, batch_idx: int):
         """
         Hook that runs for each batch of data, immediately after classification.
 
         Args:
             batch_idx: The batch index being processed.
-        """
-        pass
-
-    def on_chip_write_end(self, index: int):
-        """
-        Hook that runs for each crop of data, immediately after classification.
-
-        Args:
-            index: The index of the image crop that was processed.
         """
         pass
 
@@ -202,7 +180,7 @@ class RichSegmentationManager(GeotiffSegmentationManager):
         device_emoji = ":rocket:" if self.model.device.type == "cuda" else ":snail:"
         print(f"Running with [magenta]{self.model.device} {device_emoji}")
 
-    def on_chip_write_end(self, index: int):
+    def on_tile_write(self, index: int):
         self.progress.update(self.processing_task, completed=index)
 
     def on_end(self):

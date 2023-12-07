@@ -1,9 +1,12 @@
 import gc
 import importlib.resources as importlib_resources
 from abc import ABC, abstractmethod
+from typing import Union
 
+import numpy as np
 import torch
 import torchvision.transforms.functional as f
+from PIL.Image import Image
 
 from kelp_o_matic.data import (
     lraspp_kelp_presence_torchscript_path,
@@ -13,9 +16,11 @@ from kelp_o_matic.data import (
 
 
 class _Model(ABC):
+    register_depth = 2
+
     @staticmethod
-    def transform(x: torch.Tensor) -> torch.Tensor:
-        x = f.to_tensor(x)[:3, :, :] / 255.0
+    def transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
+        x = f.to_tensor(x)[:3, :, :]
         x = f.normalize(x, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         return x
 
@@ -40,9 +45,19 @@ class _Model(ABC):
         gc.collect()
         self.model = self.load_model()
 
-    def __call__(self, batch: "torch.Tensor") -> "torch.Tensor":
+    def __call__(self, x: "torch.Tensor") -> "torch.Tensor":
         with torch.no_grad():
-            return torch.argmax(self.model.forward(batch.to(self.device)), dim=1)
+            return self.model.forward(x.to(self.device))
+
+    def post_process(self, x: "torch.Tensor") -> "np.ndarray":
+        return x.argmax(dim=0).detach().cpu().numpy()
+
+    def shortcut(self, crop_size: int):
+        """Shortcut prediction for when we know a cropped section is background.
+        Prevent unnecessary forward passes through model."""
+        logits = torch.zeros((self.register_depth, crop_size, crop_size), device=self.device)
+        logits[0] = 1
+        return logits
 
 
 class KelpPresenceSegmentationModel(_Model):
@@ -51,20 +66,28 @@ class KelpPresenceSegmentationModel(_Model):
 
 class KelpSpeciesSegmentationModel(_Model):
     torchscript_path = lraspp_kelp_species_torchscript_path
+    register_depth = 4
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.presence_model = KelpPresenceSegmentationModel(*args, **kwargs)
 
-    def __call__(self, batch: "torch.Tensor") -> "torch.Tensor":
+    def __call__(self, x: "torch.Tensor") -> "torch.Tensor":
         with torch.no_grad():
-            batch = batch.to(self.device)
-            presence = self.presence_model(batch)  # 0: bg, 1: kelp
+            x = x.to(self.device)
+            presence_logits = self.presence_model(x)  # 0: bg, 1: kelp
+            species_logits = self.model.forward(x)  # 0: macro, 1: nerea
+            logits = torch.concat((presence_logits, species_logits), dim=1)
 
-            logits = self.model.forward(batch)
-            species = torch.add(torch.argmax(logits, dim=1), 2)  # 2: macro, 3: nereo
+        return logits  # 0: bg, 1: kelp, 2: macro, 3: nereo
 
-            return torch.mul(presence, species)  # 0: bg, 2: macro, 3: nereo
+    def post_process(self, x: "torch.Tensor") -> "np.ndarray":
+        with torch.no_grad():
+            presence = torch.argmax(x[:2], dim=0)  # 0: bg, 1: kelp
+            species = torch.argmax(x[2:], dim=0) + 2  # 2: macro, 3: nereo
+            label = torch.mul(presence, species)  # 0: bg, 2: macro, 3: nereo
+
+        return label.detach().cpu().numpy()
 
 
 class MusselPresenceSegmentationModel(_Model):
