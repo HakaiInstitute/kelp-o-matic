@@ -7,7 +7,6 @@ import rasterio
 from rich import print
 from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn
 from torch.utils.data import DataLoader
-from torchvision import transforms
 
 from kelp_o_matic.geotiff_io import GeotiffReader, GeotiffWriter
 from kelp_o_matic.models import _Model
@@ -18,13 +17,13 @@ class GeotiffSegmentationManager:
     """Class for configuring data io and efficient segmentation of Geotiff imagery."""
 
     def __init__(
-        self,
-        model: "_Model",
-        input_path: Union[str, "Path"],
-        output_path: Union[str, "Path"],
-        crop_size: int = 512,
-        padding: int = 256,
-        batch_size: int = 1,
+            self,
+            model: "_Model",
+            input_path: Union[str, "Path"],
+            output_path: Union[str, "Path"],
+            crop_size: int = 512,
+            padding: int = 256,
+            batch_size: int = 1,
     ):
         """Create the segmentation object.
 
@@ -41,18 +40,9 @@ class GeotiffSegmentationManager:
         """
         self.model = model
 
-        tran = transforms.Compose(
-            [
-                transforms.ToTensor(),
-                transforms.Lambda(lambda img: img[:3, :, :]),
-                transforms.Normalize(
-                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-                ),
-            ]
-        )
         self.reader = GeotiffReader(
             Path(input_path).expanduser().resolve(),
-            transform=tran,
+            transform=self.model.transform,
             crop_size=crop_size,
             padding=padding,
             filter_=self._should_keep,

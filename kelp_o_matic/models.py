@@ -3,6 +3,7 @@ import importlib.resources as importlib_resources
 from abc import ABC, abstractmethod
 
 import torch
+import torchvision.transforms.functional as f
 
 from kelp_o_matic.data import (
     lraspp_kelp_presence_torchscript_path,
@@ -12,6 +13,12 @@ from kelp_o_matic.data import (
 
 
 class _Model(ABC):
+    @staticmethod
+    def transform(x: torch.Tensor) -> torch.Tensor:
+        x = f.to_tensor(x)[:3, :, :] / 255.0
+        x = f.normalize(x, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        return x
+
     def __init__(self, use_gpu: bool = True):
         is_cuda = torch.cuda.is_available() and use_gpu
         self.device = torch.device("cuda") if is_cuda else torch.device("cpu")
