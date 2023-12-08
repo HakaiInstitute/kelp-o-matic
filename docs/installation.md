@@ -18,15 +18,15 @@ that you're using the most up-to-date version of `kelp-o-matic`.
 
 ### Pre-requisites
 
-Install `pytorch` and `torchvision` for your operating system using the 
-[official installation instructions here](https://pytorch.org/). 
+Install `pytorch` and `torchvision` for your operating system using the
+[official installation instructions here](https://pytorch.org/).
 Make sure you select "CUDA" as the compute platform if you have an NVIDIA GPU you'd like to use to improve performance.
 
 
 === "Conda"
 
     ### Install
-    
+
     ```bash
     conda install -c conda-forge kelp-o-matic
     ```

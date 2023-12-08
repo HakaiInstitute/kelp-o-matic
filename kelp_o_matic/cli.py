@@ -21,14 +21,8 @@ def find_kelp(
         help="Segment to species or presence/absence level.",
     ),
     crop_size: int = typer.Option(
-        512,
+        1024,
         help="The data window size to run through the segmentation model.",
-    ),
-    padding: int = typer.Option(
-        256, help="The number of context pixels added to each side of the image crops."
-    ),
-    batch_size: int = typer.Option(
-        1, help="The batch size of cropped image sections to process together."
     ),
     use_gpu: bool = typer.Option(
         True, "--gpu/--no-gpu", help="Enable or disable GPU, if available."
@@ -43,9 +37,7 @@ def find_kelp(
         if species
         else KelpPresenceSegmentationModel(use_gpu=use_gpu)
     )
-    manager = RichSegmentationManager(
-        model, source, dest, crop_size=crop_size, padding=padding, batch_size=batch_size
-    )
+    manager = RichSegmentationManager(model, source, dest, crop_size=crop_size)
     manager()
 
 
@@ -54,14 +46,8 @@ def find_mussels(
     source: str = typer.Argument(..., help="Input image with Byte data type."),
     dest: str = typer.Argument(..., help="File path location to save output to."),
     crop_size: int = typer.Option(
-        512,
+        1024,
         help="The data window size to run through the segmentation model.",
-    ),
-    padding: int = typer.Option(
-        256, help="The number of context pixels added to each side of the image crops."
-    ),
-    batch_size: int = typer.Option(
-        1, help="The batch size of cropped image sections to process together."
     ),
     use_gpu: bool = typer.Option(
         True, "--gpu/--no-gpu", help="Enable or disable GPU, if available."
@@ -72,9 +58,7 @@ def find_mussels(
     raster to file at path DEST.
     """
     model = MusselPresenceSegmentationModel(use_gpu=use_gpu)
-    manager = RichSegmentationManager(
-        model, source, dest, crop_size=crop_size, padding=padding, batch_size=batch_size
-    )
+    manager = RichSegmentationManager(model, source, dest, crop_size=crop_size)
     manager()
 
 
