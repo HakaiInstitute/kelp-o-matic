@@ -16,10 +16,10 @@ from torch.utils.data import IterableDataset
 
 class GeotiffReader(IterableDataset):
     def __init__(
-            self,
-            img_path: Union[str, "Path"],
-            crop_size: int,
-            stride: Optional[int] = None,
+        self,
+        img_path: Union[str, "Path"],
+        crop_size: int,
+        stride: Optional[int] = None,
     ):
         """A Pytorch dataset that returns cropped segments of a tif image file.
 

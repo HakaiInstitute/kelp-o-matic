@@ -16,11 +16,7 @@ from kelp_o_matic.geotiff_io import GeotiffReader
 
 class GeotiffWriter:
     def __init__(
-            self,
-            img_path: Union[str, "Path"],
-            profile: dict,
-            crop_size: int,
-            **kwargs
+        self, img_path: Union[str, "Path"], profile: dict, crop_size: int, **kwargs
     ):
         """Write a tif file in small sections.
 
@@ -44,7 +40,7 @@ class GeotiffWriter:
 
     @classmethod
     def from_reader(
-            cls, img_path: Union[str, "Path"], reader: "GeotiffReader", **kwargs
+        cls, img_path: Union[str, "Path"], reader: "GeotiffReader", **kwargs
     ):
         """Create a CropDatasetWriter using a CropDatasetReader instance.
             Defines the geo-referencing, cropping, and size parameters using an
@@ -60,15 +56,14 @@ class GeotiffWriter:
             CropDatasetWriter
         """
         return cls(
-            img_path,
-            profile=reader.profile,
-            crop_size=reader.crop_size,
-            **kwargs
+            img_path, profile=reader.profile, crop_size=reader.crop_size, **kwargs
         )
 
     def write_window(self, write_data: np.ndarray, window: Window):
         # Remove data that goes past the boundaries
-        write_data = write_data[:window.height, :window.width].astype(self.profile["dtype"])
+        write_data = write_data[: window.height, : window.width].astype(
+            self.profile["dtype"]
+        )
 
         # Write the data
         with rasterio.open(self.img_path, "r+") as dst:

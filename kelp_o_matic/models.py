@@ -55,7 +55,9 @@ class _Model(ABC):
     def shortcut(self, crop_size: int):
         """Shortcut prediction for when we know a cropped section is background.
         Prevent unnecessary forward passes through model."""
-        logits = torch.zeros((self.register_depth, crop_size, crop_size), device=self.device)
+        logits = torch.zeros(
+            (self.register_depth, crop_size, crop_size), device=self.device
+        )
         logits[0] = 1
         return logits
 

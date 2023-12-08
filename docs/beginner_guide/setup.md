@@ -70,7 +70,7 @@ At this stage, you can directly reference the [installation instructions](../ins
 
 ### Install PyTorch
 
-Kelp-O-Matic relies on PyTorch to run. PyTorch is a machine learning library for Python. 
+Kelp-O-Matic relies on PyTorch to run. PyTorch is a machine learning library for Python.
 PyTorch can be installed to use your CPU only, or can make use of an NVIDIA GPUs you may have in your machine to accelerate processing.
 
 The most up-to-date and reliable instructions for installing PyTorch can be found on the [PyTorch website](https://pytorch.org).

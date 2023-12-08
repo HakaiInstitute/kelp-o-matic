@@ -1,9 +1,7 @@
 import numpy as np
 import rasterio
-import torch
 from rasterio.profiles import DefaultGTiffProfile
 from rasterio.windows import Window
-from torchvision import transforms
 
 from kelp_o_matic.geotiff_io import GeotiffReader
 

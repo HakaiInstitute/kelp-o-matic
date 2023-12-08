@@ -17,11 +17,11 @@ class GeotiffSegmentationManager:
     """Class for configuring data io and efficient segmentation of Geotiff imagery."""
 
     def __init__(
-            self,
-            model: "_Model",
-            input_path: Union[str, "Path"],
-            output_path: Union[str, "Path"],
-            crop_size: int = 1024,
+        self,
+        model: "_Model",
+        input_path: Union[str, "Path"],
+        output_path: Union[str, "Path"],
+        crop_size: int = 1024,
     ):
         """Create the segmentation object.
 
@@ -51,8 +51,9 @@ class GeotiffSegmentationManager:
             nodata=0,
         )
         self.kernel = BartlettHannKernel(crop_size, self.model.device)
-        self.register = TorchMemoryRegister(self.input_path, self.model.register_depth,
-                                            crop_size, self.model.device)
+        self.register = TorchMemoryRegister(
+            self.input_path, self.model.register_depth, crop_size, self.model.device
+        )
 
     def __call__(self):
         """Run the segmentation task."""
@@ -71,7 +72,9 @@ class GeotiffSegmentationManager:
                 else:
                     # Zero pad to correct shape
                     _, h, w = crop.shape
-                    crop = torch.nn.functional.pad(crop, (0, self.crop_size - w, 0, self.crop_size - h), value=0)
+                    crop = torch.nn.functional.pad(
+                        crop, (0, self.crop_size - w, 0, self.crop_size - h), value=0
+                    )
                     logits = self.model(crop.unsqueeze(0))[0]
 
                 logits = self.kernel(
