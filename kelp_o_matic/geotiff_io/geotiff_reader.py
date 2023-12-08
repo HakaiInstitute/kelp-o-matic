@@ -20,7 +20,6 @@ class GeotiffReader(IterableDataset):
             img_path: Union[str, "Path"],
             crop_size: int,
             stride: Optional[int] = None,
-            fill_value: Optional[Union[int, float]] = None,
     ):
         """A Pytorch dataset that returns cropped segments of a tif image file.
 
@@ -29,8 +28,6 @@ class GeotiffReader(IterableDataset):
             crop_size: The desired edge length for each cropped section.
                 Returned images will be square.
             stride: The stride to use when cropping the image. Defaults to `crop_size`.
-            fill_value: The value to fill in border regions of nodata areas of the
-                image. Defaults to image nodata value.
         """
         super().__init__()
 
@@ -45,13 +42,6 @@ class GeotiffReader(IterableDataset):
             self.count = src.count
             self.profile = src.profile
             self.block_shapes = src.block_shapes
-
-        if fill_value is not None:
-            self.fill_value = fill_value
-        elif self.nodata is not None:
-            self.fill_value = self.nodata
-        else:
-            self.fill_value = 0
 
         self._y0s = list(range(0, self.height, self.stride))
         self._x0s = list(range(0, self.width, self.stride))
@@ -83,7 +73,7 @@ class GeotiffReader(IterableDataset):
         window = self.get_window(idx)
 
         with rasterio.open(self.img_path, "r") as src:
-            crop = src.read(window=window, boundless=True, fill_value=self.fill_value)
+            crop = src.read(window=window)
 
         if len(crop.shape) == 3:
             crop = np.moveaxis(crop, 0, 2)  # (c, h, w) => (h, w, c)
