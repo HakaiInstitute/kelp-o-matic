@@ -45,6 +45,27 @@ $ kom find-kelp --help
     kom find-kelp --species --crop-size=1024 ./some/image_with_kelp.tif ./some/place_to_write_output.tif
     ```
 
+???+ tip "Tip: Reduce windowed processing artifacts"
+
+    To reduce artifacts caused by Kelp-O-Matic's moving window classification, use the largest `crop_size` that you can.
+    Try starting with a crop_size around 3200 pixels and reduce it if your computer is unable to load that much data at once and the application crashes.
+
+    We hope to improve Kelp-O-Matic in the future such that the maximum crop size for your computer can be determined automatically.
+
+    CLI Example:
+
+    ```bash
+    kom --crop-size=3200 your-input-image.tif output-image.tif
+    ```
+
+    <div style="display:flex;">
+        <img alt="Small window output" src="../images/kom-small-window.png" width="50%"/>
+        <img alt="Big window output" src="../images/kom-big-window.png" width="50%"/>
+    </div>
+
+    Also worth noting is that the `crop_size` parameter will change the outputs. 
+    If you need to reproduce a result, make sure to use the same `crop_size` as the original run.
+
 [//]: # (??? info "Info: Misclassifications over land")
 
 [//]: # ()
