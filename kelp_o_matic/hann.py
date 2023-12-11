@@ -1,5 +1,7 @@
 import math
 from abc import ABCMeta, abstractmethod
+from pathlib import Path
+from typing import Union
 
 import numpy as np
 import rasterio
@@ -101,20 +103,20 @@ class BlackmanKernel(Kernel):
 class TorchMemoryRegister(object):
     def __init__(
         self,
-        image_path: str,
+        image_path: Union[str, Path],
         num_classes: int,
         window_size: int,
         device: torch.device.type,
     ):
         super().__init__()
-        self.image_path = image_path
+        self.image_path = Path(image_path)
         self.n = num_classes
         self.ws = window_size
         self.hws = window_size // 2
         self.device = device
 
         # Copy metadata from img
-        with rasterio.open(image_path, "r") as src:
+        with rasterio.open(str(image_path), "r") as src:
             src_width = src.width
 
         self.height = self.ws
