@@ -13,8 +13,8 @@ cli = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]})
 
 @cli.command()
 def find_kelp(
-    source: str = typer.Argument(..., help="Input image with Byte data type."),
-    dest: str = typer.Argument(..., help="File path location to save output to."),
+    source: Path = typer.Argument(..., help="Input image with Byte data type."),
+    dest: Path = typer.Argument(..., help="File path location to save output to."),
     species: bool = typer.Option(
         False,
         "--species/--presence",
@@ -37,8 +37,8 @@ def find_kelp(
 
 @cli.command()
 def find_mussels(
-    source: str = typer.Argument(..., help="Input image with Byte data type."),
-    dest: str = typer.Argument(..., help="File path location to save output to."),
+    source: Path = typer.Argument(..., help="Input image with Byte data type."),
+    dest: Path = typer.Argument(..., help="File path location to save output to."),
     crop_size: int = typer.Option(
         1024,
         help="The data window size to run through the segmentation model.",
