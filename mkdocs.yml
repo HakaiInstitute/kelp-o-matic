@@ -31,8 +31,8 @@ extra:
     provider: google
     property: G-RSSQERRJ3Q
   social:
-    - icon: fontawesome/brands/twitter
-      link: https://twitter.com/HakaiGeospatial
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/HakaiGeospatial
     - icon: fontawesome/brands/instagram
       link: https://www.instagram.com/hakaiinstitute
     - icon: fontawesome/brands/linkedin
