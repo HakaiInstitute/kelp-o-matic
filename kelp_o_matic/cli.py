@@ -1,11 +1,11 @@
+from pathlib import Path
+
 import typer
 
-from kelp_o_matic import __version__
-from kelp_o_matic.managers import RichSegmentationManager
-from kelp_o_matic.models import (
-    KelpPresenceSegmentationModel,
-    KelpSpeciesSegmentationModel,
-    MusselPresenceSegmentationModel,
+from kelp_o_matic import (
+    __version__,
+    find_kelp as find_kelp_,
+    find_mussels as find_mussels_,
 )
 
 cli = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]})
@@ -32,13 +32,7 @@ def find_kelp(
     Detect kelp in image at path SOURCE and output the resulting classification raster
     to file at path DEST.
     """
-    model = (
-        KelpSpeciesSegmentationModel(use_gpu=use_gpu)
-        if species
-        else KelpPresenceSegmentationModel(use_gpu=use_gpu)
-    )
-    manager = RichSegmentationManager(model, source, dest, crop_size=crop_size)
-    manager()
+    find_kelp_(source, dest, species, crop_size, use_gpu)
 
 
 @cli.command()
@@ -57,9 +51,7 @@ def find_mussels(
     Detect mussels in image at path SOURCE and output the resulting classification
     raster to file at path DEST.
     """
-    model = MusselPresenceSegmentationModel(use_gpu=use_gpu)
-    manager = RichSegmentationManager(model, source, dest, crop_size=crop_size)
-    manager()
+    find_mussels_(source, dest, crop_size, use_gpu)
 
 
 def version_callback(value: bool) -> None:
