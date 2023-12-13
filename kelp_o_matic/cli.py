@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 import typer
 
@@ -24,12 +25,16 @@ def find_kelp(
         1024,
         help="The data window size to run through the segmentation model.",
     ),
-    band_order: list[int] = typer.Option(
-        [1, 2, 3],
+    use_nir: bool = typer.Option(
+        False,
+        "--rgbi/--rgb",
+        help="Use RGB and NIR bands for classification. Assumes RGBI ordering.",
+    ),
+    band_order: Optional[list[int]] = typer.Option(
+        None,
         "-b",
-        help="GDAL-style band selection to map image bands to RGB or RGBI order."
-        "Defaults to RGB order (i.e. -b 1 -b 2 -b 3). "
-        "To specify, e.g. BGRI order, do -b 3 -b 2 -b 1 -b 4.",
+        help="GDAL-style band re-ordering flag. Defaults to RGB or RGBI order. "
+        "To e.g., reorder a BGRI image at runtime, pass flags `-b 3 -b 2 -b 1 -b 4`.",
     ),
     use_gpu: bool = typer.Option(
         True, "--gpu/--no-gpu", help="Enable or disable GPU, if available."
@@ -39,7 +44,7 @@ def find_kelp(
     Detect kelp in image at path SOURCE and output the resulting classification raster
     to file at path DEST.
     """
-    find_kelp_(source, dest, species, crop_size, tuple(band_order), use_gpu)
+    find_kelp_(source, dest, species, crop_size, use_nir, tuple(band_order), use_gpu)
 
 
 @cli.command()

@@ -31,7 +31,8 @@ class GeotiffSegmentationManager:
                 returns classifications.
             input_path: The path to the input geotiff image.
             output_path: The destination file path for the output segmentation data.
-            band_order: The order of the bands in the input image. Defaults to [1, 2, 3] for RGB order. Also supports RGBI ([1,2,3,4]) and BGRI ([3,2,1,4]).
+            band_order: Optional tuple to reorder bands in the input image.
+                Defaults to [1, 2, 3] for RGB ordering.
             crop_size: The size of image crop to classify iteratively until the entire
                 image is classified.
         """

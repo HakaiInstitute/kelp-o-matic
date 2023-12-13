@@ -1,5 +1,6 @@
+import warnings
 from pathlib import Path
-from typing import Union
+from typing import Union, Optional
 
 from kelp_o_matic.managers import RichSegmentationManager
 from kelp_o_matic.models import (
@@ -39,12 +40,28 @@ def _validate_paths(source: Path, dest: Path):
         )
 
 
+def _validate_band_order(band_order: list[int], use_nir: bool = False):
+    if use_nir:
+        assert len(band_order) >= 4, "RGBI ordering requires 4 bands."
+    if len(band_order) > 4:
+        warnings.warn(
+            f"RGBI models only uses the first 4 bands. Received {len(band_order)}."
+        )
+    else:
+        assert len(band_order) >= 3, "RGB ordering requires 3 bands."
+        if len(band_order) > 3:
+            warnings.warn(
+                f"RGB models only uses the first 3 bands. Received {len(band_order)}."
+            )
+
+
 def find_kelp(
     source: Union[str, Path],
     dest: Union[str, Path],
     species: bool = False,
     crop_size: int = 1024,
-    band_order: tuple[int] = (1, 2, 3),
+    use_nir: bool = False,
+    band_order: Optional[list[int]] = None,
     use_gpu: bool = True,
 ):
     """
@@ -56,9 +73,17 @@ def find_kelp(
         dest: File path location to save output to.
         species: Do species classification instead of presence/absence.
         crop_size: The size of cropped image square run through the segmentation model.
-        band_order: The order of the bands in the input image. Defaults to [1, 2, 3] for RGB order. Also supports RGBI ([1,2,3,4]) and BGRI ([3,2,1,4]).
+        use_nir: Use NIR band for classification. Assumes RGBI ordering.
+        band_order: GDAL-style band re-ordering. Defaults to RGB or RGBI order.
+            e.g. to reorder a BGRI image at runtime, pass `[3,2,1,4]`.
         use_gpu: Disable Cuda GPU usage and run on CPU only.
     """
+    if not band_order:
+        band_order = [1, 2, 3]
+        if use_nir:
+            band_order.append(4)
+
+    _validate_band_order(band_order, use_nir)
     _validate_paths(Path(source), Path(dest))
     use_nir = len(band_order) == 4
 
@@ -79,7 +104,7 @@ def find_mussels(
     source: Union[str, Path],
     dest: Union[str, Path],
     crop_size: int = 1024,
-    band_order: tuple[int] = (1, 2, 3),
+    band_order: Optional[list[int]] = None,
     use_gpu: bool = True,
 ):
     """
@@ -90,9 +115,14 @@ def find_mussels(
         source: Input image with Byte data type.
         dest: File path location to save output to.
         crop_size: The size of cropped image square run through the segmentation model.
-        band_order: The order of the bands in the input image. Defaults to [1, 2, 3] for RGB order. Also supports RGBI ([1,2,3,4]) and BGRI ([3,2,1,4]).
+        band_order: GDAL-style band re-ordering flag. Defaults to RGB order.
+            e.g. to reorder a BGR image at runtime, pass `[3,2,1]`.
         use_gpu: Disable Cuda GPU usage and run on CPU only.
     """
+    if not band_order:
+        band_order = [1, 2, 3]
+
+    _validate_band_order(band_order)
     _validate_paths(Path(source), Path(dest))
     model = MusselRGBPresenceSegmentationModel(use_gpu=use_gpu)
     RichSegmentationManager(
