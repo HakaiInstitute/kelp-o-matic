@@ -63,7 +63,7 @@ $ kom find-kelp --help
         <img alt="Big window output" src="../images/kom-big-window.png" width="50%"/>
     </div>
 
-    Also worth noting is that the `crop_size` parameter will change the outputs. 
+    Also worth noting is that the `crop_size` parameter will change the outputs.
     If you need to reproduce a result, make sure to use the same `crop_size` as the original run.
 
 [//]: # (??? info "Info: Misclassifications over land")
