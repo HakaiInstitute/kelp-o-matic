@@ -21,7 +21,7 @@ class _Model(ABC):
 
     @staticmethod
     def transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
-        x = f.to_tensor(x)[:3, :, :]
+        x = f.to_tensor(x)[:3, :, :].to(torch.float)
         x = f.normalize(x, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         return x
 
@@ -103,7 +103,7 @@ class KelpRGBIPresenceSegmentationModel(_Model):
     @staticmethod
     def transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
         # to float
-        x = f.to_tensor(x)[:4, :, :]
+        x = f.to_tensor(x)[:4, :, :].to(torch.float)
         # min-max scale
         min_, _ = torch.kthvalue(x.flatten().unique(), 2)
         max_ = x.flatten().max()

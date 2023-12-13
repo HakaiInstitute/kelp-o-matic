@@ -65,7 +65,7 @@ class GeotiffSegmentationManager:
                 crop, read_window = batch
 
                 if self.model.transform:
-                    crop = self.model.transform(crop)
+                    crop = self.model.transform(crop / self._max_value)
 
                 if torch.all(crop == 0):
                     logits = self.model.shortcut(self.reader.crop_size)
@@ -99,12 +99,24 @@ class GeotiffSegmentationManager:
                 UserWarning,
             )
 
-    def _byte_type_check(self):
-        dtype = self.reader.profile["dtype"]
-        if dtype != "uint8":
+    @property
+    def _dtype(self):
+        return self.reader.profile["dtype"]
+
+    @property
+    def _max_value(self):
+        if self._dtype == "uint8":
+            return 255
+        elif self._dtype == "uint16":
+            return 65535
+        else:
+            raise AssertionError(f"Unknown dtype {self.dtype}.")
+
+    def _dtype_check(self):
+        if self._dtype not in ["uint8", "uint16"]:
             raise AssertionError(
-                f"Input image has incorrect data type {dtype}. "
-                f"Only uint8 (aka Byte) images are supported."
+                f"Input image has incorrect data type {self._dtype}. "
+                f"Only uint8 (aka Byte) and uint16 images are supported."
             )
 
     def _band_count_check(self):
@@ -140,7 +152,7 @@ class GeotiffSegmentationManager:
     def _run_checks(self):
         """Run image checks."""
         self._no_data_check()
-        self._byte_type_check()
+        self._dtype_check()
         self._band_count_check()
         self._block_tiles_check()
 
