@@ -6,6 +6,7 @@ from kelp_o_matic.models import (
     KelpRGBPresenceSegmentationModel,
     KelpRGBSpeciesSegmentationModel,
     MusselRGBPresenceSegmentationModel,
+    KelpRGBIPresenceSegmentationModel,
 )
 
 
@@ -44,6 +45,7 @@ def find_kelp(
     species: bool = False,
     crop_size: int = 1024,
     use_gpu: bool = True,
+    use_nir: bool = False,
 ):
     """
     Detect kelp in image at path `source` and output the resulting classification raster
@@ -54,10 +56,16 @@ def find_kelp(
         dest: File path location to save output to.
         species: Do species classification instead of presence/absence.
         crop_size: The size of cropped image square run through the segmentation model.
+        use_nir: Use NIR band if present (assumes RGBI order).
         use_gpu: Disable Cuda GPU usage and run on CPU only.
     """
     _validate_paths(Path(source), Path(dest))
-    if species:
+
+    if use_nir and species:
+        raise NotImplementedError("RGBI species classification not yet available.")
+    elif use_nir:
+        model = KelpRGBIPresenceSegmentationModel(use_gpu=use_gpu)
+    elif species:
         model = KelpRGBSpeciesSegmentationModel(use_gpu=use_gpu)
     else:
         model = KelpRGBPresenceSegmentationModel(use_gpu=use_gpu)
