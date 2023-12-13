@@ -23,20 +23,6 @@ Install `pytorch` and `torchvision` for your operating system using the
 Make sure you select "CUDA" as the compute platform if you have an NVIDIA GPU you'd like to use to improve performance.
 
 
-=== "Conda"
-
-    ### Install
-
-    ```bash
-    conda install -c conda-forge kelp-o-matic
-    ```
-
-    ### Update
-
-    ```bash
-    conda update -c conda-forge kelp-o-matic
-    ```
-
 === "PIP"
 
     ### Install
@@ -49,4 +35,18 @@ Make sure you select "CUDA" as the compute platform if you have an NVIDIA GPU yo
 
     ```bash
     pip install --upgrade kelp-o-matic
+    ```
+
+=== "Conda"
+
+    ### Install
+
+    ```bash
+    conda install -c conda-forge kelp-o-matic
+    ```
+
+    ### Update
+
+    ```bash
+    conda update -c conda-forge kelp-o-matic
     ```
