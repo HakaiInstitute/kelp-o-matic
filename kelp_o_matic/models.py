@@ -9,9 +9,9 @@ import torchvision.transforms.functional as f
 from PIL.Image import Image
 
 from kelp_o_matic.data import (
-    lraspp_kelp_presence_torchscript_path,
-    lraspp_kelp_species_torchscript_path,
-    lraspp_mussel_presence_torchscript_path,
+    rgb_kelp_presence_torchscript_path,
+    rgb_kelp_species_torchscript_path,
+    rgb_mussel_presence_torchscript_path,
 )
 
 
@@ -63,11 +63,11 @@ class _Model(ABC):
 
 
 class KelpPresenceSegmentationModel(_Model):
-    torchscript_path = lraspp_kelp_presence_torchscript_path
+    torchscript_path = rgb_kelp_presence_torchscript_path
 
 
 class KelpSpeciesSegmentationModel(_Model):
-    torchscript_path = lraspp_kelp_species_torchscript_path
+    torchscript_path = rgb_kelp_species_torchscript_path
     register_depth = 4
 
     def __init__(self, *args, **kwargs):
@@ -93,4 +93,4 @@ class KelpSpeciesSegmentationModel(_Model):
 
 
 class MusselPresenceSegmentationModel(_Model):
-    torchscript_path = lraspp_mussel_presence_torchscript_path
+    torchscript_path = rgb_mussel_presence_torchscript_path
