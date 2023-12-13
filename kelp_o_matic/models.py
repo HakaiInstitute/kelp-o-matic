@@ -62,17 +62,17 @@ class _Model(ABC):
         return logits
 
 
-class KelpPresenceSegmentationModel(_Model):
+class KelpRGBPresenceSegmentationModel(_Model):
     torchscript_path = rgb_kelp_presence_torchscript_path
 
 
-class KelpSpeciesSegmentationModel(_Model):
+class KelpRGBSpeciesSegmentationModel(_Model):
     torchscript_path = rgb_kelp_species_torchscript_path
     register_depth = 4
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.presence_model = KelpPresenceSegmentationModel(*args, **kwargs)
+        self.presence_model = KelpRGBPresenceSegmentationModel(*args, **kwargs)
 
     def __call__(self, x: "torch.Tensor") -> "torch.Tensor":
         with torch.no_grad():
@@ -92,5 +92,5 @@ class KelpSpeciesSegmentationModel(_Model):
         return label.detach().cpu().numpy()
 
 
-class MusselPresenceSegmentationModel(_Model):
+class MusselRGBPresenceSegmentationModel(_Model):
     torchscript_path = rgb_mussel_presence_torchscript_path

@@ -3,9 +3,9 @@ from typing import Union
 
 from kelp_o_matic.managers import RichSegmentationManager
 from kelp_o_matic.models import (
-    KelpPresenceSegmentationModel,
-    KelpSpeciesSegmentationModel,
-    MusselPresenceSegmentationModel,
+    KelpRGBPresenceSegmentationModel,
+    KelpRGBSpeciesSegmentationModel,
+    MusselRGBPresenceSegmentationModel,
 )
 
 
@@ -58,9 +58,9 @@ def find_kelp(
     """
     _validate_paths(Path(source), Path(dest))
     if species:
-        model = KelpSpeciesSegmentationModel(use_gpu=use_gpu)
+        model = KelpRGBSpeciesSegmentationModel(use_gpu=use_gpu)
     else:
-        model = KelpPresenceSegmentationModel(use_gpu=use_gpu)
+        model = KelpRGBPresenceSegmentationModel(use_gpu=use_gpu)
     RichSegmentationManager(model, Path(source), Path(dest), crop_size=crop_size)()
 
 
@@ -81,5 +81,5 @@ def find_mussels(
         use_gpu: Disable Cuda GPU usage and run on CPU only.
     """
     _validate_paths(Path(source), Path(dest))
-    model = MusselPresenceSegmentationModel(use_gpu=use_gpu)
+    model = MusselRGBPresenceSegmentationModel(use_gpu=use_gpu)
     RichSegmentationManager(model, Path(source), Path(dest), crop_size=crop_size)()
