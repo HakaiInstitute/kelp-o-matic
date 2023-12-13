@@ -21,6 +21,7 @@ class GeotiffSegmentationManager:
         model: "_Model",
         input_path: Union[str, Path],
         output_path: Union[str, Path],
+        band_order: tuple[int] = (1, 2, 3),
         crop_size: int = 1024,
     ):
         """Create the segmentation object.
@@ -30,10 +31,12 @@ class GeotiffSegmentationManager:
                 returns classifications.
             input_path: The path to the input geotiff image.
             output_path: The destination file path for the output segmentation data.
+            band_order: The order of the bands in the input image. Defaults to [1, 2, 3] for RGB order. Also supports RGBI ([1,2,3,4]) and BGRI ([3,2,1,4]).
             crop_size: The size of image crop to classify iteratively until the entire
                 image is classified.
         """
         self.model = model
+        self.band_order = band_order
         self.crop_size = crop_size
         self.input_path = str(Path(input_path).expanduser().resolve())
         self.output_path = str(Path(output_path).expanduser().resolve())
@@ -63,6 +66,9 @@ class GeotiffSegmentationManager:
         with rasterio.Env():
             for index, batch in enumerate(self.reader):
                 crop, read_window = batch
+
+                # Reorder bands
+                crop = crop[:, :, [b - 1 for b in self.band_order]]
 
                 if self.model.transform:
                     crop = self.model.transform(crop / self._max_value)

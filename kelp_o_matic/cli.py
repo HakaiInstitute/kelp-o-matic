@@ -24,8 +24,12 @@ def find_kelp(
         1024,
         help="The data window size to run through the segmentation model.",
     ),
-    use_nir: bool = typer.Option(
-        False, "--rgbi/--rgb", help="Use NIR band if present (assumes RGBI order)."
+    band_order: list[int] = typer.Option(
+        [1, 2, 3],
+        "-b",
+        help="GDAL-style band selection to map image bands to RGB or RGBI order."
+        "Defaults to RGB order (i.e. -b 1 -b 2 -b 3). "
+        "To specify, e.g. BGRI order, do -b 3 -b 2 -b 1 -b 4.",
     ),
     use_gpu: bool = typer.Option(
         True, "--gpu/--no-gpu", help="Enable or disable GPU, if available."
@@ -35,7 +39,7 @@ def find_kelp(
     Detect kelp in image at path SOURCE and output the resulting classification raster
     to file at path DEST.
     """
-    find_kelp_(source, dest, species, crop_size, use_nir, use_gpu)
+    find_kelp_(source, dest, species, crop_size, tuple(band_order), use_gpu)
 
 
 @cli.command()
