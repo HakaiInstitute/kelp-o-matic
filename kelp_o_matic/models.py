@@ -12,6 +12,7 @@ from kelp_o_matic.data import (
     rgb_kelp_presence_torchscript_path,
     rgb_kelp_species_torchscript_path,
     rgb_mussel_presence_torchscript_path,
+    rgbi_kelp_presence_torchscript_path,
 )
 
 
@@ -94,3 +95,16 @@ class KelpRGBSpeciesSegmentationModel(_Model):
 
 class MusselRGBPresenceSegmentationModel(_Model):
     torchscript_path = rgb_mussel_presence_torchscript_path
+
+
+class KelpRGBIPresenceSegmentationModel(_Model):
+    torchscript_path = rgbi_kelp_presence_torchscript_path
+
+    @staticmethod
+    def transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
+        # to float
+        x = f.to_tensor(x)[:4, :, :]
+        # min-max scale
+        min_, _ = torch.kthvalue(x.flatten().unique(), 2)
+        max_ = x.flatten().max()
+        return torch.clamp((x - min_) / (max_ - min_ + 1e-8), 0, 1)
