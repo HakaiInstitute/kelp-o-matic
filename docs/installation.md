@@ -22,6 +22,16 @@ Install `pytorch` and `torchvision` for your operating system using the
 [official installation instructions here](https://pytorch.org/).
 Make sure you select "CUDA" as the compute platform if you have an NVIDIA GPU you'd like to use to improve performance.
 
+!!! warning
+
+    Unfortunately, Kelp-O-Matic v0.7.0 and later are only available via `pip` due to 
+    a dependency currently missing from conda-forge.
+
+    In the meantime, you can install the prerequisities with `conda` and then install 
+    Kelp-O-Matic with `pip`
+
+    Thanks for your patience!
+
 
 === "PIP"
 
