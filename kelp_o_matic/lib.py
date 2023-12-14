@@ -51,10 +51,10 @@ def _validate_paths(source: Path, dest: Path):
 def _validate_band_order(band_order: list[int], use_nir: bool = False):
     if use_nir:
         assert len(band_order) >= 4, "RGBI ordering requires 4 bands."
-    if len(band_order) > 4:
-        warnings.warn(
-            f"RGBI models only uses the first 4 bands. Received {len(band_order)}."
-        )
+        if len(band_order) > 4:
+            warnings.warn(
+                f"RGBI models only uses the first 4 bands. Received {len(band_order)}."
+            )
     else:
         assert len(band_order) >= 3, "RGB ordering requires 3 bands."
         if len(band_order) > 3:
