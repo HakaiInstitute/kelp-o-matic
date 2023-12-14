@@ -9,9 +9,10 @@ import torchvision.transforms.functional as f
 from PIL.Image import Image
 
 from kelp_o_matic.data import (
-    lraspp_kelp_presence_torchscript_path,
-    lraspp_kelp_species_torchscript_path,
-    lraspp_mussel_presence_torchscript_path,
+    rgb_kelp_presence_torchscript_path,
+    rgb_kelp_species_torchscript_path,
+    rgb_mussel_presence_torchscript_path,
+    rgbi_kelp_presence_torchscript_path,
 )
 
 
@@ -20,7 +21,7 @@ class _Model(ABC):
 
     @staticmethod
     def transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
-        x = f.to_tensor(x)[:3, :, :]
+        x = f.to_tensor(x)[:3, :, :].to(torch.float)
         x = f.normalize(x, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         return x
 
@@ -62,17 +63,17 @@ class _Model(ABC):
         return logits
 
 
-class KelpPresenceSegmentationModel(_Model):
-    torchscript_path = lraspp_kelp_presence_torchscript_path
+class KelpRGBPresenceSegmentationModel(_Model):
+    torchscript_path = rgb_kelp_presence_torchscript_path
 
 
-class KelpSpeciesSegmentationModel(_Model):
-    torchscript_path = lraspp_kelp_species_torchscript_path
+class KelpRGBSpeciesSegmentationModel(_Model):
+    torchscript_path = rgb_kelp_species_torchscript_path
     register_depth = 4
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.presence_model = KelpPresenceSegmentationModel(*args, **kwargs)
+        self.presence_model = KelpRGBPresenceSegmentationModel(*args, **kwargs)
 
     def __call__(self, x: "torch.Tensor") -> "torch.Tensor":
         with torch.no_grad():
@@ -92,5 +93,18 @@ class KelpSpeciesSegmentationModel(_Model):
         return label.detach().cpu().numpy()
 
 
-class MusselPresenceSegmentationModel(_Model):
-    torchscript_path = lraspp_mussel_presence_torchscript_path
+class MusselRGBPresenceSegmentationModel(_Model):
+    torchscript_path = rgb_mussel_presence_torchscript_path
+
+
+class KelpRGBIPresenceSegmentationModel(_Model):
+    torchscript_path = rgbi_kelp_presence_torchscript_path
+
+    @staticmethod
+    def transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
+        # to float
+        x = f.to_tensor(x)[:4, :, :].to(torch.float)
+        # min-max scale
+        min_, _ = torch.kthvalue(x.flatten().unique(), 2)
+        max_ = x.flatten().max()
+        return torch.clamp((x - min_) / (max_ - min_ + 1e-8), 0, 1)

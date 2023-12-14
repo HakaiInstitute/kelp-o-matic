@@ -30,6 +30,7 @@ class GeotiffWriter:
         self.img_path = img_path
         self.crop_size = crop_size
 
+        profile = profile.copy()
         profile.update(blockxsize=crop_size, blockysize=crop_size, tiled=True, **kwargs)
 
         # Create the file and get the indices of write locations

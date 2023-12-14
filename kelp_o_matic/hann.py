@@ -104,13 +104,13 @@ class TorchMemoryRegister(object):
     def __init__(
         self,
         image_path: Union[str, Path],
-        num_classes: int,
+        reg_depth: int,
         window_size: int,
         device: torch.device.type,
     ):
         super().__init__()
         self.image_path = Path(image_path)
-        self.n = num_classes
+        self.n = reg_depth
         self.ws = window_size
         self.hws = window_size // 2
         self.device = device

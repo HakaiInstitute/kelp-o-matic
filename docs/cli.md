@@ -1,6 +1,7 @@
 # Command Line Reference
 
-The `kelp-o-matic` package includes one command line tool, `kom`. It will be registered in the same Conda environment
+The `kelp-o-matic` package includes one command line tool, `kom`. It will be registered
+in the same Conda environment
 that the `kelp-o-matic` package is installed to.
 
 ```
@@ -35,14 +36,24 @@ $ kom find-kelp --help
    Options
   --species        --presence             Segment to species or presence/absence level. [default: presence]
   --crop-size                    INTEGER  The data window size to run through the segmentation model. [default: 1024]
+  --rgbi           --rgb                  Use RGB and NIR bands for classification. Assumes RGBI ordering. [default: rgb]
+               -b                INTEGER  GDAL-style band re-ordering flag. Defaults to RGB or RGBI order. To e.g., reorder a BGRI image at runtime, pass flags `-b 3 -b 2 -b 1 -b 4`. [default: None]
   --gpu            --no-gpu               Enable or disable GPU, if available. [default: gpu]
   --help       -h                         Show this message and exit.
 ```
 
 !!! Example
+    
+    Classify kelp species in an RGB image:
 
     ```bash
     kom find-kelp --species --crop-size=1024 ./some/image_with_kelp.tif ./some/place_to_write_output.tif
+    ```
+
+    Classify kelp presence/absence in an BGRI image:
+
+    ```bash
+    kom find-kelp --rgbi -b 3 -b 2 -b 1 -b 4 --crop-size=1024 ./some/image_with_kelp.tif ./some/place_to_write_output.tif
     ```
 
 ???+ tip "Tip: Reduce windowed processing artifacts"
@@ -63,7 +74,7 @@ $ kom find-kelp --help
         <img alt="Big window output" src="../images/kom-big-window.png" width="50%"/>
     </div>
 
-    Also worth noting is that the `crop_size` parameter will change the outputs. 
+    Also worth noting is that the `crop_size` parameter will change the outputs.
     If you need to reproduce a result, make sure to use the same `crop_size` as the original run.
 
 [//]: # (??? info "Info: Misclassifications over land")
@@ -97,6 +108,7 @@ $ kom find-mussels --help
 
    Options
   --crop-size                  INTEGER  The data window size to run through the segmentation model. [default: 1024]
+               -b              INTEGER  GDAL-style band re-ordering flag. Defaults to RGB order. To e.g., reorder a BGR image at runtime, pass flags `-b 3 -b 2 -b 1`. [default: None]
   --gpu            --no-gpu             Enable or disable GPU, if available. [default: gpu]
   --help       -h                       Show this message and exit.
 ```

@@ -21,6 +21,7 @@ class GeotiffSegmentationManager:
         model: "_Model",
         input_path: Union[str, Path],
         output_path: Union[str, Path],
+        band_order: tuple[int] = (1, 2, 3),
         crop_size: int = 1024,
     ):
         """Create the segmentation object.
@@ -30,10 +31,13 @@ class GeotiffSegmentationManager:
                 returns classifications.
             input_path: The path to the input geotiff image.
             output_path: The destination file path for the output segmentation data.
+            band_order: Optional tuple to reorder bands in the input image.
+                Defaults to [1, 2, 3] for RGB ordering.
             crop_size: The size of image crop to classify iteratively until the entire
                 image is classified.
         """
         self.model = model
+        self.band_order = band_order
         self.crop_size = crop_size
         self.input_path = str(Path(input_path).expanduser().resolve())
         self.output_path = str(Path(output_path).expanduser().resolve())
@@ -64,8 +68,11 @@ class GeotiffSegmentationManager:
             for index, batch in enumerate(self.reader):
                 crop, read_window = batch
 
+                # Reorder bands
+                crop = crop[:, :, [b - 1 for b in self.band_order]]
+
                 if self.model.transform:
-                    crop = self.model.transform(crop)
+                    crop = self.model.transform(crop / self._max_value)
 
                 if torch.all(crop == 0):
                     logits = self.model.shortcut(self.reader.crop_size)
@@ -99,12 +106,24 @@ class GeotiffSegmentationManager:
                 UserWarning,
             )
 
-    def _byte_type_check(self):
-        dtype = self.reader.profile["dtype"]
-        if dtype != "uint8":
+    @property
+    def _dtype(self):
+        return self.reader.profile["dtype"]
+
+    @property
+    def _max_value(self):
+        if self._dtype == "uint8":
+            return 255
+        elif self._dtype == "uint16":
+            return 65535
+        else:
+            raise AssertionError(f"Unknown dtype {self.dtype}.")
+
+    def _dtype_check(self):
+        if self._dtype not in ["uint8", "uint16"]:
             raise AssertionError(
-                f"Input image has incorrect data type {dtype}. "
-                f"Only uint8 (aka Byte) images are supported."
+                f"Input image has incorrect data type {self._dtype}. "
+                f"Only uint8 (aka Byte) and uint16 images are supported."
             )
 
     def _band_count_check(self):
@@ -140,7 +159,7 @@ class GeotiffSegmentationManager:
     def _run_checks(self):
         """Run image checks."""
         self._no_data_check()
-        self._byte_type_check()
+        self._dtype_check()
         self._band_count_check()
         self._block_tiles_check()
 
