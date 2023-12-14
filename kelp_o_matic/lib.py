@@ -2,6 +2,8 @@ import warnings
 from pathlib import Path
 from typing import Union, Optional
 
+import rasterio
+
 from kelp_o_matic.managers import RichSegmentationManager
 from kelp_o_matic.models import (
     KelpRGBPresenceSegmentationModel,
@@ -12,8 +14,14 @@ from kelp_o_matic.models import (
 
 
 def _validate_paths(source: Path, dest: Path):
-    def is_tif(p: Path):
-        return p.suffix.lower() in [".tif", ".tiff"]
+    drivers = rasterio.drivers.raster_driver_extensions()
+
+    def is_supported_file_type(p: Path):
+        try:
+            drivers.get(p.suffix[1:])
+            return True
+        except KeyError:
+            return False
 
     def file_exists(p: Path):
         return p.exists() and p.is_file()
@@ -22,16 +30,16 @@ def _validate_paths(source: Path, dest: Path):
         return p.exists() and p.is_dir()
 
     # Check that input and output paths are tif files
-    if not is_tif(source):
-        raise ValueError("The source must be a tif file.")
-    if not is_tif(dest):
-        raise ValueError("The dest must be a tif file.")
     # Check that input path exists
     if not file_exists(source):
         raise ValueError("The source file does not exist.")
     # Check that output path parent exists
     if not dir_exists(dest.parent):
         raise ValueError("The directory for path dest does not exist.")
+    if not is_supported_file_type(source):
+        raise ValueError("The specified source file is not supported by GDAL.")
+    if not is_supported_file_type(dest):
+        raise ValueError("The specified dest file is not supported by GDAL.")
     # Check that input and output paths are different
     if source == dest:
         raise ValueError(
@@ -43,10 +51,10 @@ def _validate_paths(source: Path, dest: Path):
 def _validate_band_order(band_order: list[int], use_nir: bool = False):
     if use_nir:
         assert len(band_order) >= 4, "RGBI ordering requires 4 bands."
-    if len(band_order) > 4:
-        warnings.warn(
-            f"RGBI models only uses the first 4 bands. Received {len(band_order)}."
-        )
+        if len(band_order) > 4:
+            warnings.warn(
+                f"RGBI models only uses the first 4 bands. Received {len(band_order)}."
+            )
     else:
         assert len(band_order) >= 3, "RGB ordering requires 3 bands."
         if len(band_order) > 3:

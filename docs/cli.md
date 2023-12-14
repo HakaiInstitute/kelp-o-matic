@@ -43,7 +43,7 @@ $ kom find-kelp --help
 ```
 
 !!! Example
-    
+
     Classify kelp species in an RGB image:
 
     ```bash

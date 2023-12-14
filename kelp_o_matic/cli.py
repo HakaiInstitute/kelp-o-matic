@@ -59,7 +59,7 @@ def find_mussels(
         None,
         "-b",
         help="GDAL-style band re-ordering flag. Defaults to RGB order. "
-             "To e.g., reorder a BGR image at runtime, pass flags `-b 3 -b 2 -b 1`.",
+        "To e.g., reorder a BGR image at runtime, pass flags `-b 3 -b 2 -b 1`.",
     ),
     use_gpu: bool = typer.Option(
         True, "--gpu/--no-gpu", help="Enable or disable GPU, if available."
