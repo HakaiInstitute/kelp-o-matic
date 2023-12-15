@@ -10,6 +10,7 @@ from kelp_o_matic.models import (
     KelpRGBSpeciesSegmentationModel,
     MusselRGBPresenceSegmentationModel,
     KelpRGBIPresenceSegmentationModel,
+    KelpRGBISpeciesSegmentationModel,
 )
 
 
@@ -93,10 +94,9 @@ def find_kelp(
 
     _validate_band_order(band_order, use_nir)
     _validate_paths(Path(source), Path(dest))
-    use_nir = len(band_order) == 4
 
     if use_nir and species:
-        raise NotImplementedError("RGBI species classification not yet available.")
+        model = KelpRGBISpeciesSegmentationModel(use_gpu=use_gpu)
     elif use_nir:
         model = KelpRGBIPresenceSegmentationModel(use_gpu=use_gpu)
     elif species:

@@ -1,6 +1,6 @@
 import gc
 import importlib.resources as importlib_resources
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, ABCMeta
 from typing import Union
 
 import numpy as np
@@ -13,6 +13,7 @@ from kelp_o_matic.data import (
     rgb_kelp_species_torchscript_path,
     rgb_mussel_presence_torchscript_path,
     rgbi_kelp_presence_torchscript_path,
+    rgbi_kelp_species_torchscript_path,
 )
 
 
@@ -63,17 +64,17 @@ class _Model(ABC):
         return logits
 
 
-class KelpRGBPresenceSegmentationModel(_Model):
-    torchscript_path = rgb_kelp_presence_torchscript_path
-
-
-class KelpRGBSpeciesSegmentationModel(_Model):
-    torchscript_path = rgb_kelp_species_torchscript_path
+class _SpeciesSegmentationModel(_Model, metaclass=ABCMeta):
     register_depth = 4
+
+    @property
+    @abstractmethod
+    def presence_model_class(self):
+        raise NotImplementedError
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.presence_model = KelpRGBPresenceSegmentationModel(*args, **kwargs)
+        self.presence_model = self.presence_model_class(*args, **kwargs)
 
     def __call__(self, x: "torch.Tensor") -> "torch.Tensor":
         with torch.no_grad():
@@ -82,7 +83,7 @@ class KelpRGBSpeciesSegmentationModel(_Model):
             species_logits = self.model.forward(x)  # 0: macro, 1: nerea
             logits = torch.concat((presence_logits, species_logits), dim=1)
 
-        return logits  # 0: bg, 1: kelp, 2: macro, 3: nereo
+        return logits  # [[0: bg, 1: kelp], [0: macro, 1: nereo]]
 
     def post_process(self, x: "torch.Tensor") -> "np.ndarray":
         with torch.no_grad():
@@ -93,8 +94,26 @@ class KelpRGBSpeciesSegmentationModel(_Model):
         return label.detach().cpu().numpy()
 
 
+class KelpRGBPresenceSegmentationModel(_Model):
+    torchscript_path = rgb_kelp_presence_torchscript_path
+
+
+class KelpRGBSpeciesSegmentationModel(_SpeciesSegmentationModel):
+    torchscript_path = rgb_kelp_species_torchscript_path
+    presence_model_class = KelpRGBPresenceSegmentationModel
+
+
 class MusselRGBPresenceSegmentationModel(_Model):
     torchscript_path = rgb_mussel_presence_torchscript_path
+
+
+def _unet_efficientnet_b4_transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
+    # to float
+    x = f.to_tensor(x)[:4, :, :].to(torch.float)
+    # min-max scale
+    min_, _ = torch.kthvalue(x.flatten().unique(), 2)
+    max_ = x.flatten().max()
+    return torch.clamp((x - min_) / (max_ - min_ + 1e-8), 0, 1)
 
 
 class KelpRGBIPresenceSegmentationModel(_Model):
@@ -102,9 +121,13 @@ class KelpRGBIPresenceSegmentationModel(_Model):
 
     @staticmethod
     def transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
-        # to float
-        x = f.to_tensor(x)[:4, :, :].to(torch.float)
-        # min-max scale
-        min_, _ = torch.kthvalue(x.flatten().unique(), 2)
-        max_ = x.flatten().max()
-        return torch.clamp((x - min_) / (max_ - min_ + 1e-8), 0, 1)
+        return _unet_efficientnet_b4_transform(x)
+
+
+class KelpRGBISpeciesSegmentationModel(_SpeciesSegmentationModel):
+    torchscript_path = rgbi_kelp_species_torchscript_path
+    presence_model_class = KelpRGBIPresenceSegmentationModel
+
+    @staticmethod
+    def transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
+        return _unet_efficientnet_b4_transform(x)
