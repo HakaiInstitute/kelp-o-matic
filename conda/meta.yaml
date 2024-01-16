@@ -27,7 +27,7 @@ requirements:
     - torchvision ~=0.16.1
     - typer ~=0.9.0
   run_constrained:
-    - pytorch-cuda ~= 11.8
+    - pytorch-cuda >= 11.8
 
 test:
   imports:
