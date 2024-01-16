@@ -1,5 +1,4 @@
 import gc
-import importlib.resources as importlib_resources
 from abc import ABC, abstractmethod, ABCMeta
 from typing import Union
 
@@ -8,13 +7,7 @@ import torch
 import torchvision.transforms.functional as f
 from PIL.Image import Image
 
-from kelp_o_matic.data import (
-    rgb_kelp_presence_torchscript_path,
-    rgb_kelp_species_torchscript_path,
-    rgb_mussel_presence_torchscript_path,
-    rgbi_kelp_presence_torchscript_path,
-    rgbi_kelp_species_torchscript_path,
-)
+from kelp_o_matic.utils import lazy_load_params
 
 
 class _Model(ABC):
@@ -37,8 +30,8 @@ class _Model(ABC):
         raise NotImplementedError
 
     def load_model(self) -> "torch.nn.Module":
-        with importlib_resources.as_file(self.torchscript_path) as ts:
-            model = torch.jit.load(ts, map_location=self.device)
+        params_file = lazy_load_params(self.torchscript_path)
+        model = torch.jit.load(params_file, map_location=self.device)
         model.eval()
         return model
 
@@ -95,16 +88,16 @@ class _SpeciesSegmentationModel(_Model, metaclass=ABCMeta):
 
 
 class KelpRGBPresenceSegmentationModel(_Model):
-    torchscript_path = rgb_kelp_presence_torchscript_path
+    torchscript_path = "LRASPP_MobileNetV3_kelp_presence_rgb_jit_miou=0.8023.pt"
 
 
 class KelpRGBSpeciesSegmentationModel(_SpeciesSegmentationModel):
-    torchscript_path = rgb_kelp_species_torchscript_path
+    torchscript_path = "LRASPP_MobileNetV3_kelp_species_rgb_jit_miou=0.9634.pt"
     presence_model_class = KelpRGBPresenceSegmentationModel
 
 
 class MusselRGBPresenceSegmentationModel(_Model):
-    torchscript_path = rgb_mussel_presence_torchscript_path
+    torchscript_path = "LRASPP_MobileNetV3_mussel_presence_rgb_jit_miou=0.8745.pt"
 
 
 def _unet_efficientnet_b4_transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
@@ -117,7 +110,9 @@ def _unet_efficientnet_b4_transform(x: Union[np.ndarray, Image]) -> torch.Tensor
 
 
 class KelpRGBIPresenceSegmentationModel(_Model):
-    torchscript_path = rgbi_kelp_presence_torchscript_path
+    torchscript_path = (
+        "UNetPlusPlus_EfficientNetB4_kelp_presence_rgbi_jit_miou=0.8785.pt"
+    )
 
     @staticmethod
     def transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
@@ -125,7 +120,9 @@ class KelpRGBIPresenceSegmentationModel(_Model):
 
 
 class KelpRGBISpeciesSegmentationModel(_SpeciesSegmentationModel):
-    torchscript_path = rgbi_kelp_species_torchscript_path
+    torchscript_path = (
+        "UNetPlusPlus_EfficientNetB4_kelp_species_rgbi_jit_miou=0.8432.pt"
+    )
     presence_model_class = KelpRGBIPresenceSegmentationModel
 
     @staticmethod

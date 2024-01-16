@@ -32,7 +32,6 @@ requirements:
 test:
   imports:
     - kelp_o_matic
-    - kelp_o_matic.data
     - kelp_o_matic.geotiff_io
   commands:
     - pip check
