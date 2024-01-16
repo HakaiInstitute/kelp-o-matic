@@ -1,7 +1,5 @@
 # Installation and Updating
 
-The most reliable way to install `kelp-o-matic` is with [Conda](https://docs.anaconda.com/anaconda/).
-
 The library is currently available for Python versions 3.9 through 3.11. Support for future versions
 will be added when possible.
 
