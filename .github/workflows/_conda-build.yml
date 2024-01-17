@@ -56,7 +56,7 @@ jobs:
           use-mamba: true
 
       - name: Install build packages
-        run: mamba install -y anaconda-client conda-build conda-verify
+        run: mamba install -y anaconda-client conda-build conda-verify boa
 
       - name: Build package
         run: |
