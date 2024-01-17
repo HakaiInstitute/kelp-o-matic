@@ -56,12 +56,12 @@ jobs:
           use-mamba: true
 
       - name: Install build packages
-        run: mamba install -y anaconda-client conda-build conda-verify
+        run: mamba install -y boa anaconda-client
 
       - name: Build package
         run: |
           cd conda
-          mamba build --output-folder . .
+          conda mambabuild --output-folder . .
 
       - name: Publish package
         if: inputs.should-upload
