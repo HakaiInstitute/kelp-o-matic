@@ -61,7 +61,7 @@ jobs:
       - name: Build package
         run: |
           cd conda
-          boa build --output-folder . .
+          conda mambabuild --output-folder . .
 
       - name: Publish package
         if: inputs.should-upload
