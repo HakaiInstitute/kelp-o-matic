@@ -11,7 +11,7 @@ nav:
     - Running the Segmentation Tool: beginner_guide/execution.md
     - Post-Processing: beginner_guide/post_processing.md
   - Installation: installation.md
-  - Data Expectations: expectations.md
+  - Data Requirements: expectations.md
   - Command Line Interface: cli.md
   - Python API: python_lib.md
   - About: about.md
