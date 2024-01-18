@@ -188,7 +188,7 @@ class RichSegmentationManager(GeotiffSegmentationManager):
         super().__init__(*args, **kwargs)
 
         self.progress = Progress(
-            SpinnerColumn("earth"), *Progress.get_default_columns(), TimeElapsedColumn()
+            SpinnerColumn("dots"), *Progress.get_default_columns(), TimeElapsedColumn()
         )
         self.processing_task = self.progress.add_task(
             description="Processing", total=len(self.reader)
