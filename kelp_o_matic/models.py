@@ -104,7 +104,10 @@ def _unet_efficientnet_b4_transform(x: Union[np.ndarray, Image]) -> torch.Tensor
     # to float
     x = f.to_tensor(x)[:4, :, :].to(torch.float)
     # min-max scale
-    min_, _ = torch.kthvalue(x.flatten().unique(), 2)
+    x_unique = x.flatten().unique()
+    min_ = x_unique[0]
+    if len(x_unique) > 1:
+        min_, _ = torch.kthvalue(x_unique, 2)
     max_ = x.flatten().max()
     return torch.clamp((x - min_) / (max_ - min_ + 1e-8), 0, 1)
 
