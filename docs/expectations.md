@@ -6,11 +6,11 @@ All interfaces to Kelp-O-Matic make the following assumptions about input images
 
 ### 1. Data type is unsigned 8- or 16-bit integer.
 
-This is often called `uint8` or `Byte` in software for unsigned 8-bit data, and 
+This is often called `uint8` or `Byte` in software for unsigned 8-bit data, and
 `uint16` for unsigned 16-bit data. If your data has a different numerical type,
 you are very likely to get strange results as output.
 
-If your image meets this condition, the pixels will be in the range 0 - 255 
+If your image meets this condition, the pixels will be in the range 0 - 255
 (for `uint8`) or 0 - 65535 (for `uint16`).
 
 ### 2. Channel order is Red, Green, Blue, then (optionally) Near Infrared.
@@ -29,14 +29,14 @@ you can pass a list of band indices to the `band_order` parameter.
 
 ### 1. Define a *nodata* value in the image metadata.
 
-This is not a strict requirement, but is helpful for skipping classification on blank 
+This is not a strict requirement, but is helpful for skipping classification on blank
 image areas to speed up processing.
 
 !!! example
     For images with a black background, this value should be 0.
     For white backgrounds, it should be set to 255.
 
-If there is no *nodata* value set, any part of the image that is completely black or 
+If there is no *nodata* value set, any part of the image that is completely black or
 completely white is classified as "background" by Kelp-O-Matic.
 
 ### 2. Use tiled GeoTIFFs.
