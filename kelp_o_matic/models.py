@@ -1,6 +1,6 @@
 import gc
 from abc import ABC, abstractmethod, ABCMeta
-from typing import Union
+from typing import Union, Type
 
 import numpy as np
 import torch
@@ -26,7 +26,7 @@ class _Model(ABC):
 
     @property
     @abstractmethod
-    def torchscript_path(self):
+    def torchscript_path(self) -> str:
         raise NotImplementedError
 
     def load_model(self) -> "torch.nn.Module":
@@ -62,7 +62,7 @@ class _SpeciesSegmentationModel(_Model, metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def presence_model_class(self):
+    def presence_model_class(self) -> Type["_Model"]:
         raise NotImplementedError
 
     def __init__(self, *args, **kwargs):
