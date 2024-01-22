@@ -273,3 +273,5 @@ conda/channeldata.json
 conda/index.html
 
 .idea/
+
+*.profile
