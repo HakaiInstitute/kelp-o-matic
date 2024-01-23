@@ -23,6 +23,7 @@ class GeotiffSegmentationManager:
         output_path: Union[str, Path],
         band_order: tuple[int] = (1, 2, 3),
         crop_size: int = 1024,
+        test_time_augmentation: bool = False,
     ):
         """Create the segmentation object.
 
@@ -35,10 +36,12 @@ class GeotiffSegmentationManager:
                 Defaults to [1, 2, 3] for RGB ordering.
             crop_size: The size of image crop to classify iteratively until the entire
                 image is classified.
+            test_time_augmentation: Use test time augmentation to improve accuracy.
         """
         self.model = model
         self.band_order = band_order
         self.crop_size = crop_size
+        self.tta = test_time_augmentation
         self.input_path = str(Path(input_path).expanduser().resolve())
         self.output_path = str(Path(output_path).expanduser().resolve())
 
@@ -83,6 +86,18 @@ class GeotiffSegmentationManager:
                         crop, (0, self.crop_size - w, 0, self.crop_size - h), value=0
                     )
                     logits = self.model(crop.unsqueeze(0))[0]
+
+                    if self.tta:
+                        for k in range(1, 4):
+                            aug_crop = torch.rot90(crop, k=k, dims=(1, 2))
+                            aug_logits = self.model(aug_crop.unsqueeze(0))[0]
+                            unaug_logits = torch.rot90(aug_logits, k=-k, dims=(1, 2))
+                            logits = torch.maximum(logits, unaug_logits)
+                        for d in [1, 2]:
+                            aug_crop = torch.flip(crop, dims=(d,))
+                            aug_logits = self.model(aug_crop.unsqueeze(0))[0]
+                            unaug_logits = torch.flip(aug_logits, dims=(d,))
+                            logits = torch.maximum(logits, unaug_logits)
 
                 logits = self.kernel(
                     logits,

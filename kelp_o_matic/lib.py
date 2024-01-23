@@ -72,6 +72,7 @@ def find_kelp(
     use_nir: bool = False,
     band_order: Optional[list[int]] = None,
     use_gpu: bool = True,
+    test_time_augmentation: bool = False,
 ):
     """
     Detect kelp in image at path `source` and output the resulting classification raster
@@ -86,6 +87,7 @@ def find_kelp(
         band_order: GDAL-style band re-ordering. Defaults to RGB or RGBI order.
             e.g. to reorder a BGRI image at runtime, pass `[3,2,1,4]`.
         use_gpu: Disable Cuda GPU usage and run on CPU only.
+        test_time_augmentation: Use test time augmentation to improve model accuracy.
     """
     if not band_order:
         band_order = [1, 2, 3]
@@ -104,7 +106,12 @@ def find_kelp(
     else:
         model = KelpRGBPresenceSegmentationModel(use_gpu=use_gpu)
     RichSegmentationManager(
-        model, Path(source), Path(dest), band_order=band_order, crop_size=crop_size
+        model,
+        Path(source),
+        Path(dest),
+        band_order=band_order,
+        crop_size=crop_size,
+        test_time_augmentation=test_time_augmentation,
     )()
 
 
@@ -114,6 +121,7 @@ def find_mussels(
     crop_size: int = 1024,
     band_order: Optional[list[int]] = None,
     use_gpu: bool = True,
+    test_time_augmentation: bool = False,
 ):
     """
     Detect mussels in image at path `source` and output the resulting classification
@@ -126,6 +134,7 @@ def find_mussels(
         band_order: GDAL-style band re-ordering flag. Defaults to RGB order.
             e.g. to reorder a BGR image at runtime, pass `[3,2,1]`.
         use_gpu: Disable Cuda GPU usage and run on CPU only.
+        test_time_augmentation: Use test time augmentation to improve model accuracy.
     """
     if not band_order:
         band_order = [1, 2, 3]
@@ -134,5 +143,10 @@ def find_mussels(
     _validate_paths(Path(source), Path(dest))
     model = MusselRGBPresenceSegmentationModel(use_gpu=use_gpu)
     RichSegmentationManager(
-        model, Path(source), Path(dest), band_order=band_order, crop_size=crop_size
+        model,
+        Path(source),
+        Path(dest),
+        band_order=band_order,
+        crop_size=crop_size,
+        test_time_augmentation=test_time_augmentation,
     )()

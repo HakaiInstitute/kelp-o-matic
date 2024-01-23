@@ -39,6 +39,7 @@ $ kom find-kelp --help
   --rgbi           --rgb                  Use RGB and NIR bands for classification. Assumes RGBI ordering. [default: rgb]
                -b                INTEGER  GDAL-style band re-ordering flag. Defaults to RGB or RGBI order. To e.g., reorder a BGRI image at runtime, pass flags `-b 3 -b 2 -b 1 -b 4`. [default: None]
   --gpu            --no-gpu               Enable or disable GPU, if available. [default: gpu]
+  --tta            --no-tta               Use test time augmentation to improve accuracy at the cost of processing time. [default: no-tta]
   --help       -h                         Show this message and exit.
 ```
 
@@ -110,6 +111,7 @@ $ kom find-mussels --help
   --crop-size                  INTEGER  The data window size to run through the segmentation model. [default: 1024]
                -b              INTEGER  GDAL-style band re-ordering flag. Defaults to RGB order. To e.g., reorder a BGR image at runtime, pass flags `-b 3 -b 2 -b 1`. [default: None]
   --gpu            --no-gpu             Enable or disable GPU, if available. [default: gpu]
+  --tta            --no-tta             Use test time augmentation to improve accuracy at the cost of processing time. [default: no-tta]
   --help       -h                       Show this message and exit.
 ```
 

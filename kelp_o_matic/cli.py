@@ -39,12 +39,18 @@ def find_kelp(
     use_gpu: bool = typer.Option(
         True, "--gpu/--no-gpu", help="Enable or disable GPU, if available."
     ),
+    use_tta: bool = typer.Option(
+        False,
+        "--tta/--no-tta",
+        help="Use test time augmentation to improve accuracy at the cost of "
+        "processing time.",
+    ),
 ):
     """
     Detect kelp in image at path SOURCE and output the resulting classification raster
     to file at path DEST.
     """
-    find_kelp_(source, dest, species, crop_size, use_nir, band_order, use_gpu)
+    find_kelp_(source, dest, species, crop_size, use_nir, band_order, use_gpu, use_tta)
 
 
 @cli.command()
@@ -64,12 +70,18 @@ def find_mussels(
     use_gpu: bool = typer.Option(
         True, "--gpu/--no-gpu", help="Enable or disable GPU, if available."
     ),
+    use_tta: bool = typer.Option(
+        False,
+        "--tta/--no-tta",
+        help="Use test time augmentation to improve accuracy at the cost of "
+        "processing time.",
+    ),
 ):
     """
     Detect mussels in image at path SOURCE and output the resulting classification
     raster to file at path DEST.
     """
-    find_mussels_(source, dest, crop_size, band_order, use_gpu)
+    find_mussels_(source, dest, crop_size, band_order, use_gpu, use_tta)
 
 
 def version_callback(value: bool) -> None:
