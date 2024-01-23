@@ -9,8 +9,9 @@ from rasterio.transform import from_origin
 from kelp_o_matic.hann import TorchMemoryRegister
 
 
-def create_dummy_tiff(filename, width=512, height=512, num_bands=3,
-                      dtype=rasterio.uint8):
+def create_dummy_tiff(
+    filename, width=512, height=512, num_bands=3, dtype=rasterio.uint8
+):
     """
     Create a dummy TIFF file for testing.
 
@@ -25,19 +26,21 @@ def create_dummy_tiff(filename, width=512, height=512, num_bands=3,
 
     # Create a new dataset with given parameters
     with rasterio.open(
-            filename, 'w',
-            driver='GTiff',
-            height=height,
-            width=width,
-            count=num_bands,
-            dtype=dtype,
-            crs='+proj=latlong',
-            transform=transform
+        filename,
+        "w",
+        driver="GTiff",
+        height=height,
+        width=width,
+        count=num_bands,
+        dtype=dtype,
+        crs="+proj=latlong",
+        transform=transform,
     ) as dst:
         # Write dummy data to each band
         for i in range(1, num_bands + 1):
             data = np.random.randint(0, 255, (height, width)).astype(dtype)
             dst.write(data, i)
+
 
 @pytest.fixture
 def memory_register(tmp_path):
@@ -50,8 +53,9 @@ def memory_register(tmp_path):
         image_path=dummy_image_path,
         reg_depth=2,
         window_size=256,
-        device=torch.device("cpu")
+        device=torch.device("cpu"),
     )
+
 
 @pytest.fixture
 def small_dummy_image_path(tmp_path):
@@ -61,6 +65,7 @@ def small_dummy_image_path(tmp_path):
 
     return small_dummy_image_path
 
+
 @pytest.fixture
 def small_img_memory_register(small_dummy_image_path):
     # Initialize TorchMemoryRegister with the dummy image
@@ -68,8 +73,9 @@ def small_img_memory_register(small_dummy_image_path):
         image_path=small_dummy_image_path,
         reg_depth=2,
         window_size=256,
-        device=torch.device("cpu")
+        device=torch.device("cpu"),
     )
+
 
 @pytest.fixture
 def full_window_memory_register(small_dummy_image_path):
@@ -78,8 +84,9 @@ def full_window_memory_register(small_dummy_image_path):
         image_path=small_dummy_image_path,
         reg_depth=2,
         window_size=200,
-        device=torch.device("cpu")
+        device=torch.device("cpu"),
     )
+
 
 @pytest.fixture
 def odd_window_memory_register(small_dummy_image_path):
@@ -88,8 +95,9 @@ def odd_window_memory_register(small_dummy_image_path):
         image_path=small_dummy_image_path,
         reg_depth=2,
         window_size=125,
-        device=torch.device("cpu")
+        device=torch.device("cpu"),
     )
+
 
 def test_initialization(memory_register):
     assert memory_register.n == 2
