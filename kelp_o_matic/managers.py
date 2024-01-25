@@ -85,19 +85,27 @@ class GeotiffSegmentationManager:
                     crop = torch.nn.functional.pad(
                         crop, (0, self.crop_size - w, 0, self.crop_size - h), value=0
                     )
-                    logits = self.model(crop.unsqueeze(0))[0]
-
                     if self.tta:
-                        for k in range(1, 4):
-                            aug_crop = torch.rot90(crop, k=k, dims=(1, 2))
-                            aug_logits = self.model(aug_crop.unsqueeze(0))[0]
-                            unaug_logits = torch.rot90(aug_logits, k=-k, dims=(1, 2))
-                            logits = torch.maximum(logits, unaug_logits)
-                        for d in [1, 2]:
-                            aug_crop = torch.flip(crop, dims=(d,))
-                            aug_logits = self.model(aug_crop.unsqueeze(0))[0]
-                            unaug_logits = torch.flip(aug_logits, dims=(d,))
-                            logits = torch.maximum(logits, unaug_logits)
+                        all_logits = []
+                        for flip in [False, True]:
+                            for k in range(4):
+                                # Augment
+                                aug_crop = torch.flip(crop, dims=(1,)) if flip else crop
+                                aug_crop = torch.rot90(aug_crop, k=k, dims=(1, 2))
+                                # Classify
+                                aug_logits = self.model(aug_crop.unsqueeze(0))[0]
+                                # Un-augment
+                                aug_logits = torch.rot90(aug_logits, k=-k, dims=(1, 2))
+                                logits = (
+                                    torch.flip(aug_logits, dims=(1,))
+                                    if flip
+                                    else aug_logits
+                                )
+                                all_logits.append(logits)
+                        logits = torch.stack(all_logits).mean(dim=0)
+
+                    else:
+                        logits = self.model(crop.unsqueeze(0))[0]
 
                 logits = self.kernel(
                     logits,
