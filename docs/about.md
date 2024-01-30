@@ -296,9 +296,21 @@ $$
 
 === "RGBI"
 
-    !!! todo
+    === "Validation split"
 
-        Coming soon!
+        | Class    |    IoU | Precision | Recall | Accuracy |
+        |:---------|-------:|----------:|-------:|---------:|
+        | Macro    | 0.8158 |    0.8527 | 0.8762 |        - |
+        | Nereo    | 0.8344 |    0.9516 | 0.9344 |        - |
+        | *Mean*   | 0.8251 |    0.9022 | 0.9053 |   0.8898 |
+
+    === "Train split"
+
+        | Class    |    IoU | Precision | Recall | Accuracy |
+        |:---------|-------:|----------:|-------:|---------:|
+        | Macro    | 1.0000 |    1.0000 | 1.0000 |        - |
+        | Nereo    | 1.0000 |    1.0000 | 1.0000 |        - |
+        | *Mean*   | 1.0000 |    1.0000 | 1.0000 |   1.0000 |
 
 **Mussels (presence/absence)**
 
