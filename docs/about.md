@@ -247,6 +247,14 @@ $$
 
 === "RGBI"
 
+    === "Test split"
+
+        | Class    |    IoU | Precision | Recall | Accuracy |
+        |:---------|-------:|----------:|-------:|---------:|
+        | Kelp     | 0.6615 |    0.7494 | 0.8586 |        - |
+        | Not Kelp | 0.9823 |    0.9961 | 0.9860 |        - |
+        | *Mean*   | 0.8219 |    0.8727 | 0.9223 |   0.9223 |
+
     === "Validation split"
 
         | Class    |    IoU | Precision | Recall | Accuracy |
@@ -295,6 +303,14 @@ $$
         | *Mean*   | 0.8118 |    0.8719 | 0.8855 |   0.9649 |
 
 === "RGBI"
+
+    === "Test split"
+
+        | Class    |    IoU | Precision | Recall | Accuracy |
+        |:---------|-------:|----------:|-------:|---------:|
+        | Macro    | 0.5788 |    0.6109 | 0.5897 |        - |
+        | Nereo    | 0.6782 |    0.7149 | 0.7090 |        - |
+        | *Mean*   | 0.6285 |    0.6629 | 0.6494 |   0.8242 |
 
     === "Validation split"
 
