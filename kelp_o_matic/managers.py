@@ -74,12 +74,12 @@ class GeotiffSegmentationManager:
                 # Reorder bands
                 crop = crop[:, :, [b - 1 for b in self.band_order]]
 
-                if self.model.transform:
-                    crop = self.model.transform(crop / self._max_value)
-
-                if torch.all(crop == 0):
+                if (crop == 0).all():
                     logits = self.model.shortcut(self.reader.crop_size)
                 else:
+                    if self.model.transform:
+                        crop = self.model.transform(crop / self._max_value)
+
                     # Zero pad to correct shape
                     _, h, w = crop.shape
                     crop = torch.nn.functional.pad(
