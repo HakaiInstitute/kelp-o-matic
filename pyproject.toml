@@ -21,7 +21,7 @@ torchvision = "^0.16.1"
 typer = "^0.9.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.3.0"
+black = ">=23.3,<25.0"
 pre-commit = "^3.3.3"
 ruff = "^0.0.272"
 pytest = "^7.3.2"
