@@ -97,10 +97,19 @@ class KelpRGBSpeciesSegmentationModel(_SpeciesSegmentationModel):
 
 
 class MusselRGBPresenceSegmentationModel(_Model):
-    torchscript_path = "LRASPP_MobileNetV3_mussel_presence_rgb_jit_miou=0.8745.pt"
+    register_depth = 1
+    torchscript_path = (
+        "UNetPlusPlus_EfficientNetB4_mussel_presence_rgb_jit_dice=0.9269.pt"
+    )
+
+    def post_process(self, x: "torch.Tensor") -> "np.ndarray":
+        with torch.no_grad():
+            label = (torch.sigmoid(x) > 0.5).to(torch.uint8)[0]
+
+        return label.detach().cpu().numpy()
 
 
-def _unet_efficientnet_b4_transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
+def _rgbi_kelp_transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
     # to float
     x = f.to_tensor(x)[:4, :, :].to(torch.float)
     # min-max scale
@@ -119,7 +128,7 @@ class KelpRGBIPresenceSegmentationModel(_Model):
 
     @staticmethod
     def transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
-        return _unet_efficientnet_b4_transform(x)
+        return _rgbi_kelp_transform(x)
 
 
 class KelpRGBISpeciesSegmentationModel(_SpeciesSegmentationModel):
@@ -130,4 +139,4 @@ class KelpRGBISpeciesSegmentationModel(_SpeciesSegmentationModel):
 
     @staticmethod
     def transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
-        return _unet_efficientnet_b4_transform(x)
+        return _rgbi_kelp_transform(x)

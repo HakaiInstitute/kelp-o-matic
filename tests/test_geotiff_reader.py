@@ -21,7 +21,7 @@ def _create_simple_1band_img(tmpdir):
             count=1,
             crs="+proj=latlong",
             transform=rasterio.Affine.identity(),
-        )
+        ),
     ) as dst:
         dst.write(simple_img.astype(rasterio.uint8), 1)
 
@@ -45,7 +45,7 @@ def _create_simple_3band_img(tmpdir):
             count=3,
             crs="+proj=latlong",
             transform=rasterio.Affine.identity(),
-        )
+        ),
     ) as dst:
         for b in range(simple_img.shape[-1]):
             dst.write(simple_img[:, :, b].astype(rasterio.uint8), b + 1)
