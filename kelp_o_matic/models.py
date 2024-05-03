@@ -12,6 +12,7 @@ from kelp_o_matic.utils import lazy_load_params
 
 class _Model(ABC):
     register_depth = 2
+    all_black_val = 1
 
     @staticmethod
     def transform(x: Union[np.ndarray, Image]) -> torch.Tensor:
@@ -53,7 +54,7 @@ class _Model(ABC):
         logits = torch.zeros(
             (self.register_depth, crop_size, crop_size), device=self.device
         )
-        logits[0] = 1
+        logits[0] = self.all_black_val
         return logits
 
 
@@ -98,6 +99,8 @@ class KelpRGBSpeciesSegmentationModel(_SpeciesSegmentationModel):
 
 class MusselRGBPresenceSegmentationModel(_Model):
     register_depth = 1
+    all_black_val = -1
+    
     torchscript_path = (
         "UNetPlusPlus_EfficientNetB4_mussel_presence_rgb_jit_dice=0.9269.pt"
     )
