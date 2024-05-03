@@ -150,9 +150,9 @@ class TorchMemoryRegister(object):
         logits_bd = logits_abcd[:, :, self.hws :]
 
         # write c0
-        self.register[
-            :, :, img_window.col_off : img_window.col_off + self.hws
-        ] = logits_c0
+        self.register[:, :, img_window.col_off : img_window.col_off + self.hws] = (
+            logits_c0
+        )
 
         # write bd
         col_off_bd = img_window.col_off + self.hws

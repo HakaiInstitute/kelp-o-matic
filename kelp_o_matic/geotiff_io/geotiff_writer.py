@@ -4,6 +4,7 @@ Organization: Hakai Institute
 Date: 2021-02-22
 Description: A Pytorch Dataset for geotiff images that dynamically crops the image.
 """
+
 from pathlib import Path
 from typing import Union
 
