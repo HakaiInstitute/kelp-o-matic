@@ -99,7 +99,7 @@ class KelpRGBSpeciesSegmentationModel(_SpeciesSegmentationModel):
 
 class MusselRGBPresenceSegmentationModel(_Model):
     register_depth = 1
-    all_black_val = -1
+    all_black_val = 0
 
     torchscript_path = (
         "UNetPlusPlus_EfficientNetB4_mussel_presence_rgb_jit_dice=0.9269.pt"
