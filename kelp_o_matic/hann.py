@@ -150,21 +150,21 @@ class TorchMemoryRegister(object):
         logits_bd = logits_abcd[:, :, self.hws :]
 
         # write c0
-        self.register[
-            :, :, img_window.col_off : img_window.col_off + self.hws
-        ] = logits_c0
+        self.register[:, :, img_window.col_off : img_window.col_off + self.hws] = (
+            logits_c0
+        )
 
         # write bd
         col_off_bd = img_window.col_off + self.hws
         self.register[:, :, col_off_bd : col_off_bd + (self.ws - self.hws)] = logits_bd
 
         # Return the information-complete predictions
-        preds_win = Window(
+        logits_win = Window(
             col_off=img_window.col_off,
             row_off=img_window.row_off,
             height=min(self.hws, img_window.height),
             width=min(self.hws, img_window.width),
         )
-        preds = logits_a[:, : img_window.height, : img_window.width].softmax(axis=0)
+        logits = logits_a[:, : img_window.height, : img_window.width]
 
-        return preds, preds_win
+        return logits, logits_win

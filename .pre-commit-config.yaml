@@ -12,12 +12,9 @@ repos:
     hooks:
       - id: poetry-check
       - id: poetry-lock
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.265
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.2
     hooks:
       - id: ruff
         args: [ --fix ]
-  - repo: https://github.com/psf/black
-    rev: 23.3.0
-    hooks:
-      - id: black
+      - id: ruff-format
