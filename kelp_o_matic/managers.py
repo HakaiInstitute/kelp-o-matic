@@ -57,9 +57,12 @@ class GeotiffSegmentationManager:
             dtype="uint8",
             nodata=0,
         )
-        self.kernel = BartlettHannKernel(crop_size, self.model.device)
         self.register = TorchMemoryRegister(
-            self.input_path, self.model.register_depth, crop_size, self.model.device
+            image_width=self.reader.width,
+            register_depth=self.model.register_depth,
+            window_size=crop_size,
+            kernel=BartlettHannKernel,
+            device=self.model.device,
         )
 
     def __call__(self):
@@ -107,14 +110,14 @@ class GeotiffSegmentationManager:
                     else:
                         logits = self.model(crop.unsqueeze(0))[0]
 
-                logits = self.kernel(
+                write_logits, write_window = self.register.step(
                     logits,
+                    read_window,
                     top=self.reader.is_top_window(read_window),
                     bottom=self.reader.is_bottom_window(read_window),
                     left=self.reader.is_left_window(read_window),
                     right=self.reader.is_right_window(read_window),
                 )
-                write_logits, write_window = self.register.step(logits, read_window)
                 labels = self.model.post_process(write_logits)
 
                 # Write outputs
