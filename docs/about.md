@@ -105,25 +105,8 @@ flowchart TD
 
 ## Model Training
 
-The LRASPP MobileNetV3-Large[^1] model was trained using a stochastic gradient descent
-optimizer with the learning rate set to $0.35$, and L2 weight decay set to
-$3 \times 10^{-6}$. The model was trained for a total of 100 epochs. A cosine annealing
-learning rate schedule[^2] was used to improve accuracy. The loss function used for
-training was Focal Tversky Loss[^3], with parameters
-$\alpha=0.7, \beta=0.3, \gamma=4.0 / 3.0$.
-
-The model was trained on an AWS p3.8xlarge instance with 4 Nvidia Tesla V100 GPUS and
-took 18 hours to finish. At the end of training, the model parameters which achieved
-the best IoU~$\mu$~ score on the validation data split were saved for inference. It is
-these parameters that were used to calculate the final performance statistics for the
-model on the test split.
-
 Source code for model training is available on GitHub
 at [:material-github: hakai-ml-train](https://github.com/tayden/hakai-ml-train).
-
-[^1]: [A. Howard et al., ‘Searching for MobileNetV3’. arXiv, 2019.](https://arxiv.org/abs/1905.02244)
-[^2]: [I. Loshchilov and F. Hutter, ‘SGDR: Stochastic Gradient Descent with Warm Restarts’. arXiv, 2016.](https://arxiv.org/abs/1608.03983)
-[^3]: [N. Abraham and N. M. Khan, ‘A Novel Focal Tversky loss function with improved Attention U-Net for lesion segmentation’. arXiv, 2018.](https://arxiv.org/abs/1810.07842)
 
 ### Training overview
 
