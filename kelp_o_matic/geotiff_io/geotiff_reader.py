@@ -44,8 +44,8 @@ class GeotiffReader(IterableDataset):
             self.profile = src.profile
             self.block_shapes = src.block_shapes
 
-        self._y0s = list(range(0, self.height, self.stride))
-        self._x0s = list(range(0, self.width, self.stride))
+        self._y0s = list(range(0, self.height - self.stride + 1, self.stride))
+        self._x0s = list(range(0, self.width - self.stride + 1, self.stride))
         self.y0x0 = list(itertools.product(self._y0s, self._x0s))
 
     def __len__(self) -> int:
@@ -62,13 +62,13 @@ class GeotiffReader(IterableDataset):
         return window.row_off == 0
 
     def is_bottom_window(self, window: Window):
-        return window.row_off == self._y0s[-1]
+        return window.row_off + window.height >= self.height
 
     def is_left_window(self, window: Window):
         return window.col_off == 0
 
     def is_right_window(self, window: Window):
-        return window.col_off == self._x0s[-1]
+        return window.col_off + window.width >= self.width
 
     def __getitem__(self, idx: int) -> ("np.ndarray", Window):
         window = self.get_window(idx)

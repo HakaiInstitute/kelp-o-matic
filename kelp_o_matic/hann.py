@@ -1,10 +1,8 @@
 import math
 from abc import ABCMeta, abstractmethod
-from pathlib import Path
-from typing import Union
+from typing import Type, Annotated
 
 import numpy as np
-import rasterio
 import torch
 from rasterio.windows import Window
 
@@ -103,24 +101,21 @@ class BlackmanKernel(Kernel):
 class TorchMemoryRegister(object):
     def __init__(
         self,
-        image_path: Union[str, Path],
-        reg_depth: int,
-        window_size: int,
+        image_width: Annotated[int, "Width of the image in pixels"],
+        register_depth: Annotated[int, "Generally equal to the number of classes"],
+        window_size: Annotated[int, "Moving window size"],
+        kernel: Type[Kernel],
         device: torch.device.type,
     ):
         super().__init__()
-        self.image_path = Path(image_path)
-        self.n = reg_depth
+        self.n = register_depth
         self.ws = window_size
         self.hws = window_size // 2
+        self.kernel = kernel(size=window_size, device=device)
         self.device = device
 
-        # Copy metadata from img
-        with rasterio.open(str(image_path), "r") as src:
-            src_width = src.width
-
         self.height = self.ws
-        self.width = (math.ceil(src_width / self.ws) * self.ws) + self.hws
+        self.width = (math.ceil(image_width / self.ws) * self.ws) + self.hws
         self.register = torch.zeros(
             (self.n, self.height, self.width), device=self.device
         )
@@ -131,40 +126,110 @@ class TorchMemoryRegister(object):
             (self.n, self.hws, self.hws), dtype=torch.float, device=self.device
         )
 
-    def step(self, new_logits: torch.Tensor, img_window: Window):
-        # 1. Read data from the registry to update with the new logits
+    def step(
+        self,
+        new_logits: torch.Tensor,
+        img_window: Window,
+        *,
+        top: bool,
+        bottom: bool,
+        left: bool,
+        right: bool,
+    ):
+        # Read data from the registry to update with the new logits
         # |a|b| |
         # |c|d| |
         with torch.no_grad():
             logits_abcd = self.register[
                 :, :, img_window.col_off : img_window.col_off + self.ws
             ].clone()
-            logits_abcd += new_logits
+            logits_abcd += self.kernel(
+                new_logits, top=top, bottom=bottom, left=left, right=right
+            )
 
-        # Update the registry and pop information-complete data
-        # |c|b| | + pop a
-        # |0|d| |
-        logits_a = logits_abcd[:, : self.hws, : self.hws]
-        logits_c = logits_abcd[:, self.hws :, : self.hws]
-        logits_c0 = torch.concat([logits_c, self._zero_chip], dim=1)
-        logits_bd = logits_abcd[:, :, self.hws :]
+        if right and bottom:
+            # Need to return entire window
+            logits_win = img_window
+            logits = logits_abcd[:, : img_window.height, : img_window.width]
 
-        # write c0
-        self.register[:, :, img_window.col_off : img_window.col_off + self.hws] = (
-            logits_c0
-        )
+        elif right:
+            # Need to return a and b sections
 
-        # write bd
-        col_off_bd = img_window.col_off + self.hws
-        self.register[:, :, col_off_bd : col_off_bd + (self.ws - self.hws)] = logits_bd
+            # Update the registry and pop information-complete data
+            # |c|d| | + pop a+b
+            # |0|0| |
+            logits_ab = logits_abcd[:, : self.hws, :]
+            logits_cd = logits_abcd[:, self.hws :, :]
+            logits_00 = torch.concat([self._zero_chip, self._zero_chip], dim=2)
 
-        # Return the information-complete predictions
-        logits_win = Window(
-            col_off=img_window.col_off,
-            row_off=img_window.row_off,
-            height=min(self.hws, img_window.height),
-            width=min(self.hws, img_window.width),
-        )
-        logits = logits_a[:, : img_window.height, : img_window.width]
+            # write cd and 00
+            self.register[
+                :, : self.hws, img_window.col_off : img_window.col_off + self.ws
+            ] = logits_cd
+            self.register[
+                :, self.hws :, img_window.col_off : img_window.col_off + self.ws
+            ] = logits_00
+
+            logits_win = Window(
+                col_off=img_window.col_off,
+                row_off=img_window.row_off,
+                height=min(self.hws, img_window.height),
+                width=min(self.ws, img_window.width),
+            )
+            logits = logits_ab[:, : logits_win.height, : logits_win.width]
+        elif bottom:
+            # Need to return a and c sections only
+
+            # Update the registry and pop information-complete data
+            # |0|b| | + pop a+c
+            # |0|d| |
+            logits_ac = logits_abcd[:, :, : self.hws]
+            logits_00 = torch.concat([self._zero_chip, self._zero_chip], dim=1)
+            logits_bd = logits_abcd[:, :, self.hws :]
+
+            # write 00 and bd
+            self.register[:, :, img_window.col_off : img_window.col_off + self.hws] = (
+                logits_00  # Not really necessary since this is the last row
+            )
+            self.register[
+                :, :, img_window.col_off + self.hws : img_window.col_off + self.ws
+            ] = logits_bd
+
+            logits_win = Window(
+                col_off=img_window.col_off,
+                row_off=img_window.row_off,
+                height=min(self.ws, img_window.height),
+                width=min(self.hws, img_window.width),
+            )
+            logits = logits_ac[:, : img_window.height, : img_window.width]
+        else:
+            # Need to return "a" section only
+
+            # Update the registry and pop information-complete data
+            # |c|b| | + pop a
+            # |0|d| |
+            logits_a = logits_abcd[:, : self.hws, : self.hws]
+            logits_c = logits_abcd[:, self.hws :, : self.hws]
+            logits_c0 = torch.concat([logits_c, self._zero_chip], dim=1)
+            logits_bd = logits_abcd[:, :, self.hws :]
+
+            # write c0
+            self.register[:, :, img_window.col_off : img_window.col_off + self.hws] = (
+                logits_c0
+            )
+
+            # write bd
+            col_off_bd = img_window.col_off + self.hws
+            self.register[:, :, col_off_bd : col_off_bd + (self.ws - self.hws)] = (
+                logits_bd
+            )
+
+            logits_win = Window(
+                col_off=img_window.col_off,
+                row_off=img_window.row_off,
+                height=min(self.hws, img_window.height),
+                width=min(self.hws, img_window.width),
+            )
+            logits = logits_a[:, : img_window.height, : img_window.width]
 
         return logits, logits_win
