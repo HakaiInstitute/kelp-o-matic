@@ -1,10 +1,12 @@
 # Methods for Post-Processing Kelp-O-Matic Output[^1]
 
-This document describes the methods used for generating analysis ready data on species-level kelp
-extent from outputs from the Kelp-O-Matic tool. Final outputs consist of polygon features (.shp)
-that contain species-level classification of emergent canopy kelp present in drone imagery.
+This document describes the methods used for generating analysis ready data on
+species-level kelp extent from outputs from the Kelp-O-Matic tool. Final outputs 
+consist of polygon features (.shp) that contain species-level classification of 
+emergent canopy kelp present in drone imagery.
 
-These instructions assume a basic level of experience with the ArcMAP GIS interface. For questions,
+These instructions assume a basic level of experience with the ArcMAP GIS interface. For
+questions,
 please contact [Luba Reshitnyk](email:luba.reshitnyk@hakai.org) at
 the [Hakai Institute](https://hakai.org).
 
@@ -31,12 +33,15 @@ graph TB
 
 ## Detailed Workflow
 
-This section assumes that you have obtained output from the Kelp-O-Matic (.tif) and have a new
-instance of ArcMap (version 10.8). These same steps can be done using other GIS software (e.g. QGIS)
+This section assumes that you have obtained output from the Kelp-O-Matic (.tif) and have
+a new
+instance of ArcMap (version 10.8). These same steps can be done using other GIS
+software (e.g. QGIS)
 
 ??? tip "Tip: ArcMap Keyboard Shortcuts"
 
-    Keyboard shortcuts can make the editing process much faster. To enable some, go to `Customize > Customize Mode > Keyboard…`.
+    Keyboard shortcuts can make the editing process much faster. To enable some, go 
+    to `Customize > Customize Mode > Keyboard…`.
 
     Some useful shortcuts include:
 
@@ -47,11 +52,13 @@ instance of ArcMap (version 10.8). These same steps can be done using other GIS 
     3. Freehand tool (set to ++ctrl+r++)
         1. Toggle to freehand tool to manually digitize kelp feature polygons.
     4. Clip (set to ++ctrl+w++)
-        1. Quickly draw a polygon then click ctrl+W to delete the polygon features within the newly drawn polygon. Then delete that polygon.
+        1. Quickly draw a polygon then click ctrl+W to delete the polygon features 
+           within the newly drawn polygon. Then delete that polygon.
 
 ### Load Kelp-O-Matic Raster
 
-Load the output `.tif` file from Kelp-O-Matic into ArcMap. The raster will have the following
+Load the output `.tif` file from Kelp-O-Matic into ArcMap. The raster will have the
+following
 attributes:
 
 | Output value (gridcode) | Class                        |
@@ -77,10 +84,12 @@ Convert this raster into polygons using the `Raster to Polygon` tool in ArcMap.
         2. Type = "float"
         3. Click `OK`
 2. Calculate the area for each polygon
-    1. Right-click the "area" header in the attribute table, select `Calculate Geometry...`
+    1. Right-click the "area" header in the attribute table,
+       select `Calculate Geometry...`
         1. Property = "area"
         2. Units = "square meters"
-        3. Coordinate system = choose an appropriate projection that preserves area (e.g. NAD83 BC
+        3. Coordinate system = choose an appropriate projection that preserves area (
+           e.g. NAD83 BC
            Albers Equal Area EPSG = 3005)
         4. Click "OK"
 3. Add a new "species" field
@@ -95,7 +104,8 @@ Convert this raster into polygons using the `Raster to Polygon` tool in ArcMap.
 #### Delete small polygons that are unlikely to be kelp
 
 1. Start editing this feature polygon layer
-    1. In the Editor toolbar click `Editor > start editing`. Select the feature layer you will be
+    1. In the Editor toolbar click `Editor > start editing`. Select the feature layer
+       you will be
        editing
 2. Right click layer in the table of contents, Select `Open attribute table`.
    Click `Select by attribute`
@@ -105,7 +115,8 @@ Convert this raster into polygons using the `Raster to Polygon` tool in ArcMap.
 
 #### Manually delete non-kelp polygons
 
-There may be areas where KoM classifier falsely detected kelp and these polygons need to be removed
+There may be areas where KoM classifier falsely detected kelp and these polygons need to
+be removed
 manually.
 
 1. Select using the edit tool or “Select by Lasso” tool
@@ -114,29 +125,38 @@ manually.
 
 #### Add kelp not detected by KoM
 
-If there are locations where emergent canopy kelp was missed by the KoM classifier (example in
-figure below) manually digitize these features using the Freehand Tool. You will need to manually
-classify these new regions to species (change value in the attribute table). A 1:100 scale is
+If there are locations where emergent canopy kelp was missed by the KoM classifier (
+example in
+figure below) manually digitize these features using the Freehand Tool. You will need to
+manually
+classify these new regions to species (change value in the attribute table). A 1:100
+scale is
 recommended.
 
 ![Missed Kelp](./images/post_processing2.png)
 
 ### Review Species Attributes
 
-There may be some areas where the KoM classifier misclassified the species in a given area. These
-polygons can be edited manually. If you're just interested in presence/absence don't worry about
+There may be some areas where the KoM classifier misclassified the species in a given
+area. These
+polygons can be edited manually. If you're just interested in presence/absence don't
+worry about
 this step.
 
-1. Select all polygon features classified as giant kelp by opening the attribute table and “select
-   by attribute”. Select features representing giant kelp by typing: `"gridcode" = 2`. At the bottom
+1. Select all polygon features classified as giant kelp by opening the attribute table
+   and “select
+   by attribute”. Select features representing giant kelp by typing: `"gridcode" = 2`.
+   At the bottom
    of the attribute table click on the "Show selected records" tab.
 2. Right-click the "species" field you created earlier. Select "Field Calculator".
-3. In the text box enter "Macrocystis pyrifera" (with quotes included) and click OK. This will fill
+3. In the text box enter "Macrocystis pyrifera" (with quotes included) and click OK.
+   This will fill
    out that attribute for all the selected polygons.
 
 Repeat steps 1 - 3 for bull kelp by using `"gridcode" = 3` and "Nereocystis luetkeana".
 
-1. Review all the polygon species classification and manually change ones that the KoM classifier
+1. Review all the polygon species classification and manually change ones that the KoM
+   classifier
    misclassified by changing the text in the "species" field for that polygon feature.
 2. Save edits.
 3. Delete the "gridcode" attribute once you are done.
