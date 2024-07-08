@@ -38,9 +38,9 @@ This command also installs Python version 3.10 into your new environment.
 
 ??? question "Why do we use a new environment?"
 
-    Using a new Conda environment is a good practice to get into when installing Python 
-    packages. It ensures that the software you install does not conflict with other 
-    software on your computer, as well as makes it easy to remove when you don't want 
+    Using a new Conda environment is a good practice to get into when installing Python
+    packages. It ensures that the software you install does not conflict with other
+    software on your computer, as well as makes it easy to remove when you don't want
     it anymore.
 
 ## Change Environments
@@ -60,10 +60,10 @@ conda activate KelpSegmentation
 
 !!! note
 
-    If you used a different name for your environment, be sure to replace 
+    If you used a different name for your environment, be sure to replace
     `conda activate KelpSegmentation` with `conda activate <your-environment-name-here>`
 
-    You can see a list of all installed environments by typing and entering the 
+    You can see a list of all installed environments by typing and entering the
     command: `conda env list`.
 
 ![Change Environments 2](images/change_environments2.png)
@@ -78,7 +78,7 @@ the prompt.
 Now that we're in the new environment, we can install the packages that the Kelp-O-Matic
 tool needs to run, followed by Kelp-O-Matic itself.
 
-At this stage, you can directly reference 
+At this stage, you can directly reference
 the [installation instructions](../installation.md) if you find that easier, or continue
 with the following instructions.
 

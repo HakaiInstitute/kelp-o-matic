@@ -1,8 +1,8 @@
 # Methods for Post-Processing Kelp-O-Matic Output[^1]
 
 This document describes the methods used for generating analysis ready data on
-species-level kelp extent from outputs from the Kelp-O-Matic tool. Final outputs 
-consist of polygon features (.shp) that contain species-level classification of 
+species-level kelp extent from outputs from the Kelp-O-Matic tool. Final outputs
+consist of polygon features (.shp) that contain species-level classification of
 emergent canopy kelp present in drone imagery.
 
 These instructions assume a basic level of experience with the ArcMAP GIS interface. For
@@ -40,7 +40,7 @@ software (e.g. QGIS)
 
 ??? tip "Tip: ArcMap Keyboard Shortcuts"
 
-    Keyboard shortcuts can make the editing process much faster. To enable some, go 
+    Keyboard shortcuts can make the editing process much faster. To enable some, go
     to `Customize > Customize Mode > Keyboard…`.
 
     Some useful shortcuts include:
@@ -52,7 +52,7 @@ software (e.g. QGIS)
     3. Freehand tool (set to ++ctrl+r++)
         1. Toggle to freehand tool to manually digitize kelp feature polygons.
     4. Clip (set to ++ctrl+w++)
-        1. Quickly draw a polygon then click ctrl+W to delete the polygon features 
+        1. Quickly draw a polygon then click ctrl+W to delete the polygon features
            within the newly drawn polygon. Then delete that polygon.
 
 ### Load Kelp-O-Matic Raster

@@ -30,10 +30,10 @@ as KelpSegmentation is now appearing in brackets.
 
 !!! note
 
-    If you used a different name for your environment, be sure to replace 
+    If you used a different name for your environment, be sure to replace
     `conda activate KelpSegmentation` with `conda activate <your-environment-name-here>`
 
-    You can see a list of all installed environments by typing and entering the 
+    You can see a list of all installed environments by typing and entering the
     command: `conda env list`.
 
 ***
@@ -71,26 +71,26 @@ size of the image.
 
 !!! note
 
-    You can always get help documentation for the `kom find-kelp` tool by typing into 
+    You can always get help documentation for the `kom find-kelp` tool by typing into
     the prompt `kom find-kelp --help`.
 
-    This help documentation is the same as what is shown under 
+    This help documentation is the same as what is shown under
     the :doc:`Command Line Reference <./cli>`.
 
 !!! tip
 
-    If you manually type in the path to your file, use the `<tab>` key to have your 
+    If you manually type in the path to your file, use the `<tab>` key to have your
     operating system autocomplete the paths for you.
 
-    *e.g.*, if you type `kom find-kelp C:\\Desk`, then press the `<tab>` key, your 
-    operating system should complete the command for you so it 
+    *e.g.*, if you type `kom find-kelp C:\\Desk`, then press the `<tab>` key, your
+    operating system should complete the command for you so it
     reads: `kom find-kelp C:\\Desktop`.
 
-    If the partial path is ambiguous, tapping `<tab>` multiple times will cycle through 
+    If the partial path is ambiguous, tapping `<tab>` multiple times will cycle through
     the possible path options.
 
-    You can continue doing this as you type in the location to autocomplete the text 
-    for long path names. It is faster, and less error prone than typing the whole 
+    You can continue doing this as you type in the location to autocomplete the text
+    for long path names. It is faster, and less error prone than typing the whole
     path yourself.
 
 ![Complete Segmentation](images/complete_segmentation.png)

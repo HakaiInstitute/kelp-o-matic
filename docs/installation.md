@@ -5,16 +5,16 @@ future versions
 will be added when possible.
 
 New versions of the tool are occasionally released to improve segmentation performance,
-speed, and the user interface of the tool. Changes are published to the PyPI and 
-Anaconda repositories using [semantic versioning](https://semver.org/). You may want to 
-occasionally run the update commands to ensure that you're using the most up-to-date 
+speed, and the user interface of the tool. Changes are published to the PyPI and
+Anaconda repositories using [semantic versioning](https://semver.org/). You may want to
+occasionally run the update commands to ensure that you're using the most up-to-date
 version of `kelp-o-matic`.
 
 ## Commands
 
 !!! help "Need more help?"
 
-    If you are unfamiliar with the command line or installing Python packages, you may 
+    If you are unfamiliar with the command line or installing Python packages, you may
     find our [Beginner Guide](beginner_guide/index.md) helpful.
 
 ### Pre-requisites
