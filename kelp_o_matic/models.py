@@ -89,12 +89,34 @@ class _SpeciesSegmentationModel(_Model, metaclass=ABCMeta):
 
 
 class KelpRGBPresenceSegmentationModel(_Model):
-    torchscript_path = "LRASPP_MobileNetV3_kelp_presence_rgb_jit_miou=0.8023.pt"
+    register_depth = 1
+    all_black_val = 0
+
+    torchscript_path = (
+        "UNetPlusPlus_EfficientNetV2_m_kelp_presence_rgb_jit_dice=0.8677.pt"
+    )
+
+    def post_process(self, x: "torch.Tensor") -> "np.ndarray":
+        with torch.no_grad():
+            label = (torch.sigmoid(x) > 0.5).to(torch.uint8)[0]
+
+        return label.detach().cpu().numpy()
 
 
 class KelpRGBSpeciesSegmentationModel(_SpeciesSegmentationModel):
+    register_depth = 3
+    all_black_val = 0
+
     torchscript_path = "LRASPP_MobileNetV3_kelp_species_rgb_jit_miou=0.9634.pt"
     presence_model_class = KelpRGBPresenceSegmentationModel
+
+    def post_process(self, x: "torch.Tensor") -> "np.ndarray":
+        with torch.no_grad():
+            presence = (torch.sigmoid(x[0]) > 0.5).to(torch.uint8)  # 0: bg, 1: kelp
+            species = torch.argmax(x[1:], dim=0) + 2  # 2: macro, 3: nereo
+            label = torch.mul(presence, species)  # 0: bg, 2: macro, 3: nereo
+
+        return label.detach().cpu().numpy()
 
 
 class MusselRGBPresenceSegmentationModel(_Model):
