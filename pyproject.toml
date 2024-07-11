@@ -19,7 +19,7 @@ rich = ">=13.5,<14"
 torch = ">=2.1.0,<3"
 torchvision = ">=0.16.1"
 typer = ">=0.9.0"
-setuptools = "<70"
+packaging = "^24.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = ">=3.3.3"
