@@ -26,7 +26,7 @@ requirements:
     - rich >=13.5, <14
     - torchvision ~=0.16.1
     - typer ~=0.9.0
-    - setuptools <70
+    - packaging >=24.1, <25
   run_constrained:
     - pytorch-cuda >=11.8
 
