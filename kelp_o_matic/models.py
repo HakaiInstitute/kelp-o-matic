@@ -107,7 +107,9 @@ class KelpRGBSpeciesSegmentationModel(_SpeciesSegmentationModel):
     register_depth = 3
     all_black_val = 0
 
-    torchscript_path = "LRASPP_MobileNetV3_kelp_species_rgb_jit_miou=0.9634.pt"
+    torchscript_path = (
+        "UNetPlusPlus_EfficientNetV2_m_kelp_species_rgb_jit_dice=0.9881.pt"
+    )
     presence_model_class = KelpRGBPresenceSegmentationModel
 
     def post_process(self, x: "torch.Tensor") -> "np.ndarray":
