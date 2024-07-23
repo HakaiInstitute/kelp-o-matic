@@ -93,7 +93,7 @@ class KelpRGBPresenceSegmentationModel(_Model):
     all_black_val = 0
 
     torchscript_path = (
-        "UNetPlusPlus_EfficientNetV2_m_kelp_presence_rgb_jit_dice=0.8677.pt"
+        "UNetPlusPlus_EfficientNetV2_m_kelp_presence_rgb_jit_dice=0.8703.pt"
     )
 
     def post_process(self, x: "torch.Tensor") -> "np.ndarray":
