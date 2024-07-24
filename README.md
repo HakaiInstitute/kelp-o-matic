@@ -11,6 +11,10 @@
     <img alt="Version" src="https://anaconda.org/conda-forge/kelp-o-matic/badges/version.svg" height="20px" />
 </a>
 
+<a href="https://pypi.org/project/kelp-o-matic">
+    <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/kelp-o-matic" height="20px">
+</a>
+
 <a href="https://zenodo.org/badge/latestdoi/462897183">
     <img alt="DOI" src="https://zenodo.org/badge/462897183.svg" height="20px" />
 </a>
