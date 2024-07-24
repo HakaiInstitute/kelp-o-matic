@@ -1,4 +1,5 @@
 import os
+import shutil
 import tempfile
 import urllib.request
 from pathlib import Path
@@ -37,21 +38,27 @@ def download_file(url: str, filename: Path):
         task = progress.add_task(f"Downloading {filename.name}...", total=file_size)
 
         # Download the file
-        with tempfile.NamedTemporaryFile("wb") as f:
-            # Read data in chunks (e.g., 1024 bytes)
-            while True:
-                chunk = response.read(1024)
-                if not chunk:
-                    break
-                f.write(chunk)
+        try:
+            with tempfile.NamedTemporaryFile("wb", delete=False) as f:
+                # Read data in chunks (e.g., 1024 bytes)
+                while True:
+                    chunk = response.read(1024)
+                    if not chunk:
+                        break
+                    f.write(chunk)
 
-                # Update progress bar
-                progress.update(task, advance=len(chunk))
+                    # Update progress bar
+                    progress.update(task, advance=len(chunk))
 
-            # Move the file to the cache directory once downloaded
-            f.flush()
-            os.fsync(f.fileno())
-            filename.hardlink_to(f.name)
+                # Move the file to the cache directory once downloaded
+                f.flush()
+                os.fsync(f.fileno())
+
+            shutil.move(f.name, filename)
+        except Exception as e:
+            if f and os.path.exists(f.name):
+                os.remove(f.name)
+            raise e
 
 
 def all_same(items):
