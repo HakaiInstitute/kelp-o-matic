@@ -15,6 +15,7 @@ nav:
   - Command Line Interface: cli.md
   - Python API: python_lib.md
   - About: about.md
+  - FAQs: faqs.md
   - Issue Tracker: 'https://github.com/HakaiInstitute/kelp-o-matic/issues'
 
 theme:
