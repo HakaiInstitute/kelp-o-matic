@@ -1,16 +1,16 @@
 import warnings
 from pathlib import Path
-from typing import Union, Optional
+from typing import Optional, Union
 
 import rasterio
 
 from kelp_o_matic.managers import RichSegmentationManager
 from kelp_o_matic.models import (
+    KelpRGBIPresenceSegmentationModel,
+    KelpRGBISpeciesSegmentationModel,
     KelpRGBPresenceSegmentationModel,
     KelpRGBSpeciesSegmentationModel,
     MusselRGBPresenceSegmentationModel,
-    KelpRGBIPresenceSegmentationModel,
-    KelpRGBISpeciesSegmentationModel,
 )
 
 

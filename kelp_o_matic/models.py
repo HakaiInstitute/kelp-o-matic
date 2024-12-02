@@ -1,6 +1,6 @@
 import gc
-from abc import ABC, abstractmethod, ABCMeta
-from typing import Union, Type
+from abc import ABC, ABCMeta, abstractmethod
+from typing import Type, Union
 
 import numpy as np
 import torch

@@ -31,6 +31,9 @@ mkdocs = "^1.5.3"
 mkdocs-material = "^9.5.2"
 mkdocstrings-python = "^1.7.5"
 
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

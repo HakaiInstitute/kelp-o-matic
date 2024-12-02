@@ -5,7 +5,7 @@ import torch
 from rasterio.transform import from_origin
 from rasterio.windows import Window
 
-from kelp_o_matic.hann import TorchMemoryRegister, BartlettHannKernel, Kernel
+from kelp_o_matic.hann import BartlettHannKernel, Kernel, TorchMemoryRegister
 
 
 def create_dummy_tiff(

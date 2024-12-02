@@ -1,11 +1,10 @@
 import math
 from abc import ABCMeta, abstractmethod
-from typing import Type, Annotated
+from typing import Annotated, Type
 
 import numpy as np
 import torch
 from rasterio.windows import Window
-
 
 # Implementation of paper:
 # https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0229839#pone.0229839.ref007

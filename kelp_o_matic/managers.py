@@ -8,7 +8,7 @@ from rich import print
 from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn
 
 from kelp_o_matic.geotiff_io import GeotiffReader, GeotiffWriter
-from kelp_o_matic.hann import TorchMemoryRegister, BartlettHannKernel
+from kelp_o_matic.hann import BartlettHannKernel, TorchMemoryRegister
 from kelp_o_matic.models import _Model
 from kelp_o_matic.utils import all_same
 
