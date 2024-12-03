@@ -10,7 +10,7 @@ from kelp_o_matic import (
     find_mussels as find_mussels_,
 )
 
-cli = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]})
+cli = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]}, add_completion=False)
 
 
 @cli.command()
