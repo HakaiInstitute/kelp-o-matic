@@ -52,11 +52,9 @@ jobs:
           channel-priority: true
           auto-update-conda: true
           activate-environment: my-env
-          miniforge-variant: Miniforge3
-          use-mamba: true
 
       - name: Install build packages
-        run: mamba install -y boa anaconda-client
+        run: mamba install -y boa anaconda-client conda-verify
 
       - name: Build package
         run: |
