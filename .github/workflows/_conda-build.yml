@@ -52,7 +52,7 @@ jobs:
           channel-priority: true
           auto-update-conda: true
           activate-environment: my-env
-          miniforge-variant: Mambaforge
+          miniforge-variant: Miniforge3
           use-mamba: true
 
       - name: Install build packages
