@@ -14,11 +14,11 @@ build:
 
 requirements:
   host:
-    - python >=3.9, <3.12
+    - python 3.9
     - poetry-core
     - pip
   run:
-    - python ~=3.9, <3.12
+    - python >= 3.9
     - numpy >=1.24.2
     - pytorch >=2.1.0, <3
     - fsspec
@@ -38,6 +38,7 @@ test:
     - pip check
     - kom --help
   requires:
+    - python 3.9
     - pip
 
 about:
