@@ -26,6 +26,8 @@ theme:
     logo: material/shore
   features:
     - navigation.indexes
+    - navigation.instant
+    - navigation.instant.prefetch
 
 extra:
   analytics:
