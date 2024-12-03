@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Annotated, Optional
 
+import torch
 import typer
 
 from kelp_o_matic import (
@@ -144,6 +145,12 @@ def version_callback(value: bool) -> None:
         raise typer.Exit()
 
 
+def gpu_callback(value: bool) -> None:
+    if value:
+        typer.echo(f"GPU detected: {torch.cuda.is_available()}")
+        raise typer.Exit()
+
+
 @cli.callback()
 def main(
     version: Annotated[
@@ -154,6 +161,15 @@ def main(
             callback=version_callback,
             is_eager=True,
             help="Show version and exit.",
+        ),
+    ] = False,
+    gpu_test: Annotated[
+        bool,
+        typer.Option(
+            "--gpu-test",
+            callback=gpu_callback,
+            is_eager=True,
+            help="Test if GPU is detected and exit.",
         ),
     ] = False,
 ):
