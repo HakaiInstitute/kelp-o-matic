@@ -48,7 +48,7 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
           mamba-version: "*"
-          channels: pytorch,nvidia,conda-forge,defaults
+          channels: pytorch,nvidia,conda-forge
           channel-priority: true
           auto-update-conda: true
           activate-environment: my-env
