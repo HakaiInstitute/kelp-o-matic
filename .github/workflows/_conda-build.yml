@@ -58,7 +58,7 @@ jobs:
 
       - name: Build package
         run: |
-          rattler-build build -r conda/recipe.yaml --output-dir conda
+          rattler-build build -r conda/recipe.yaml
 
       - name: Publish package
         if: inputs.should-upload
