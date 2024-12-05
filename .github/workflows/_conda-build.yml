@@ -54,17 +54,17 @@ jobs:
           activate-environment: my-env
 
       - name: Install build packages
-        run: mamba install -y boa anaconda-client conda-verify
+        run: mamba install -y rattler-build anaconda-client conda-verify
 
       - name: Build package
         run: |
           cd conda
-          mamba build --output-folder . .
+          rattler-build build -r conda/recipe.yaml --output-dir conda
 
       - name: Publish package
         if: inputs.should-upload
         env:
           ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
-          cd conda
+          cd outputs
           anaconda upload --label main noarch/*.tar.bz2

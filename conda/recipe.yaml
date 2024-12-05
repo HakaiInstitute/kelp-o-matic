@@ -1,0 +1,64 @@
+schema_version: 1
+
+context:
+  git_tag: ${{ env.get('GIT_DESCRIBE_TAG', default="v0.0.0") }}
+  version: ${{ git_tag[1:] }}
+
+package:
+  name: kelp-o-matic
+  version: ${{ version }}
+
+source:
+  path: ../
+
+build:
+  number: 0
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv
+  python:
+    entry_points:
+      - kom = kelp_o_matic.cli:cli
+
+requirements:
+  host:
+    - python 3.9
+    - poetry-core
+    - pip
+  run:
+    - python >=3.9
+    - numpy >=1.24.2
+    - pytorch >=2.1.0, <3
+    - fsspec
+    - rasterio >=1.3.7, <2
+    - rich >=13.5, <14
+    - torchvision ~=0.16.1
+    - typer ~=0.9.0
+    - packaging >=24.1, <25
+  run_constraints:
+    - pytorch-cuda >=11.8
+
+tests:
+  - python:
+      imports:
+        - kelp_o_matic
+        - kelp_o_matic.geotiff_io
+  - requirements:
+      run:
+        - python 3.9
+        - pip
+    script:
+      - pip check
+      - kom --help
+
+about:
+  summary: Segmentation Tools for Remotely Sensed RPAS Imagery
+  license: MIT
+  license_file: LICENSE.txt
+  homepage: https://github.com/HakaiInstitute/kelp-o-matic
+  repository: https://github.com/HakaiInstitute/kelp-o-matic
+  documentation: https://kelp-o-matic.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - tayden
+

@@ -275,3 +275,5 @@ conda/index.html
 .idea/
 
 *.profile
+
+output
