@@ -21,11 +21,11 @@ build:
 
 requirements:
   host:
-    - python 3.9
+    - python 3.10
     - poetry-core
     - pip
   run:
-    - python >=3.9
+    - python >=3.10
     - numpy >=1.24.2
     - pytorch >=2.1.0, <3
     - fsspec
@@ -44,7 +44,7 @@ tests:
         - kelp_o_matic.geotiff_io
   - requirements:
       run:
-        - python 3.9
+        - python 3.10
         - pip
     script:
       - pip check
