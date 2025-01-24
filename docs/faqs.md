@@ -1,6 +1,6 @@
 # Common Questions
 
-Here some answers to the questions we get most often.
+Here are some answers to the questions we get most often.
 
 ## Data input
 
