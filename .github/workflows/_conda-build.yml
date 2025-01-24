@@ -53,6 +53,11 @@ jobs:
           auto-update-conda: true
           activate-environment: my-env
 
+      - name: Configure Windows Path
+        if: runner.os == 'Windows'
+        run: |
+          echo "$CONDA/Scripts" >> $GITHUB_PATH
+
       - name: Install build packages
         run: mamba install -y rattler-build anaconda-client conda-verify
 
