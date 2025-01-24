@@ -57,7 +57,6 @@ jobs:
           init-shell: >-
             bash
             powershell
-            cmd.exe
 
       - name: Verify rattler-build installation
         run: rattler-build --version
