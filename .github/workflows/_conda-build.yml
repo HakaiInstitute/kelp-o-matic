@@ -62,13 +62,10 @@ jobs:
         run: rattler-build --version
 
       - name: Build package
-        shell: micromamba-shell {0}
-        run: |
-          rattler-build build -r conda/recipe.yaml
+        run: rattler-build build -r conda/recipe.yaml
 
       - name: Publish package
         if: inputs.should-upload
-        shell: micromamba-shell {0}
         env:
           ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
