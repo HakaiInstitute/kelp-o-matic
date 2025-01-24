@@ -56,6 +56,9 @@ jobs:
       - name: Install build packages
         run: mamba install -y rattler-build anaconda-client conda-verify
 
+      - name: Verify rattler-build installation
+        run: rattler-build --version
+
       - name: Build package
         run: |
           rattler-build build -r conda/recipe.yaml
