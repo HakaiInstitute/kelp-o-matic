@@ -43,33 +43,31 @@ jobs:
         if: github.ref_type == 'tag'
         run: sed -i "s/0.0.0/${{ env.tag }}/g" kelp_o_matic/__init__.py
 
-      - name: Setup Mambaforge
-        uses: conda-incubator/setup-miniconda@v3
+      - name: Setup Mamba
+        uses: mamba-org/setup-micromamba@v2
         with:
-          python-version: ${{ inputs.python-version }}
-          mamba-version: "*"
-          channels: pytorch,nvidia,conda-forge,defaults
-          channel-priority: true
-          auto-update-conda: true
-          activate-environment: my-env
-
-      - name: Configure Windows Path
-        if: runner.os == 'Windows'
-        run: |
-          echo "$CONDA/Scripts" >> $GITHUB_PATH
-
-      - name: Install build packages
-        run: mamba install -y rattler-build anaconda-client conda-verify
+          environment-name: build-env
+          create-args: >-
+            python=${{ inputs.python-version }}
+            rattler-build
+            anaconda-client
+            conda-verify
+            -c pytorch -c nvidia -c conda-forge
+          cache-downloads: true
+          cache-downloads-key: ${{ runner.os }}-${{ runner.arch }}-${{ env.CACHE_NUMBER }}
+          init-shell: bash
 
       - name: Verify rattler-build installation
         run: rattler-build --version
 
       - name: Build package
+        shell: micromamba-shell {0}
         run: |
           rattler-build build -r conda/recipe.yaml
 
       - name: Publish package
         if: inputs.should-upload
+        shell: micromamba-shell {0}
         env:
           ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
