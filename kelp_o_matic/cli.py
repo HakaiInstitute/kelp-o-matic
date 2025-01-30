@@ -28,7 +28,7 @@ def find_kelp(
     dest: Annotated[
         Path,
         typer.Argument(
-            exists=True,
+            exists=False,
             dir_okay=False,
             file_okay=True,
             writable=True,
@@ -98,7 +98,7 @@ def find_mussels(
     dest: Annotated[
         Path,
         typer.Argument(
-            exists=True,
+            exists=False,
             dir_okay=False,
             file_okay=True,
             writable=True,
