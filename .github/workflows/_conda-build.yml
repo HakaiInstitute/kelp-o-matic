@@ -43,29 +43,23 @@ jobs:
         if: github.ref_type == 'tag'
         run: sed -i "s/0.0.0/${{ env.tag }}/g" kelp_o_matic/__init__.py
 
-      - name: Setup Mamba
-        uses: mamba-org/setup-micromamba@v2
-        with:
-          environment-name: build-env
-          create-args: >-
-            python=${{ inputs.python-version }}
-            rattler-build
-            anaconda-client
-            -c pytorch -c nvidia -c conda-forge
-          cache-downloads: true
-          cache-downloads-key: ${{ runner.os }}-${{ runner.arch }}-${{ env.CACHE_NUMBER }}
-          init-shell: bash
-
-      - name: Verify rattler-build installation
-        run: rattler-build --version
-
       - name: Build package
-        run: rattler-build build -r conda/recipe.yaml
+        uses: prefix-dev/rattler-build-action@v0.2.30
+        with:
+          recipe-path: conda/recipe.yaml
+          upload-artifact: false
 
       - name: Publish package
         if: inputs.should-upload
+        shell: bash
         env:
           ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
-          cd output
-          anaconda upload --label main noarch/*.tar.bz2
+          shopt -s nullglob
+          EXIT_CODE=0
+          for pkg in $(find output -type f \( -name "*.conda" -o -name "*.tar.bz2" \) ); do
+            if ! rattler-build upload anaconda -o hakai-institute -c main "${pkg}"; then
+              EXIT_CODE=1
+            fi
+          done
+          exit $EXIT_CODE
