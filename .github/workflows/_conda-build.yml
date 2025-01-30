@@ -53,7 +53,7 @@ jobs:
         if: inputs.should-upload
         shell: bash
         env:
-          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+          ANACONDA_API_KEY: ${{ secrets.ANACONDA_TOKEN }}
         run: |
           shopt -s nullglob
           EXIT_CODE=0
