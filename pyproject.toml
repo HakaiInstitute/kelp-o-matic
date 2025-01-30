@@ -1,10 +1,10 @@
 [project]
 name = "kelp-o-matic"
-version = "0.0.0"
+dynamic = ["version"]
 description = "Hakai Segment Tool for GeoTiff RPAS Imagery"
+readme = "README.md"
 authors = [{ name = "Taylor Denouden", email = "taylor.denouden@hakai.org" }]
 requires-python = ">=3.10, <3.14"
-readme = "README.md"
 license = "MIT"
 dependencies = [
     "numpy>=1.24.2",
@@ -45,6 +45,9 @@ include = ["kelp_o_matic"]
 
 [tool.hatch.build.targets.wheel]
 include = ["kelp_o_matic"]
+
+[tool.hatch.version]
+path = "kelp_o_matic/__init__.py"
 
 [build-system]
 requires = ["hatchling"]

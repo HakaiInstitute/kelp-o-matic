@@ -29,21 +29,20 @@ jobs:
           - "3.10"
     steps:
       - uses: actions/checkout@v4
-      - name: Setup python for test ${{ matrix.py }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.5.26"
+          enable-cache: true
+
+      - name: "Set up Python"
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.py }}
 
-      - name: Setup Poetry
-        uses: abatilo/actions-poetry@v2
-        with:
-          poetry-version: 1.6.1
-
       - name: Install dependencies
-        run: |
-          poetry update
-          poetry run pip install --upgrade setuptools
-          poetry install
+        run: uv sync --all-extras --dev
 
       - name: Run tests
-        run: poetry run pytest
+        run: uv run pytest

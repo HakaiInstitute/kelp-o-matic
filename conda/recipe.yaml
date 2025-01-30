@@ -21,7 +21,8 @@ build:
 requirements:
   host:
     - python >=3.10
-    - poetry-core
+    - uv
+    - hatch
     - pip
   run:
     - python >=3.10
