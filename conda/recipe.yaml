@@ -1,8 +1,7 @@
 schema_version: 1
 
 context:
-  git_tag: ${{ env.get('GIT_DESCRIBE_TAG', default="v0.0.0") }}
-  version: ${{ git_tag[1:] }}
+  version: 0.0.0
 
 package:
   name: kelp-o-matic

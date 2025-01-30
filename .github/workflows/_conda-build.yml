@@ -41,7 +41,7 @@ jobs:
 
       - name: Update version
         if: github.ref_type == 'tag'
-        run: sed -i "s/0.0.0/${{ env.tag }}/g" kelp_o_matic/__init__.py
+        run: sed -i "s/0.0.0/${{ env.tag }}/g" kelp_o_matic/__init__.py conda/recipe.yaml
 
       - name: Build package
         uses: prefix-dev/rattler-build-action@v0.2.30
