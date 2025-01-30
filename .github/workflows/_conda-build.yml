@@ -47,6 +47,7 @@ jobs:
         uses: prefix-dev/rattler-build-action@v0.2.30
         with:
           recipe-path: conda/recipe.yaml
+          upload-artifact: false
 
       - name: Publish package
         if: inputs.should-upload
