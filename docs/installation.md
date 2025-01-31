@@ -1,38 +1,99 @@
 # Installation and Updating
 
-The library is currently available for Python versions 3.9 through 3.11. Support for
-future versions
-will be added when possible.
+## Requirements
 
-New versions of the tool are occasionally released to improve segmentation performance,
-speed, and the user interface of the tool. Changes are published to the PyPI and
-Anaconda repositories using [semantic versioning](https://semver.org/). You may want to
-occasionally run the update commands to ensure that you're using the most up-to-date
-version of `kelp-o-matic`.
+Kelp-o-Matic is currently available for Python versions 3.10 through 3.13.
 
-## Commands
+## Quick Install
+
+=== "PIP"
+
+    ```bash
+    pip install kelp-o-matic
+    ```
+
+=== "Conda"
+
+    ```bash
+    conda install -c conda-forge kelp-o-matic
+    ```
 
 !!! help "Need more help?"
 
     If you are unfamiliar with the command line or installing Python packages, you may
     find our [Beginner Guide](beginner_guide/index.md) helpful.
 
-### Pre-requisites
+## Recommended Installation (Virtual Environment)
 
-Install `pytorch` and `torchvision` for your operating system using the
-[official installation instructions here](https://pytorch.org/).
-Make sure you select "CUDA" as the compute platform if you have an NVIDIA GPU you'd like
-to use to improve performance.
+It is recommended to install Kelp-o-Matic in a virtual environment to avoid conflicts
+with other Python packages present on your system. `uv` is our recommended environment manager
+(a faster alternative to `venv`/`virtualenv`), but you can use any Python environment manager you prefer.
 
-=== "PIP"
+**UV Virtual Environment Setup**
 
-    ### Install
+1. Install `uv` using their [installation instructions](https://docs.astral.sh/uv/getting-started/installation/).
 
+2. Create a new virtual environment (you can replace `kom-env` with a different name if you prefer):
     ```bash
-    pip install kelp-o-matic
+    uv venv kom-env 
     ```
 
-    ### Update
+3. Activate the virtual environment
+
+    === "Windows"
+        ```powershell
+        kom-env\Scripts\activate
+        ```
+
+    === "MacOS/Linux"
+        ```bash
+        source kom-env/bin/activate
+        ```
+
+4. Install Kelp-o-Matic and its dependencies
+
+    ```bash
+    uv pip install kelp-o-matic
+    ```
+
+5. If you want to deactivate the virtual environment, run
+
+    ```bash
+    deactivate
+    ```
+
+   It will deactivate automatically when you close the terminal. To reactivate, just run `source kom-env/bin/activate`
+   (you don't have to reinstall Kelp-o-Matic though).
+
+!!! important 
+
+      The `kom` command will be available only when the virtual environment is activated.
+
+## Verify Installation
+
+To verify that Kelp-o-Matic was installed correctly and to check the installed version, run:
+
+```bash
+kom --version
+```
+
+If you have an Nvidia GPU, you can check if it is detected with:
+
+```bash
+kom --gpu-test
+```
+
+## Updating
+
+We follow [semantic versioning](https://semver.org/). Regular updates are recommended for:
+
+- Performance improvements
+- New features
+- Security patches
+
+To update Kelp-o-Matic, you can use the following commands:
+
+=== "PIP"
 
     ```bash
     pip install --upgrade kelp-o-matic
@@ -40,14 +101,10 @@ to use to improve performance.
 
 === "Conda"
 
-    ### Install
-
-    ```bash
-    conda install -c conda-forge kelp-o-matic
-    ```
-
-    ### Update
-
     ```bash
     conda update -c conda-forge kelp-o-matic
     ```
+
+## Next Steps
+
+For available commands, see the [Command Line Interface](cli.md) documentation.
