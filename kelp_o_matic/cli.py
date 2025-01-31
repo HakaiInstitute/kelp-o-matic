@@ -141,7 +141,7 @@ def find_mussels(
 
 def version_callback(value: bool) -> None:
     if value:
-        typer.echo(f"Kelp-o-Matic {__version__}")
+        typer.echo(f"Kelp-O-Matic {__version__}")
         raise typer.Exit()
 
 

@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Kelp-o-Matic is currently available for Python versions 3.10 through 3.13.
+Kelp-O-Matic is currently available for Python versions 3.10 through 3.13.
 
 ## Quick Install
 
@@ -25,7 +25,7 @@ Kelp-o-Matic is currently available for Python versions 3.10 through 3.13.
 
 ## Recommended Installation (Virtual Environment)
 
-It is recommended to install Kelp-o-Matic in a virtual environment to avoid conflicts
+It is recommended to install Kelp-O-Matic in a virtual environment to avoid conflicts
 with other Python packages present on your system. `uv` is our recommended environment manager
 (a faster alternative to `venv`/`virtualenv`), but you can use any Python environment manager you prefer.
 
@@ -50,7 +50,7 @@ with other Python packages present on your system. `uv` is our recommended envir
         source kom-env/bin/activate
         ```
 
-4. Install Kelp-o-Matic and its dependencies
+4. Install Kelp-O-Matic and its dependencies
 
     ```bash
     uv pip install kelp-o-matic
@@ -63,7 +63,7 @@ with other Python packages present on your system. `uv` is our recommended envir
     ```
 
    It will deactivate automatically when you close the terminal. To reactivate, just run `source kom-env/bin/activate`
-   (you don't have to reinstall Kelp-o-Matic though).
+   (you don't have to reinstall Kelp-O-Matic though).
 
 !!! important 
 
@@ -71,7 +71,7 @@ with other Python packages present on your system. `uv` is our recommended envir
 
 ## Verify Installation
 
-To verify that Kelp-o-Matic was installed correctly and to check the installed version, run:
+To verify that Kelp-O-Matic was installed correctly and to check the installed version, run:
 
 ```bash
 kom --version
@@ -91,7 +91,7 @@ We follow [semantic versioning](https://semver.org/). Regular updates are recomm
 - New features
 - Security patches
 
-To update Kelp-o-Matic, you can use the following commands:
+To update Kelp-O-Matic, you can use the following commands:
 
 === "PIP"
 

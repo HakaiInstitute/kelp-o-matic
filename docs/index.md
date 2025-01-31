@@ -25,12 +25,8 @@
 
 ## Getting Started
 
-Please see the [Beginner Guide](beginner_guide/index.md) if you are new to Anaconda and command line
-tools.
-
-If you have worked with Anaconda before, start with the more
-brief [installation instructions](installation.md), followed by the documentation for
-the [CLI](cli.md) or [Python API](python_lib.md).
+Please see the [beginner guide](beginner_guide/index.md) if you are new to using command line tools. Otherwise, see the 
+[installation](installation.md) and the [CLI](cli.md) or [Python API](python_lib.md) documentation.
 
 ## Features
 
@@ -42,16 +38,16 @@ the [CLI](cli.md) or [Python API](python_lib.md).
 
 ## Contribute
 
-Please file a bug report using our
-[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/kelp-o-matic/issues) if
-you encounter any problems.
+Please file a bug report using our 
+[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/kelp-o-matic/issues) if you encounter any 
+problems.
 
 Comments and questions are also appreciated!
 
 ## License
 
-Kelp-O-Matic is released under
-the [MIT license](https://raw.githubusercontent.com/tayden/kelp-o-matic/main/LICENSE.txt).
+Kelp-O-Matic is released under the 
+[MIT license](https://raw.githubusercontent.com/tayden/kelp-o-matic/main/LICENSE.txt).
 
 ## Contact
 
@@ -59,9 +55,3 @@ This project was co-created at the [Hakai Institute](https://hakai.org) by:
 
 - [**Taylor Denouden**](mailto:taylor.denouden@hakai.org) *(Machine Learning, Software Development)*
 - [**Luba Reshitnyk**](mailto:luba.reshitnyk@hakai.org) *(Scientific Application, Data Collation and Labelling)*
-
-[//]: # (<div style="margin-top: 50px; overflow: hidden; display: flex; justify-content:center; gap:10px;">)
-
-[//]: # (<img alt="Hakai" src="./images/hakai_logo.png" width="50%" />)
-
-[//]: # (</div>)
