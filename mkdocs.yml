@@ -5,11 +5,6 @@ repo_name: HakaiInstitue/kelp-o-matic
 
 nav:
   - Home: index.md
-  - Beginner Guide:
-    - beginner_guide/index.md
-    - Set-up and Installation: beginner_guide/setup.md
-    - Running the Segmentation Tool: beginner_guide/execution.md
-    - Post-Processing: beginner_guide/post_processing.md
   - Installation: installation.md
   - Data Requirements: expectations.md
   - Command Line Interface: cli.md
@@ -17,6 +12,11 @@ nav:
   - About: about.md
   - FAQs: faqs.md
   - Issue Tracker: 'https://github.com/HakaiInstitute/kelp-o-matic/issues'
+  - Beginner Guide:
+      - beginner_guide/index.md
+      - Set-up and Installation: beginner_guide/setup.md
+      - Running the Segmentation Tool: beginner_guide/execution.md
+      - Post-Processing: beginner_guide/post_processing.md
 
 theme:
   name: material
