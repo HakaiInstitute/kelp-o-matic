@@ -94,7 +94,7 @@ depending on your operating system, so choose the tab below based on which is re
         | `cd documents` | Move to a folder called `documents`, that is contained in the current directory |
         | `cd ./documents` | Same as above |
         | `cd ..` | Move up one directory |
-        | `cd downloads/cool_directory` | Move to a folder called `documents` inside a folder called `User` contained in your current directory |
+        | `cd downloads/cool_directory` | Move to a folder called `cool_directory` inside a folder called `downloads` contained in your current directory |
         | `cd ~` | Move to your user home directory |
         | `cd ~/documents` | Move to a folder called `documents` inside the user home directory |
         | `cd ../documents` | Move up one folder and then into a folder called `Documents` |
