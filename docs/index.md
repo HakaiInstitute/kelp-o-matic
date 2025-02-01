@@ -54,4 +54,6 @@ Kelp-O-Matic is released under the
 This project was co-created at the [Hakai Institute](https://hakai.org) by:
 
 - [**Taylor Denouden**](mailto:taylor.denouden@hakai.org) *(Machine Learning, Software Development)*
-- [**Luba Reshitnyk**](mailto:luba.reshitnyk@hakai.org) *(Scientific Application, Data Collation and Labelling)*
+- [**Luba Reshitnyk**](mailto:luba.reshitnyk@hakai.org) *(Scientific Application - Kelp, Data Collation and Labelling)*
+- [**Will McInnes**](mailto:will.mcinnes@hakai.org) *(Data Collation and Labelling - Mussels)*
+- [**Alyssa Gehman**](mailto:alyssa.gehman@hakai.org) *(Scientific Application - Mussels)*
