@@ -2,106 +2,113 @@
 
 Each time you want to run a classification on new imagery follow these steps.
 
-***
-
-## Open Anaconda Prompt
-
-![Open Prompt](images/open_prompt1.png)
-
-Open anaconda prompt by searching “Anaconda Prompt” in search tool bar.
+1. Open your preferred terminal
+    1. See the [Terminal Crash Course](./terminal_crash_course.md) if you need to refresh your memory.
+2. Activate your virtual environment
+    1. This is detailed under [Virtual Environment Setup and Installation](./install_env_setup.md).
+3. Run the Kelp-O-Matic tool, as detailed in this document.
 
 ***
 
-## Change Environments
+## The `kom` Command
 
-![Change Environments 1](images/change_environments1.png)
+The `kom` command is the entry point for the Kelp-O-Matic tool. It is used to run the image processing tools that are part of the Kelp-O-Matic package.
 
-The default environment is called `(base)` which will appear in brackets before each
-line of text.
+`kom`, like many command line tools, has a number of subcommands that can be used to run different tools.
 
-![Change Environments 2](images/change_environments2.png)
+### Getting Help
 
-To change to the new environment that you created in Part 1,
-type: `conda activate KelpSegmentation` and press enter.
-In this command, "KelpSegmentation" was the name that you chose for your new
-environment.
-Now you will see that the environment has changed from `(base)` to `(KelpSegmentation)`
-as KelpSegmentation is now appearing in brackets.
+It is typical of many CLI tools to also have a `--help` option that can be used to get more information about the tool and its subcommands. This is also true for `kom`.
 
-!!! note
+To get help documentation for the `kom` tool, you can type `kom --help` into your terminal.
 
-    If you used a different name for your environment, be sure to replace
-    `conda activate KelpSegmentation` with `conda activate <your-environment-name-here>`
-
-    You can see a list of all installed environments by typing and entering the
-    command: `conda env list`.
-
-***
-
-## Run Segmentation Tool
-
-![Run Tool](images/run_tool.png)
-
-Type `kom find-kelp` and copy and paste the location of the image in which you would
-like to detect kelp. Add a space
-and then type or paste the location you would like the output file to be saved on your
-computer with the name of the
-output file.
-
-In this example the orthomosaic to be classified is named
-“Kelp_Bed_Orthomosaic_2022.tif” and its location is in the C
-drive, documents folder, Drone_Images subfolder.
-
-`C:\Users\sbs33.DESKTOP-K0SDD1B\Documents\Drone_Images\Kelp_Bed_Orthomosaic_2022.tif`
-
-The output results will be sent to the same Drone_Images folder and will have the name
-“Kelp_Bed_Orthomosiac_2022_output.tif”,
-where .tif is the file type.
-
-`C:\Users\sbs33.DESKTOP-K0SDD1B\Documents\Drone_Images\Kelp_Bed_Orthomosaic_2022_output.tif`
-
-So, the entire command in the Anaconda prompt is:
+??? tip "Shorthand flags"
+    You can also use the shorthand flags `-h` to get help, e.g. `kom -h`. This is common for many CLI tools. 
+    Options will be shown in the help documentation with both the long form (`--help`) and the shorthand form (`-h`).
 
 ```console
-kom find-kelp C:\Users\sbs33.DESKTOP-K0SDD1B\Documents\Drone_Images\Kelp_Bed_Orthomosaic_2022.tif C:\Users\sbs33.DESKTOP-K0SDD1B\Documents\Drone_Images\Kelp_Bed_Orthomosaic_2022_output.tif
+kom --help
 ```
 
-Press ++enter++ and wait for the segmentation to run; the time may vary depending on the
-size of the image.
+This will show you a list of the subcommands available to you, as well as a brief description of what each subcommand does.
 
-!!! note
+### Processing an Image
 
-    You can always get help documentation for the `kom find-kelp` tool by typing into
-    the prompt `kom find-kelp --help`.
+??? note "A note on mussel detection"
+    The Kelp-O-Matic tool is designed to detect both kelp and mussels. The following information was written for kelp 
+    detection, but the same information applies for mussels. All you have to do to find mussels instead of kelp is use 
+    the `kom find-mussels` subcommand instead of `kom find-kelp` in the following steps.
 
-    This help documentation is the same as what is shown under
-    the :doc:`Command Line Reference <./cli>`.
+#### Subcommands and Options
+To process an image, you will need to use the `kom find-kelp` subcommand. This subcommand is used to detect kelp in an 
+image. Like we did for `kom`, we can also get help for subcommands:
 
-!!! tip
+```console
+kom find-kelp --help
+```
 
-    If you manually type in the path to your file, use the `<tab>` key to have your
-    operating system autocomplete the paths for you.
+And it will print out something like this:
 
-    *e.g.*, if you type `kom find-kelp C:\\Desk`, then press the `<tab>` key, your
-    operating system should complete the command for you so it
-    reads: `kom find-kelp C:\\Desktop`.
+```console
+ Usage: kom find-kelp [OPTIONS] SOURCE DEST
 
-    If the partial path is ambiguous, tapping `<tab>` multiple times will cycle through
-    the possible path options.
+ Detect kelp in image at path SOURCE and output the resulting classification raster to file at path DEST.
 
-    You can continue doing this as you type in the location to autocomplete the text
-    for long path names. It is faster, and less error prone than typing the whole
-    path yourself.
+   Arguments
+  *    source      FILE  Input image with Byte data type. [default: None] [required]
+  *    dest        FILE  File path location to save output to. [default: None] [required]
 
-![Complete Segmentation](images/complete_segmentation.png)
+   Options
+  --species        --presence             Segment to species or presence/absence level. [default: presence]
+  --crop-size                    INTEGER  The data window size to run through the segmentation model. [default: 1024]
+  --rgbi           --rgb                  Use RGB and NIR bands for classification. Assumes RGBI ordering. [default: rgb]
+               -b                INTEGER  GDAL-style band re-ordering flag. Defaults to RGB or RGBI order. To e.g., reorder a BGRI image at runtime, pass flags `-b 3 -b 2 -b 1 -b 4`. [default: None]
+  --gpu            --no-gpu               Enable or disable GPU, if available. [default: gpu]
+  --tta            --no-tta               Use test time augmentation to improve accuracy at the cost of processing time. [default: no-tta]
+  --help       -h                         Show this message and exit.
+```
 
-Once the processing bar is at 100%, you can open the results in an image processing or
-spatial analysis software such as QGIS or ArcGIS. Review the results for errors and edit
-as needed.
+This help documentation will show you the required arguments and options that are available to you when running the `find-kelp` subcommand.
 
-**Part 2 Kelp Segmentation is now complete!**
+#### Constructing and Executing a Command
 
-Continue to [Part 3](./post_processing.md) to learn how to post-process the results.
-***
+##### Arguments
+We're going to use the above `--help` documentation to construct a command relevant to the image we want to process.
+For the `SOURCE` and `DEST` arguments, you will need to provide the path to the image you want to process and the path where you want to save the output, respectively.
+The same path options discussed in the [Terminal Crash Course](./terminal_crash_course.md) apply here.
 
-*Authors: Sarah Schroeder and Taylor Denouden*
+##### Options
+The various options available to you are detailed in the `--help` documentation. You can use these options to customize the processing of your image, or you can use the default values.
+The options are flags that can be used to enable or disable certain features of the tool, or they can take arguments to customize the behavior of the tool.
+
+!!! example "An Example Command"
+    
+    === "Windows"
+
+        ```console
+        kom find-kelp --species --crop-size 2048 .\some\image_with_kelp.tif .\some\output.tif
+        ```
+
+        In this example, we are running the `find-kelp` subcommand with the `--species` option and a 
+        `--crop-size` of 2048. The input image is located at `.\some\image_with_kelp.tif`. 
+        The output will be saved to `.\some\output.tif`.
+    
+    === "MacOS/Linux"
+
+        ```console
+        kom find-kelp --species --crop-size 2048 ./some/image_with_kelp.tif ./some/output.tif
+        ```
+
+        In this example, we are running the `find-kelp` subcommand with the `--species` option and a 
+        `--crop-size` of 2048. The input image is located at `./some/image_with_kelp.tif`. 
+        The output will be saved to `./some/output.tif`.
+
+##### Executing the Command
+Once you have constructed your command, execute it by pressing ++enter++. 
+
+Wait for the progress bar to reach 100%, then open the results in an image processing or spatial analysis software such as QGIS or ArcGIS. 
+Review the results for errors and edit as needed.
+
+**Part 3 Kelp Segmentation is now complete!**
+
+Continue to [Part 4](./post_processing.md) to learn how to post-process the results.

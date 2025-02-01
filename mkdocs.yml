@@ -6,10 +6,11 @@ repo_name: HakaiInstitue/kelp-o-matic
 nav:
   - Home: index.md
   - Beginner Guide:
-    - beginner_guide/index.md
-    - Set-up and Installation: beginner_guide/setup.md
-    - Running the Segmentation Tool: beginner_guide/execution.md
-    - Post-Processing: beginner_guide/post_processing.md
+      - beginner_guide/index.md
+      - Terminal Crash Course: beginner_guide/terminal_crash_course.md
+      - Installation and Virtual Environment Setup: beginner_guide/install_env_setup.md
+      - Running the Segmentation Tool: beginner_guide/execution.md
+      - Post-Processing: beginner_guide/post_processing.md
   - Installation: installation.md
   - Data Requirements: expectations.md
   - Command Line Interface: cli.md
@@ -28,6 +29,7 @@ theme:
     - navigation.indexes
     - navigation.instant
     - navigation.instant.prefetch
+    - content.tabs.link
 
 extra:
   analytics:
@@ -72,6 +74,9 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
   - pymdownx.tasklist:
       custom_checkbox: true
 

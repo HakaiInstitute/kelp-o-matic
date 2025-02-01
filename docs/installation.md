@@ -1,10 +1,18 @@
 # Installation and Updating
 
+!!! help "Need more help?"
+
+    If you are unfamiliar with the command line or installing Python packages, you may
+    find our [Beginner Guide](beginner_guide/index.md) helpful.
+
 ## Requirements
 
 Kelp-O-Matic is currently available for Python versions 3.10 through 3.13.
 
 ## Quick Install
+
+We recommend using a virtual environment to manage your Python packages. This will help avoid conflicts with other packages and system installations.
+
 
 === "PIP"
 
@@ -17,57 +25,6 @@ Kelp-O-Matic is currently available for Python versions 3.10 through 3.13.
     ```bash
     conda install -c conda-forge kelp-o-matic
     ```
-
-!!! help "Need more help?"
-
-    If you are unfamiliar with the command line or installing Python packages, you may
-    find our [Beginner Guide](beginner_guide/index.md) helpful.
-
-## Recommended Installation (Virtual Environment)
-
-It is recommended to install Kelp-O-Matic in a virtual environment to avoid conflicts
-with other Python packages present on your system. `uv` is our recommended environment manager
-(a faster alternative to `venv`/`virtualenv`), but you can use any Python environment manager you prefer.
-
-**UV Virtual Environment Setup**
-
-1. Install `uv` using their [installation instructions](https://docs.astral.sh/uv/getting-started/installation/).
-
-2. Create a new virtual environment (you can replace `kom-env` with a different name if you prefer):
-    ```bash
-    uv venv kom-env 
-    ```
-
-3. Activate the virtual environment
-
-    === "Windows"
-        ```powershell
-        kom-env\Scripts\activate
-        ```
-
-    === "MacOS/Linux"
-        ```bash
-        source kom-env/bin/activate
-        ```
-
-4. Install Kelp-O-Matic and its dependencies
-
-    ```bash
-    uv pip install kelp-o-matic
-    ```
-
-5. If you want to deactivate the virtual environment, run
-
-    ```bash
-    deactivate
-    ```
-
-   It will deactivate automatically when you close the terminal. To reactivate, just run `source kom-env/bin/activate`
-   (you don't have to reinstall Kelp-O-Matic though).
-
-!!! important 
-
-      The `kom` command will be available only when the virtual environment is activated.
 
 ## Verify Installation
 
