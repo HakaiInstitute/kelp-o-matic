@@ -1,4 +1,4 @@
-# Terminal Crash Course
+# Crash Course on the Terminal
 
 The terminal is a text-based interface to your computer. It allows you to run
 commands to interact with your computer. The terminal is where you will run the
@@ -13,8 +13,7 @@ depending on your operating system, so choose the tab below based on which is re
     On Windows, there are two default terminal options: Command Prompt and PowerShell.
     You can use either of these to run the Kelp-O-Matic tool. We recommend using PowerShell.
 
-    To open PowerShell, search for "PowerShell" in the search bar and click on the
-    application that appears.
+    To open PowerShell, search for "PowerShell" in the search bar and click on "Windows PowerShell".
 
 === "MacOS/Linux"
     On MacOS and Linux, the default terminal is called Terminal. To open Terminal, search for "Terminal" in the search bar

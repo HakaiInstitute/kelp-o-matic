@@ -7,9 +7,9 @@ nav:
   - Home: index.md
   - Beginner Guide:
       - beginner_guide/index.md
-      - Terminal Crash Course: beginner_guide/terminal_crash_course.md
-      - Installation and Virtual Environment Setup: beginner_guide/install_env_setup.md
-      - Running the Segmentation Tool: beginner_guide/execution.md
+      - Crash Course on the Terminal: beginner_guide/terminal_crash_course.md
+      - Environment Setup and Installation: beginner_guide/install_env_setup.md
+      - Processing Images: beginner_guide/execution.md
       - Post-Processing: beginner_guide/post_processing.md
   - Installation: installation.md
   - Data Requirements: expectations.md

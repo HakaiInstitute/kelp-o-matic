@@ -1,4 +1,4 @@
-# Running the Segmentation Tool
+# Processing Images with Kelp-O-Matic
 
 Each time you want to run a classification on new imagery follow these steps.
 
@@ -108,6 +108,26 @@ Once you have constructed your command, execute it by pressing ++enter++.
 
 Wait for the progress bar to reach 100%, then open the results in an image processing or spatial analysis software such as QGIS or ArcGIS.
 Review the results for errors and edit as needed.
+
+??? tip "Checking GPU Usage"
+
+    If you have a GPU, you should be able to run `nvidia-smi` to check its status.
+    You can see here what processes are using the GPU, and how much memory they are using.
+
+    If Kelp-O-Matic is running, you'll have to run this in a new Poweshell window or tab.
+    If Kelp-O-Matic is actively using the GPU, you should see it listed here.
+
+#### Aborting Processing
+
+If you need to stop the processing of an image, you can press ++ctrl+c++ in the terminal to send a signal to the process
+that it should stop. This will stop the processing and return you to the command prompt.
+
+This is useful, for example, if you realize that you entered the wrong path and need to correct it but don't want to
+wait for `kom` for finish running.
+
+This command is standard in the terminal. It is used to send a signal to the running process that it should stop.
+
+---
 
 **Part 3 Kelp Segmentation is now complete!**
 
