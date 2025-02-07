@@ -6,8 +6,8 @@ guide.
 
 ??? question "Why UV"
 
-    `uv` is a Python environment manager that is easy to use and works on Windows, MacOS, and Linux. 
-    It is a good choice for beginners and experienced users alike. It's extremely fast and lightweight, and provides a 
+    `uv` is a Python environment manager that is easy to use and works on Windows, MacOS, and Linux.
+    It is a good choice for beginners and experienced users alike. It's extremely fast and lightweight, and provides a
     simple way to manage Python environments and install packages.
 
 ## UV Virtual Environment Setup
@@ -26,8 +26,8 @@ guide.
 
     ??? question "What's a Virtual Environment"
 
-        A virtual environment is a self-contained directory that contains a Python installation for a particular version 
-        of Python, plus a number of additional packages. It allows you to work on a specific project without affecting 
+        A virtual environment is a self-contained directory that contains a Python installation for a particular version
+        of Python, plus a number of additional packages. It allows you to work on a specific project without affecting
         other projects or the system Python installation.
 
         It's a good practice to create a new virtual environment for each project you work on. This way, you can install the
@@ -58,7 +58,7 @@ active.
 
 ## Install Kelp-O-Matic
 
-Now that you have your virtual environment set up, you can install Kelp-O-Matic and its dependencies very easily with 
+Now that you have your virtual environment set up, you can install Kelp-O-Matic and its dependencies very easily with
 `uv`.
 
 1. Install Kelp-O-Matic using the following command:
@@ -68,15 +68,15 @@ Now that you have your virtual environment set up, you can install Kelp-O-Matic 
 
 !!! important
 
-      The `kom` command will be available only when the virtual environment is activated. If you close your terminal, 
+      The `kom` command will be available only when the virtual environment is activated. If you close your terminal,
       be sure to navigate to the location where you created the virtual environment and activate it again before running
       `kom`.
 
 ??? question "What's `uv pip`?"
-    `uv` has a built-in package manager called `pip` that you can use to install Python packages. When not using `uv`, 
+    `uv` has a built-in package manager called `pip` that you can use to install Python packages. When not using `uv`,
     Python comes with a package manager called `pip`. `uv pip` is just a faster version of that default package manager.
 
 ## Next Steps
 
-You're now ready to process some imagery, hooray! Head over to the next section, 
+You're now ready to process some imagery, hooray! Head over to the next section,
 [Running the Segmentation tool](./execution.md), to learn how to run the segmentation tool

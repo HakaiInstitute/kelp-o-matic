@@ -25,7 +25,7 @@
 
 ## Getting Started
 
-Please see the [beginner guide](beginner_guide/index.md) if you are new to using command line tools. Otherwise, see the 
+Please see the [beginner guide](beginner_guide/index.md) if you are new to using command line tools. Otherwise, see the
 [installation](installation.md) and the [CLI](cli.md) or [Python API](python_lib.md) documentation.
 
 ## Features
@@ -38,15 +38,15 @@ Please see the [beginner guide](beginner_guide/index.md) if you are new to using
 
 ## Contribute
 
-Please file a bug report using our 
-[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/kelp-o-matic/issues) if you encounter any 
+Please file a bug report using our
+[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/kelp-o-matic/issues) if you encounter any
 problems.
 
 Comments and questions are also appreciated!
 
 ## License
 
-Kelp-O-Matic is released under the 
+Kelp-O-Matic is released under the
 [MIT license](https://raw.githubusercontent.com/tayden/kelp-o-matic/main/LICENSE.txt).
 
 ## Contact

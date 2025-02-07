@@ -23,7 +23,7 @@ It is typical of many CLI tools to also have a `--help` option that can be used 
 To get help documentation for the `kom` tool, you can type `kom --help` into your terminal.
 
 ??? tip "Shorthand flags"
-    You can also use the shorthand flags `-h` to get help, e.g. `kom -h`. This is common for many CLI tools. 
+    You can also use the shorthand flags `-h` to get help, e.g. `kom -h`. This is common for many CLI tools.
     Options will be shown in the help documentation with both the long form (`--help`) and the shorthand form (`-h`).
 
 ```console
@@ -35,12 +35,12 @@ This will show you a list of the subcommands available to you, as well as a brie
 ### Processing an Image
 
 ??? note "A note on mussel detection"
-    The Kelp-O-Matic tool is designed to detect both kelp and mussels. The following information was written for kelp 
-    detection, but the same information applies for mussels. All you have to do to find mussels instead of kelp is use 
+    The Kelp-O-Matic tool is designed to detect both kelp and mussels. The following information was written for kelp
+    detection, but the same information applies for mussels. All you have to do to find mussels instead of kelp is use
     the `kom find-mussels` subcommand instead of `kom find-kelp` in the following steps.
 
 #### Subcommands and Options
-To process an image, you will need to use the `kom find-kelp` subcommand. This subcommand is used to detect kelp in an 
+To process an image, you will need to use the `kom find-kelp` subcommand. This subcommand is used to detect kelp in an
 image. Like we did for `kom`, we can also get help for subcommands:
 
 ```console
@@ -82,31 +82,31 @@ The various options available to you are detailed in the `--help` documentation.
 The options are flags that can be used to enable or disable certain features of the tool, or they can take arguments to customize the behavior of the tool.
 
 !!! example "An Example Command"
-    
+
     === "Windows"
 
         ```console
         kom find-kelp --species --crop-size 2048 .\some\image_with_kelp.tif .\some\output.tif
         ```
 
-        In this example, we are running the `find-kelp` subcommand with the `--species` option and a 
-        `--crop-size` of 2048. The input image is located at `.\some\image_with_kelp.tif`. 
+        In this example, we are running the `find-kelp` subcommand with the `--species` option and a
+        `--crop-size` of 2048. The input image is located at `.\some\image_with_kelp.tif`.
         The output will be saved to `.\some\output.tif`.
-    
+
     === "MacOS/Linux"
 
         ```console
         kom find-kelp --species --crop-size 2048 ./some/image_with_kelp.tif ./some/output.tif
         ```
 
-        In this example, we are running the `find-kelp` subcommand with the `--species` option and a 
-        `--crop-size` of 2048. The input image is located at `./some/image_with_kelp.tif`. 
+        In this example, we are running the `find-kelp` subcommand with the `--species` option and a
+        `--crop-size` of 2048. The input image is located at `./some/image_with_kelp.tif`.
         The output will be saved to `./some/output.tif`.
 
 ##### Executing the Command
-Once you have constructed your command, execute it by pressing ++enter++. 
+Once you have constructed your command, execute it by pressing ++enter++.
 
-Wait for the progress bar to reach 100%, then open the results in an image processing or spatial analysis software such as QGIS or ArcGIS. 
+Wait for the progress bar to reach 100%, then open the results in an image processing or spatial analysis software such as QGIS or ArcGIS.
 Review the results for errors and edit as needed.
 
 **Part 3 Kelp Segmentation is now complete!**
