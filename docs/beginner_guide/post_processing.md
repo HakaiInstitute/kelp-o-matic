@@ -5,7 +5,7 @@ species-level kelp extent from outputs from the Kelp-O-Matic tool. Final outputs
 consist of polygon features (.shp) that contain species-level classification of
 emergent canopy kelp present in drone imagery.
 
-These instructions assume a basic level of experience with the ArcMAP GIS interface. For
+These instructions assume a basic level of experience with ArcGIS Pro. For
 questions,
 please contact [Luba Reshitnyk](email:luba.reshitnyk@hakai.org) at
 the [Hakai Institute](https://hakai.org).
@@ -20,7 +20,7 @@ the [Hakai Institute](https://hakai.org).
 
 ```mermaid
 graph TB
-    A[/"Raw KoM output (.tif)"/]-- Open in ArcGIS -->B["Convert to polygon feature (raster to polygon)"];
+    A[/"Raw KoM output (.tif)"/]-- Open in ArcGIS Pro -->B["Convert to polygon feature (raster to polygon)"];
     B-->edit
     subgraph edit [Edit]
         direction TB
@@ -35,10 +35,10 @@ graph TB
 
 This section assumes that you have obtained output from the Kelp-O-Matic (.tif) and have
 a new
-instance of ArcMap (version 10.8). These same steps can be done using other GIS
+instance of ArcGIS Pro (3.4). These same steps can be done using other GIS
 software (e.g. QGIS)
 
-??? tip "Tip: ArcMap Keyboard Shortcuts"
+??? tip "Tip: ArcGIS Pro Keyboard Shortcuts"
 
     Keyboard shortcuts can make the editing process much faster. To enable some, go
     to `Customize > Customize Mode > Keyboard…`.
@@ -57,7 +57,7 @@ software (e.g. QGIS)
 
 ### Load Kelp-O-Matic Raster
 
-Load the output `.tif` file from Kelp-O-Matic into ArcMap. The raster will have the
+Load the output `.tif` file from Kelp-O-Matic into ArcGIS Pro. The raster will have the
 following
 attributes:
 
@@ -70,48 +70,40 @@ attributes:
 
 ### Convert to Polygons
 
-Convert this raster into polygons using the `Raster to Polygon` tool in ArcMap.
+Convert this raster into polygons using the `Raster to Polygon` tool in ArcGIS Pro.
 
-1. Uncheck "simplify polygons"
+1. Uncheck `simplify polygons`
 2. Leave the other defaults as they are
 
 ### Add New Attributes to Polygons
+#### Note - if you are exporting to GDB you don't need to calculate area
 
-1. Add a new "area" field
-    1. Right click layer in the table of contents
-    2. Select `Open attribute table > Table options > Add field`
-        1. Name = "area"
-        2. Type = "float"
-        3. Click `OK`
+1. Add a new `area` and `species` field
+   1. Right-click the layer in the Contents pane
+   2. Select `Attribute Table`
+   3. Click the `New Field` button in the Fields tab of the ribbon
+      1. Name = `area`, Type = `Double`
+      2. Name = `species`, Type = `Text`
+      3. Click `Save` on the fields tab of the ribbon
 2. Calculate the area for each polygon
-    1. Right-click the "area" header in the attribute table,
+    1. Right-click the `area` header in the attribute table,
        select `Calculate Geometry...`
-        1. Property = "area"
-        2. Units = "square meters"
+        1. Property = `area`
+        2. Units = `square meters`
         3. Coordinate system = choose an appropriate projection that preserves area (
            e.g. NAD83 BC
            Albers Equal Area EPSG = 3005)
-        4. Click "OK"
-3. Add a new "species" field
-    1. Right click layer in the table of contents
-    2. Select `Open attribute table > Table options > Add field`
-        1. Name = "species"
-        2. Type = "text"
-        3. Click `OK`
+        4. Click `OK`
 
 ### Editing and Data Cleaning
 
 #### Delete small polygons that are unlikely to be kelp
 
-1. Start editing this feature polygon layer
-    1. In the Editor toolbar click `Editor > start editing`. Select the feature layer
-       you will be
-       editing
-2. Right click layer in the table of contents, Select `Open attribute table`.
+1. Right click layer in the table of contents, Select `Open attribute table`.
    Click `Select by attribute`
-3. Select features < 0.2 m2 by typing: `"area" < 0.2`
-4. Right click highlighted features in attribute table and click `Delete Selected`
-5. Save edits
+2. Select features < 0.2 m2 by typing: `"area" < 0.2`
+3. Right click highlighted features in attribute table and click `Delete Selected`
+4. Save edits
 
 #### Manually delete non-kelp polygons
 
@@ -119,7 +111,7 @@ There may be areas where KoM classifier falsely detected kelp and these polygons
 be removed
 manually.
 
-1. Select using the edit tool or “Select by Lasso” tool
+1. Select using the edit tool or `Select by Lasso` tool
 2. Delete the selected polygon(s)
 3. Save edits.
 
@@ -144,24 +136,22 @@ worry about
 this step.
 
 1. Select all polygon features classified as giant kelp by opening the attribute table
-   and “select
-   by attribute”. Select features representing giant kelp by typing: `"gridcode" = 2`.
-   At the bottom
-   of the attribute table click on the "Show selected records" tab.
-2. Right-click the "species" field you created earlier. Select "Field Calculator".
-3. In the text box enter "Macrocystis pyrifera" (with quotes included) and click OK.
+   and `select by attribute`. Select features representing giant kelp by typing: `"gridcode" = 2`.
+   At the bottom of the attribute table click on the `Show selected records` tab.
+2. Right-click the `species` field you created earlier. Select `Field Calculator`.
+3. In the text box enter `Macrocystis pyrifera` (with quotes included) and click OK.
    This will fill
    out that attribute for all the selected polygons.
 
-Repeat steps 1 - 3 for bull kelp by using `"gridcode" = 3` and "Nereocystis luetkeana".
+Repeat steps 1 - 3 for bull kelp by using `"gridcode" = 3` and `Nereocystis luetkeana`.
 
 1. Review all the polygon species classification and manually change ones that the KoM
    classifier
-   misclassified by changing the text in the "species" field for that polygon feature.
+   misclassified by changing the text in the `species` field for that polygon feature.
 2. Save edits.
-3. Delete the "gridcode" attribute once you are done.
+3. Delete the `gridcode` attribute once you are done.
 4. Save edits.
 
 ### Export Data
 
-That's it! You can now export your data a shapefile and give it an appropriate name.
+That's it! You can now export your data a shapefile or gdb feature class and give it an appropriate name.
