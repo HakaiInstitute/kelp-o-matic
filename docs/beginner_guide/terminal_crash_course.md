@@ -17,7 +17,7 @@ depending on your operating system, so choose the tab below based on which is re
     application that appears.
 
 === "MacOS/Linux"
-    On MacOS and Linux, the default terminal is called Terminal. To open Terminal, search for "Terminal" in the search bar 
+    On MacOS and Linux, the default terminal is called Terminal. To open Terminal, search for "Terminal" in the search bar
     and click on the application that appears.
 
 ### Nagivating around
@@ -43,7 +43,7 @@ depending on your operating system, so choose the tab below based on which is re
         | ------- | ----------- |
         | `cd [some path]` | Change directory |
         | `ls [some path]` | List files and folders in the current directory |
-    
+
 
 #### Specifying Paths
 
@@ -52,7 +52,7 @@ depending on your operating system, so choose the tab below based on which is re
     - Using `..` is interpreted as "the parent directory" of my current location.
     - Using `.` is interpreted as "the current directory".
     - Using `~` is interpreted as the user's home directory. (e.g. `C:\Users\McLovin`, if that is your username)
-    - You can use relative paths to navigate to folders in relation to your current location, like ` cd .\Documents` 
+    - You can use relative paths to navigate to folders in relation to your current location, like ` cd .\Documents`
     - You can also use absolute paths to navigate, like `cd C:\Users\McLovin\Documents`.
     - Use ++tab++ to autocomplete file and folder names. It is **very strongly** recommended to use this to avoid typos and save time typing long paths.
         - e.g. `cd C:\Users\McLovin\Docu` then press ++tab++ to autocomplete to `cd C:\Users\McLovin\Documents`. Pressing ++tab++ again will cycle through all possible completions.
@@ -62,7 +62,7 @@ depending on your operating system, so choose the tab below based on which is re
     - Using `..` is interpreted as "the parent directory" of my current location.
     - Using `.` is interpreted as "the current directory".
     - Using `~` is interpreted as the user's home directory. (e.g. `/home/mclovin`, if that is your username)
-    - You can use relative paths to navigate to folders in relation to your current location, like ` cd ./documents` 
+    - You can use relative paths to navigate to folders in relation to your current location, like ` cd ./documents`
     - You can also use absolute paths to navigate, like `cd /home/mclovin/documents`. Absolute paths start from the root directory `/`.
     - Use ++tab++ to autocomplete file and folder names. It is **very strongly** recommended to use this to avoid typos and save time typing long paths.
         - e.g. `cd /home/mclovin/docu` then press ++tab++ to autocomplete to `cd /home/mclovin/documents`. Pressing ++tab++ again will cycle through all possible completions.
@@ -101,15 +101,15 @@ depending on your operating system, so choose the tab below based on which is re
         | `cd /home/mclovin/documents` | Move to a folder called `documents` inside the `mclovin` home directory |
 
 !!! warning "Spaces in Paths"
-    If a folder or file name has a space in it, you need to enclose the path in quotes. 
-    For example, if you have a folder called `My Documents`, you would need to use `cd "My Documents"`. 
-    It's a good idea to avoid spaces in folder and file names to make your life easier. Many people use 
+    If a folder or file name has a space in it, you need to enclose the path in quotes.
+    For example, if you have a folder called `My Documents`, you would need to use `cd "My Documents"`.
+    It's a good idea to avoid spaces in folder and file names to make your life easier. Many people use
     underscores `_` or hyphens `-` instead of spaces.
 
 
-You did it! You now know enough to navigate around the terminal. There are many commands you can use 
-in the terminal, but these are the most important ones to get you started. You're now going to copy and paste some 
-commands to set up the Kelp-O-Matic tool, detailed in the next section. This is going to add a new command to your 
+You did it! You now know enough to navigate around the terminal. There are many commands you can use
+in the terminal, but these are the most important ones to get you started. You're now going to copy and paste some
+commands to set up the Kelp-O-Matic tool, detailed in the next section. This is going to add a new command to your
 terminal that you can use to run the Kelp-O-Matic tool.
 
 ### Next Steps
