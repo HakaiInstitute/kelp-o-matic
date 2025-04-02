@@ -92,9 +92,7 @@ class KelpRGBPresenceSegmentationModel(_Model):
     register_depth = 1
     all_black_val = 0
 
-    torchscript_path = (
-        "UNetPlusPlus_EfficientNetV2_m_kelp_presence_rgb_jit_dice=0.8703.pt"
-    )
+    torchscript_path = "segformer_mit_b3_kelp_presence_rgb_jit_dice=0.8828.pt"
 
     def post_process(self, x: "torch.Tensor") -> "np.ndarray":
         with torch.no_grad():
@@ -107,9 +105,7 @@ class KelpRGBSpeciesSegmentationModel(_SpeciesSegmentationModel):
     register_depth = 3
     all_black_val = 0
 
-    torchscript_path = (
-        "UNetPlusPlus_EfficientNetV2_m_kelp_species_rgb_jit_dice=0.9881.pt"
-    )
+    torchscript_path = "segformer_mit_b3_kelp_species_rgb_jit_dice=0.9933.pt"
     presence_model_class = KelpRGBPresenceSegmentationModel
 
     def post_process(self, x: "torch.Tensor") -> "np.ndarray":
