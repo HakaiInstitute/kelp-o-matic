@@ -1,32 +1,37 @@
 [project]
 name = "kelp-o-matic"
 dynamic = ["version"]
-description = "Hakai Segment Tool for GeoTiff RPAS Imagery"
+description = "Habitat segmentation with AI"
 readme = "README.md"
 authors = [{ name = "Taylor Denouden", email = "taylor.denouden@hakai.org" }]
-requires-python = ">=3.10, <3.14"
+requires-python = ">=3.10"
 license = "MIT"
 dependencies = [
-    "numpy>=1.24.2",
-    "rasterio>=1.3.7,<2",
-    "rich>=13.5,<14",
-    "torch>=2.1.0,<3",
-    "torchvision>=0.16.1",
-    "typer>=0.9.0",
-    "packaging~=24.1",
+    "cyclopts>=3.22.2",
+    "humanize>=4.12.3",
+    "numpy>=2.2.6",
+    "onnxruntime-gpu[cuda,cudnn]>=1.22.0; platform_system != 'Darwin'",
+    "onnxruntime>=1.22.0; platform_system == 'Darwin'",
+    "opencv-python-headless>=4.11.0.86",
+    "platformdirs>=4.3.8",
+    "pydantic>=2.11.7",
+    "rasterio>=1.4.3",
+    "requests>=2.32.4",
+    "rich>=13.0.0",
 ]
 
 [project.urls]
 Documentation = "https://kelp-o-matic.readthedocs.io"
 
 [project.scripts]
-kom = "kelp_o_matic.cli:cli"
+kom = "kelp_o_matic.main:app"
 
 [dependency-groups]
 dev = [
-    "pre-commit>=4.1.0",
-    "ruff>=0.9.5",
-    "pytest>=8.3.4",
+    "pre-commit>=4.2.0",
+    "pytest>=8.4.1",
+    "pyupgrade>=3.20.0",
+    "ruff>=0.12.5",
 ]
 docs = [
     "mkdocs>=1.6.1,<2",
@@ -40,18 +45,12 @@ default-groups = [
     "docs",
 ]
 
-[tool.hatch.build.targets.sdist]
-include = ["kelp_o_matic"]
-
-[tool.hatch.build.targets.wheel]
-include = ["kelp_o_matic"]
-
 [tool.hatch.version]
-path = "kelp_o_matic/__init__.py"
+path = "src/kelp_o_matic/__init__.py"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.ruff.lint.isort]
-combine-as-imports = true
+[tools.ruff]
+line-length = 120

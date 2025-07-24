@@ -1,11 +1,10 @@
 import numpy as np
 import pytest
 import rasterio
-import torch
 from rasterio.transform import from_origin
 from rasterio.windows import Window
 
-from kelp_o_matic.hann import BartlettHannKernel, Kernel, TorchMemoryRegister
+from kelp_o_matic.hann import BartlettHannKernel, Kernel, NumpyMemoryRegister
 
 
 def create_dummy_tiff(
@@ -43,49 +42,45 @@ def create_dummy_tiff(
 
 @pytest.fixture
 def memory_register(tmp_path):
-    # Initialize TorchMemoryRegister with the dummy image
-    return TorchMemoryRegister(
+    # Initialize NumpyMemoryRegister with the dummy image
+    return NumpyMemoryRegister(
         image_width=1000,
         register_depth=2,
         window_size=256,
         kernel=BartlettHannKernel,
-        device=torch.device("cpu"),
     )
 
 
 @pytest.fixture
 def small_img_memory_register():
-    # Initialize TorchMemoryRegister with the dummy image
-    return TorchMemoryRegister(
+    # Initialize NumpyMemoryRegister with the dummy image
+    return NumpyMemoryRegister(
         image_width=200,
         register_depth=2,
         window_size=256,
         kernel=BartlettHannKernel,
-        device=torch.device("cpu"),
     )
 
 
 @pytest.fixture
 def full_window_memory_register():
-    # Initialize TorchMemoryRegister with the dummy image
-    return TorchMemoryRegister(
+    # Initialize NumpyMemoryRegister with the dummy image
+    return NumpyMemoryRegister(
         image_width=200,
         register_depth=2,
         window_size=200,
         kernel=BartlettHannKernel,
-        device=torch.device("cpu"),
     )
 
 
 @pytest.fixture
 def odd_window_memory_register():
-    # Initialize TorchMemoryRegister with the dummy image
-    return TorchMemoryRegister(
+    # Initialize NumpyMemoryRegister with the dummy image
+    return NumpyMemoryRegister(
         image_width=200,
         register_depth=2,
         window_size=125,
         kernel=BartlettHannKernel,
-        device=torch.device("cpu"),
     )
 
 
@@ -97,12 +92,11 @@ def test_initialization(memory_register):
     width = np.ceil(1000 / 256) * 256 + 128
     assert width == memory_register.width
     assert memory_register.register.shape == (2, 256, width)
-    assert memory_register.register.device == torch.device("cpu")
 
 
 def test_step_method(memory_register):
     # Test typical case
-    new_logits = torch.rand((2, 256, 256))
+    new_logits = np.random.rand(2, 256, 256)
 
     img_window = rasterio.windows.Window(0, 0, 256, 256)
     preds, preds_win = memory_register.step(
@@ -134,7 +128,7 @@ def test_step_method(memory_register):
 
 def test_small_img_edge_case(small_img_memory_register):
     # Test small image
-    new_logits = torch.rand((2, 256, 256))
+    new_logits = np.random.rand(2, 256, 256)
 
     img_window = rasterio.windows.Window(0, 0, 200, 200)
     preds, preds_win = small_img_memory_register.step(
@@ -175,7 +169,7 @@ def test_small_img_edge_case(small_img_memory_register):
 
 def test_full_window_sizes(full_window_memory_register):
     # Test case that image size is equal to the register window size
-    new_logits = torch.rand((2, 200, 200))
+    new_logits = np.random.rand(2, 200, 200)
 
     img_window = rasterio.windows.Window(0, 0, 200, 200)
     preds, preds_win = full_window_memory_register.step(
@@ -198,7 +192,7 @@ def test_full_window_sizes(full_window_memory_register):
 
 def test_odd_window_size(odd_window_memory_register):
     # Test case where the register size is an odd number
-    new_logits = torch.rand((2, 125, 125))
+    new_logits = np.random.rand(2, 125, 125)
 
     assert odd_window_memory_register.hws == 62
 
@@ -251,18 +245,17 @@ def test_odd_window_size(odd_window_memory_register):
 def test_moving_window():
     class DummyKernel(Kernel):
         @staticmethod
-        def _init_wi(size: int, device: torch.device.type) -> torch.Tensor:
-            return torch.ones(size, device=device)
+        def _init_wi(size: int) -> np.ndarray:
+            return np.ones(size)
 
     h, w, s = 4, 4, 2
-    register = TorchMemoryRegister(
+    register = NumpyMemoryRegister(
         image_width=w,
         register_depth=1,
         window_size=s,
         kernel=DummyKernel,
-        device=torch.device("cpu"),
     )
-    output = torch.zeros((1, h, w), dtype=torch.float32)
+    output = np.zeros((1, h, w), dtype=np.float32)
 
     for row_off in range(0, h - s // 2, s // 2):
         for col_off in range(0, w - s // 2, s // 2):
@@ -278,7 +271,7 @@ def test_moving_window():
             isright = col_off == (w - s)
 
             preds, win = register.step(
-                torch.ones((1, s, s), dtype=torch.float32),
+                np.ones((1, s, s), dtype=np.float32),
                 img_window,
                 top=istop,
                 left=isleft,
@@ -305,7 +298,7 @@ def test_moving_window():
                 win.col_off : win.col_off + win.width,
             ] += preds
 
-    a = output[0].numpy()
+    a = output[0]
 
     # Each corner should have been visited once
     assert np.allclose(a[0, 0], 1.0)
@@ -326,14 +319,13 @@ def test_moving_window():
 def test_kernel_sum():
     h, w, s = 600, 600, 20
 
-    register = TorchMemoryRegister(
+    register = NumpyMemoryRegister(
         image_width=w,
         register_depth=1,
         window_size=s,
         kernel=BartlettHannKernel,
-        device=torch.device("cpu"),
     )
-    output = torch.zeros((1, h, w), dtype=torch.float32)
+    output = np.zeros((1, h, w), dtype=np.float32)
 
     for row_off in range(0, h - s // 2, s // 2):
         for col_off in range(0, w - s // 2, s // 2):
@@ -349,7 +341,7 @@ def test_kernel_sum():
             isright = col_off == (w - s)
 
             preds, win = register.step(
-                torch.ones((1, s, s), dtype=torch.float32),
+                np.ones((1, s, s), dtype=np.float32),
                 img_window,
                 top=istop,
                 left=isleft,
@@ -376,6 +368,6 @@ def test_kernel_sum():
                 win.col_off : win.col_off + win.width,
             ] += preds
 
-    a = output[0].numpy()
+    a = output[0]
     # Each output pixels should sum to 1
     assert np.allclose(a, 1.0)

@@ -1,0 +1,362 @@
+from __future__ import annotations
+
+import itertools
+import warnings
+from pathlib import Path
+from typing import Generator, Iterable
+
+import cv2
+import numpy as np
+import rasterio
+from rasterio.windows import Window
+from rich.console import Console
+from rich.progress import (
+    BarColumn,
+    Progress,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
+
+from kelp_o_matic.config import ProcessingConfig
+from kelp_o_matic.hann import BartlettHannKernel, NumpyMemoryRegister
+
+
+class ImageProcessor:
+    """
+    High-level image processor that orchestrates model inference and tiled processing.
+    """
+
+    def __init__(self, model):
+        """
+        Initialize the ImageProcessor.
+
+        Args:
+            model: The ONNXModel instance to use for inference
+        """
+        self.model = model
+        self.console = Console()
+
+    def process(
+        self,
+        input_path: str | Path,
+        output_path: str | Path,
+        *,
+        batch_size: int = 1,
+        tile_size: int | None = None,
+        blur_kernel_size: int = 5,
+        morph_kernel_size: int = 0,
+        band_order: list[int] | None = None,
+    ) -> None:
+        """
+        Process an image using tiled segmentation with overlap handling.
+
+        Args:
+            input_path: Path to input raster
+            output_path: Path to output segmentation raster
+            batch_size: Batch size for processing
+            tile_size: Tile size for processing (uses model's preferred size if None)
+            blur_kernel_size: Size of median blur kernel (must be odd)
+            morph_kernel_size: Size of morphological kernel (0 to disable)
+        """
+        # Determine tile size
+        if tile_size is None:
+            # Default to 1024 if model does not specify
+            tile_size = self.model.input_tile_size or 1024
+        elif (
+            self.model.input_tile_size is not None
+            and tile_size != self.model.input_tile_size
+        ):
+            from rich.panel import Panel
+
+            warning_panel = Panel(
+                f"[yellow]Specified tile size {tile_size} does not match model preferred size {self.model.input_tile_size}.\\n"
+                f"Using model preferred size of {self.model.input_tile_size}.[/yellow]",
+                title="[bold yellow]Tile Size Warning[/bold yellow]",
+                border_style="yellow",
+            )
+            self.console.print(warning_panel)
+            warnings.warn(
+                f"Specified tile size {tile_size} does not match model preferred size {self.model.input_tile_size}. "
+                f"Using model preferred size of {self.model.input_tile_size}."
+            )
+            tile_size = self.model.input_tile_size
+
+        # Create processing configuration
+        config = ProcessingConfig(
+            tile_size=tile_size,
+            batch_size=batch_size,
+            blur_kernel_size=blur_kernel_size,
+            morph_kernel_size=morph_kernel_size,
+            band_order=band_order,
+        )
+
+        # Process using tiled approach
+        self._process_raster(input_path, output_path, config)
+
+    def _process_raster(
+        self,
+        input_path: str | Path,
+        output_path: str | Path,
+        config: ProcessingConfig,
+    ) -> None:
+        """
+        Process a raster file with tiled segmentation.
+
+        Args:
+            input_path: Path to input raster
+            output_path: Path to output segmentation raster
+            config: Processing configuration
+        """
+        register = None
+
+        with rasterio.open(input_path) as src:
+            # Get raster properties
+            height, width = src.height, src.width
+            profile = src.profile.copy()
+
+            # Update profile for output
+            profile.update({"dtype": "uint8", "count": 1, "compress": "lzw"})
+
+            # Calculate extended dimensions to accommodate full tiles
+            extended_height, extended_width = self._calculate_extended_dimensions(
+                height, width, config
+            )
+
+            # Generate tiles and process in batches
+            windows = self._generate_windows(extended_height, extended_width, config)
+            window_batches = list(itertools.batched(windows, n=config.batch_size))
+
+            with rasterio.open(output_path, "w", **profile) as dst:
+                with Progress(
+                    TextColumn("[bold blue]Segmenting"),
+                    BarColumn(),
+                    TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+                    TimeElapsedColumn(),
+                    TimeRemainingColumn(),
+                    console=self.console,
+                ) as progress:
+                    task = progress.add_task("Processing", total=len(window_batches))
+                    for window_batch in window_batches:
+                        # Read tile data from source raster
+                        input_batch = self._load_batch(src, window_batch, config)
+
+                        # Process batch through model
+                        result_batch = self.model.predict(input_batch)
+
+                        if register is None:
+                            num_classes = result_batch.shape[1]
+                            register = NumpyMemoryRegister(
+                                image_width=width,
+                                register_depth=num_classes,
+                                window_size=config.tile_size,
+                                kernel=BartlettHannKernel,
+                            )
+
+                        # Apply post-processing to each result
+                        for read_window, model_output in zip(
+                            window_batch, result_batch
+                        ):
+                            is_top = read_window.row_off == 0
+                            is_bottom = (
+                                read_window.row_off + read_window.height >= height
+                            )
+                            is_left = read_window.col_off == 0
+                            is_right = read_window.col_off + read_window.width >= width
+                            data, write_window = register.step(
+                                model_output,
+                                read_window,
+                                top=is_top,
+                                bottom=is_bottom,
+                                left=is_left,
+                                right=is_right,
+                            )
+                            data = self.model.postprocess(data)
+                            dst.write(data, 1, window=write_window)
+
+                        progress.update(task, advance=1)
+
+            # Apply final post-processing
+            self._apply_final_postprocessing(output_path, config)
+
+    @staticmethod
+    def _load_batch(
+        src: rasterio.io.DatasetReader,
+        windows: Iterable[Window],
+        config: ProcessingConfig,
+    ) -> np.ndarray:
+        """Load a batch of tiles from the source raster."""
+        tile_data = []
+        for window in windows:
+            tile_img = src.read(window=window)
+            _, th, tw = tile_img.shape
+
+            # Pad out to tile size
+            tile_img = np.pad(
+                tile_img,
+                (
+                    (0, 0),
+                    (0, config.tile_size - th),
+                    (0, config.tile_size - tw),
+                ),
+                mode="reflect",
+            )
+
+            if config.band_order is not None:
+                tile_img = tile_img[[b - 1 for b in config.band_order], ...]
+
+            tile_data.append(tile_img)
+
+        # Stack into batch array [b, c, h, w]
+        return np.stack(tile_data, axis=0)
+
+    @staticmethod
+    def _calculate_extended_dimensions(
+        height: int, width: int, config: ProcessingConfig
+    ) -> tuple[int, int]:
+        """Calculate extended dimensions to fit complete tiles"""
+        # Calculate number of tiles needed
+        tiles_y = ((height - config.tile_size) // config.stride) + 1
+        tiles_x = ((width - config.tile_size) // config.stride) + 1
+
+        # Calculate extended dimensions
+        extended_height = (tiles_y - 1) * config.stride + config.tile_size
+        extended_width = (tiles_x - 1) * config.stride + config.tile_size
+
+        return max(extended_height, height), max(extended_width, width)
+
+    @staticmethod
+    def _generate_windows(
+        height: int,
+        width: int,
+        config: ProcessingConfig,
+        tile_size: int = None,
+        stride: int = None,
+    ) -> Generator[Window]:
+        """Generate tile windows for processing"""
+        tile_size = tile_size or config.tile_size
+        stride = stride or config.stride
+
+        tiles_y = ((height - tile_size) // stride) + 1
+        tiles_x = ((width - tile_size) // stride) + 1
+
+        for y in range(tiles_y):
+            for x in range(tiles_x):
+                row_start = y * stride
+                col_start = x * stride
+                row_end = min(row_start + tile_size, height)
+                col_end = min(col_start + tile_size, width)
+
+                yield Window.from_slices(
+                    rows=(row_start, row_end), cols=(col_start, col_end)
+                )
+
+    @staticmethod
+    def _place_window_result(
+        dst: rasterio.io.BufferedDatasetWriter,
+        window: Window,
+        tile_result: np.ndarray,
+        overlap: int,
+    ) -> None:
+        """Place tile result into the full result array using overlap strategy"""
+        # Calculate the region to copy (excluding overlap except at image boundaries)
+        copy_row_start = window.row_off
+        copy_col_start = window.col_off
+        copy_row_end = window.row_off + window.height
+        copy_col_end = window.col_off + window.width
+
+        # Exclude overlap regions except at image boundaries
+        if window.row_off > 0:  # Not top edge
+            copy_row_start += overlap
+        if window.col_off > 0:  # Not left edge
+            copy_col_start += overlap
+        if window.row_off + window.height < dst.height:  # Not bottom edge
+            copy_row_end -= overlap
+        if window.col_off + window.width < dst.width:  # Not right edge
+            copy_col_end -= overlap
+
+        # Calculate corresponding region in tile result
+        tile_row_start = copy_row_start - window.row_off
+        tile_col_start = copy_col_start - window.col_off
+        tile_row_end = tile_row_start + (copy_row_end - copy_row_start)
+        tile_col_end = tile_col_start + (copy_col_end - copy_col_start)
+
+        result = tile_result[tile_row_start:tile_row_end, tile_col_start:tile_col_end]
+        write_window = Window(
+            col_off=copy_col_start,
+            row_off=copy_row_start,
+            width=copy_col_end - copy_col_start,
+            height=copy_row_end - copy_row_start,
+        )
+
+        dst.write(result, 1, window=write_window)
+
+    def _apply_final_postprocessing(
+        self, dst_path: str, config: ProcessingConfig
+    ) -> None:
+        """Apply final post-processing using tiled approach for large rasters"""
+        if not (config.apply_median_blur or config.apply_morphological_ops):
+            return  # No processing needed
+
+        # Calculate required overlap for operations
+        blur_overlap = (
+            (config.blur_kernel_size - 1) // 2 if config.apply_median_blur else 0
+        )
+        morph_overlap = (
+            (config.morph_kernel_size - 1) // 2 if config.apply_morphological_ops else 0
+        )
+        overlap = max(blur_overlap, morph_overlap)
+
+        if overlap == 0:
+            return
+
+        # Process in tiles with overlap
+        with rasterio.open(dst_path, "r+") as dst:
+            height, width = dst.height, dst.width
+
+            # Use smaller tiles for post-processing to manage memory
+            tile_size = min(512, config.tile_size)
+            # Calculate stride to create overlapping tiles
+            stride = tile_size - 2 * overlap
+
+            # Generate overlapping windows for post-processing
+            windows = self._generate_windows(height, width, config, tile_size, stride)
+
+            windows_list = list(windows)
+            if windows_list:  # Only show progress if there are windows to process
+                with Progress(
+                    TextColumn("[bold green]Post-processing"),
+                    BarColumn(),
+                    TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+                    TimeElapsedColumn(),
+                    console=self.console,
+                ) as progress:
+                    task = progress.add_task("Post-processing", total=len(windows_list))
+                    for window in windows_list:
+                        # Read tile with overlap
+                        tile_data = dst.read(1, window=window)
+
+                        # Apply median blur (key for quality improvement)
+                        if config.apply_median_blur:
+                            blur_size = config.blur_kernel_size
+                            if blur_size % 2 == 0:
+                                blur_size += 1  # Ensure odd size
+                            tile_data = cv2.medianBlur(tile_data, blur_size)
+
+                        # Apply morphological operations if enabled
+                        if config.morph_kernel_size > 0:
+                            kernel_size = config.morph_kernel_size
+                            kernel = np.ones((kernel_size, kernel_size), np.uint8)
+
+                            # Opening (remove noise)
+                            tile_data = cv2.morphologyEx(
+                                tile_data, cv2.MORPH_OPEN, kernel
+                            )
+                            # Closing (fill gaps)
+                            tile_data = cv2.morphologyEx(
+                                tile_data, cv2.MORPH_CLOSE, kernel
+                            )
+
+                        # Place result, removing overlap except at boundaries
+                        self._place_window_result(dst, window, tile_data, overlap)
+                        progress.update(task, advance=1)
