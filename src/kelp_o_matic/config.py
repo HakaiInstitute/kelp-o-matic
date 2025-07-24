@@ -18,7 +18,7 @@ class ProcessingConfig(BaseModel):
     batch_size: int = 4
     blur_kernel_size: int = 5
     morph_kernel_size: int = 0
-    band_order: list[int] | None = None
+    band_order: list[int]
 
     @property
     def stride(self) -> int:
@@ -80,7 +80,7 @@ class ModelConfig(BaseModel):
     description: str | None = None
     version: str
     model_path: str  # URL to download model from, or local file path
-
+    input_channels: int = 3
     activation: Literal["sigmoid", "softmax"] | None = None
 
     normalization: (

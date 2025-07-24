@@ -83,6 +83,9 @@ class ImageProcessor:
             tile_size = self.model.input_tile_size
 
         # Create processing configuration
+        if band_order is None:
+            band_order = [i + 1 for i in range(self.model.cfg.input_channels)]
+
         config = ProcessingConfig(
             tile_size=tile_size,
             batch_size=batch_size,
@@ -202,8 +205,8 @@ class ImageProcessor:
                 mode="reflect",
             )
 
-            if config.band_order is not None:
-                tile_img = tile_img[[b - 1 for b in config.band_order], ...]
+            # Rearrange/select bands
+            tile_img = tile_img[[b - 1 for b in config.band_order], ...]
 
             tile_data.append(tile_img)
 

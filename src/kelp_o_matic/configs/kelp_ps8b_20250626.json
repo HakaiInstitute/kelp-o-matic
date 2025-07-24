@@ -4,6 +4,7 @@
   "description": "Kelp segmentation model for 8-band PlanetScope imagery.",
   "model_path": "https://hakai-triton-models-bf426c24.s3.us-east-1.amazonaws.com/kelp_segmentation_ps8b_model/1/model.onnx",
   "normalization": "standard",
+  "input_channels": 8,
   "mean": [
     1720.0,
     1715.0,
