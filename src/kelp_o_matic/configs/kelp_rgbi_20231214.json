@@ -1,0 +1,9 @@
+{
+  "name": "kelp-rgbi",
+  "version": "20231214",
+  "description": "Kelp segmentation model for 4-band RGB+NIR drone imagery.",
+  "model_path": "https://hakai-triton-models-bf426c24.s3.us-east-1.amazonaws.com/kelp_segmentation_rgbi_model/1/model.onnx",
+  "input_channels": 4,
+  "normalization": "min_max",
+  "max_pixel_value": 1.0
+}

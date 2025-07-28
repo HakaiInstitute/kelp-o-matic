@@ -105,13 +105,14 @@ class ONNXModel:
             return (batch - mean) / std
 
         elif self.cfg.normalization == "min_max":
-            return (batch - batch.min(axis=0)) / (batch.max(axis=0) - batch.min(axis=0))
+            bmin = batch.min(axis=(1, 2, 3), keepdims=True)
+            bmax = batch.max(axis=(1, 2, 3), keepdims=True)
+            return (batch - bmin) / (bmax - bmin + 1e-8)
 
         elif self.cfg.normalization == "min_max_per_channel":
-            return (batch - batch.min(axis=(0, 1), keepdims=True)) / (
-                batch.max(axis=(0, 1), keepdims=True)
-                - batch.min(axis=(0, 1), keepdims=True)
-            )
+            bcmin = batch.min(axis=(2, 3), keepdims=True)
+            bcmax = batch.max(axis=(2, 3), keepdims=True)
+            return (batch - bcmin) / (bcmax - bcmin + 1e-8)
 
         else:
             raise NotImplementedError("Normalization method not implemented.")
