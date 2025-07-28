@@ -1,7 +1,7 @@
 {
   "name": "mussel-gooseneck-rgb",
   "version": "20250725",
-  "description": "Mussel and gooseneck barnacvle segmentation model for RGB drone imagery.",
+  "description": "Mussel and gooseneck barnacle segmentation model for RGB drone imagery.",
   "model_path": "https://hakai-triton-models-bf426c24.s3.us-east-1.amazonaws.com/mussel_gooseneck_segmentation_rgb_model/1/model.onnx",
   "normalization": "standard",
   "mean": [
