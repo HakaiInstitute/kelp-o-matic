@@ -24,7 +24,7 @@ console = Console()
 @app.command
 def list_models() -> None:
     """
-    List all available models in the model_registry.
+    List all available models with their latest versions.
     """
     from kelp_o_matic.utils import get_local_model_path, is_url
 
@@ -34,9 +34,13 @@ def list_models() -> None:
     table.add_column("Description", style="white")
     table.add_column("Status", style="green")
 
-    for model_name in model_registry.list_models():
+    # Show only the latest version of each model
+    model_names = model_registry.list_model_names()
+    for model_name in sorted(model_names):
         try:
-            model = model_registry[model_name]
+            # Get the latest version of this model
+            latest_version = model_registry.get_latest_version(model_name)
+            model = model_registry[model_name]  # Gets latest version
             cfg = model.cfg
 
             # Check if model is cached locally
@@ -55,7 +59,7 @@ def list_models() -> None:
                 )
 
             table.add_row(
-                model_name, cfg.version, cfg.description or "No description", status
+                model_name, latest_version, cfg.description or "No description", status
             )
         except Exception as e:
             error_panel = Panel(
@@ -70,6 +74,74 @@ def list_models() -> None:
                 "Failed to load model configuration",
                 "[red]Error[/red]",
             )
+
+    console.print(table)
+
+
+@app.command
+def list_versions(
+    model_name: str,
+) -> None:
+    """
+    List all available versions for a specific model.
+    """
+    from kelp_o_matic.utils import get_local_model_path, is_url
+
+    # Check if model exists
+    if model_name not in model_registry:
+        available_models = ", ".join(sorted(model_registry.list_model_names()))
+        error_panel = Panel(
+            f"[red]Model '{model_name}' not found.\n\nAvailable models: {available_models}[/red]",
+            title="[bold red]Model Error[/bold red]",
+            border_style="red",
+        )
+        console.print(error_panel)
+        return
+
+    table = Table(title=f"[bold green]Versions for {model_name}[/bold green]")
+    table.add_column("Version", style="magenta")
+    table.add_column("Latest", style="bright_yellow", justify="center")
+    table.add_column("Description", style="white")
+    table.add_column("Status", style="green")
+
+    try:
+        # Get all versions for this model
+        models_by_version = model_registry._models[model_name]
+        latest_version = model_registry.get_latest_version(model_name)
+
+        for version in sorted(models_by_version.keys(), reverse=True):
+            model = models_by_version[version]
+            cfg = model.cfg
+
+            # Check if model is cached locally
+            local_path = get_local_model_path(cfg)
+            if is_url(cfg.model_path):
+                status = (
+                    "[green]Cached[/green]"
+                    if local_path.exists()
+                    else "[yellow]Available[/yellow]"
+                )
+            else:
+                status = (
+                    "[green]Local[/green]"
+                    if local_path.exists()
+                    else "[red]Missing[/red]"
+                )
+
+            # Mark latest version
+            is_latest = "✓" if version == latest_version else ""
+
+            table.add_row(
+                version, is_latest, cfg.description or "No description", status
+            )
+    except Exception as e:
+        error_panel = Panel(
+            f"[red]Error loading versions for model '{model_name}': {e}[/red]",
+            title="[bold red]Model Error[/bold red]",
+            border_style="red",
+        )
+        console.print(error_panel)
+        return
 
     console.print(table)
 
@@ -134,6 +206,13 @@ def segment(
             name=["--output", "-o"],
         ),
     ],
+    model_version: Annotated[
+        str,
+        Parameter(
+            help="The version of the model to use. Defaults to 'latest' for the most recent version",
+            name=["--version", "-v"],
+        ),
+    ] = "latest",
     batch_size: Annotated[
         int,
         Parameter(
@@ -194,7 +273,7 @@ def segment(
 
         # Validate model exists
         if model_name not in model_registry:
-            available_models = ", ".join(model_registry.list_models())
+            available_models = ", ".join(model_registry.list_model_names())
             error_panel = Panel(
                 f"[red]Model '{model_name}' not found.\n\nAvailable models: {available_models}[/red]",
                 title="[bold red]Model Error[/bold red]",
@@ -203,11 +282,29 @@ def segment(
             console.print(error_panel)
             return
 
-        model = model_registry[model_name]
+        # Handle version retrieval
+        try:
+            if model_version == "latest":
+                model = model_registry[model_name]  # Gets latest version
+                actual_version = model_registry.get_latest_version(model_name)
+            else:
+                model = model_registry[
+                    model_name, model_version
+                ]  # Gets specific version
+                actual_version = model_version
+        except KeyError as e:
+            error_panel = Panel(
+                f"[red]{e}[/red]",
+                title="[bold red]Version Error[/bold red]",
+                border_style="red",
+            )
+            console.print(error_panel)
+            return
 
         # Show processing info in a panel
         info_panel = Panel(
             f"[blue]Model:[/blue] {model_name}\n"
+            f"[blue]Version:[/blue] {actual_version}\n"
             f"[blue]Input:[/blue] {input_file}\n"
             f"[blue]Output:[/blue] {Path(output_path).expanduser()}",
             title="[bold blue]Processing Configuration[/bold blue]",
