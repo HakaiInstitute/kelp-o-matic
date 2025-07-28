@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 from pathlib import Path
 
 import onnxruntime as ort
@@ -14,6 +13,10 @@ from rich.progress import (
     TextColumn,
     TransferSpeedColumn,
 )
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from kelp_o_matic import ModelConfig
 
 
 def download_file_with_progress(url: str, out_path: Path):
@@ -73,29 +76,28 @@ def is_url(uri: str) -> bool:
     return uri.startswith(("http://", "https://", "ftp://", "ftps://"))
 
 
-def get_local_model_path(model_uri: str) -> Path:
+def get_local_model_path(model_config: ModelConfig) -> Path:
     """
     Get the local path for a model, handling both URLs and local file paths.
 
     Args:
-        model_uri: Either a URL to download from or a local file path
+        model_config: Either a URL to download from or a local file path
 
     Returns:
         Path to the local model file
     """
     # Check if it's a local file path
-    if model_uri.startswith(("/", "./", "../", "~")) or (
-        len(model_uri) > 1 and model_uri[1] == ":"
+    if model_config.model_path.startswith(("/", "./", "../", "~")) or (
+        len(model_config.model_path) > 1 and model_config.model_path[1] == ":"
     ):
         # It's a local path (Unix absolute/relative or Windows drive path)
-        return Path(model_uri).expanduser().resolve()
+        return Path(model_config.model_path).expanduser().resolve()
 
     # Check if it's a URL
-    if is_url(model_uri):
+    if is_url(model_config.model_path):
         # It's a URL - use existing cache logic
-        url_hash = hashlib.md5(model_uri.encode()).hexdigest()[:8]
-        filename = f"{Path(model_uri).stem}_{url_hash}.onnx"
+        filename = f"{model_config.name}-{model_config.version}.onnx"
         return get_local_model_dir() / filename
 
     # If it doesn't match URL patterns, assume it's a local path
-    return Path(model_uri).expanduser().resolve()
+    return Path(model_config.model_path).expanduser().resolve()

@@ -14,7 +14,7 @@ from kelp_o_matic.utils import download_file_with_progress, get_local_model_path
 class ProcessingConfig(BaseModel):
     """Configuration for segmentation processing"""
 
-    tile_size: int = 224
+    crop_size: int = 224
     batch_size: int = 4
     blur_kernel_size: int = 5
     morph_kernel_size: int = 0
@@ -26,7 +26,7 @@ class ProcessingConfig(BaseModel):
         Calculate the stride based on tile size and 50% overlap.
         The stride is the distance to move the tile window.
         """
-        return int(self.tile_size * 0.5)
+        return int(self.crop_size * 0.5)
 
     @property
     def apply_morphological_ops(self) -> bool:
@@ -38,7 +38,7 @@ class ProcessingConfig(BaseModel):
         """Whether to apply median blur."""
         return self.blur_kernel_size > 1
 
-    @field_validator("tile_size")
+    @field_validator("crop_size")
     @staticmethod
     def _is_even(value: int):
         if value % 2 == 1:
@@ -61,7 +61,7 @@ class ProcessingConfig(BaseModel):
             raise ValueError(f"{value} is not greater than 1")
         return value
 
-    @field_validator("batch_size", "tile_size")
+    @field_validator("batch_size", "crop_size")
     @staticmethod
     def _is_positive(value: int):
         if value < 0:
@@ -109,7 +109,7 @@ class ModelConfig(BaseModel):
             RuntimeError: If download fails
         """
 
-        local_path = get_local_model_path(self.model_path)
+        local_path = get_local_model_path(self)
 
         console = Console()
 

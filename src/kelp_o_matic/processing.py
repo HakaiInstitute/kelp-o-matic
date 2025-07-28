@@ -43,7 +43,7 @@ class ImageProcessor:
         output_path: str | Path,
         *,
         batch_size: int = 1,
-        tile_size: int | None = None,
+        crop_size: int | None = None,
         blur_kernel_size: int = 5,
         morph_kernel_size: int = 0,
         band_order: list[int] | None = None,
@@ -55,39 +55,39 @@ class ImageProcessor:
             input_path: Path to input raster
             output_path: Path to output segmentation raster
             batch_size: Batch size for processing
-            tile_size: Tile size for processing (uses model's preferred size if None)
+            crop_size: Tile size for processing (uses model's preferred size if None)
             blur_kernel_size: Size of median blur kernel (must be odd)
             morph_kernel_size: Size of morphological kernel (0 to disable)
         """
         # Determine tile size
-        if tile_size is None:
+        if crop_size is None:
             # Default to 1024 if model does not specify
-            tile_size = self.model.input_tile_size or 1024
+            crop_size = self.model.input_tile_size or 1024
         elif (
             self.model.input_tile_size is not None
-            and tile_size != self.model.input_tile_size
+            and crop_size != self.model.input_tile_size
         ):
             from rich.panel import Panel
 
             warning_panel = Panel(
-                f"[yellow]Specified tile size {tile_size} does not match model preferred size {self.model.input_tile_size}.\\n"
+                f"[yellow]Specified tile size {crop_size} does not match model preferred size {self.model.input_tile_size}.\\n"
                 f"Using model preferred size of {self.model.input_tile_size}.[/yellow]",
                 title="[bold yellow]Tile Size Warning[/bold yellow]",
                 border_style="yellow",
             )
             self.console.print(warning_panel)
             warnings.warn(
-                f"Specified tile size {tile_size} does not match model preferred size {self.model.input_tile_size}. "
+                f"Specified tile size {crop_size} does not match model preferred size {self.model.input_tile_size}. "
                 f"Using model preferred size of {self.model.input_tile_size}."
             )
-            tile_size = self.model.input_tile_size
+            crop_size = self.model.input_tile_size
 
         # Create processing configuration
         if band_order is None:
             band_order = [i + 1 for i in range(self.model.cfg.input_channels)]
 
         config = ProcessingConfig(
-            tile_size=tile_size,
+            crop_size=crop_size,
             batch_size=batch_size,
             blur_kernel_size=blur_kernel_size,
             morph_kernel_size=morph_kernel_size,
@@ -152,7 +152,7 @@ class ImageProcessor:
                             register = NumpyMemoryRegister(
                                 image_width=width,
                                 register_depth=num_classes,
-                                window_size=config.tile_size,
+                                window_size=config.crop_size,
                                 kernel=BartlettHannKernel,
                             )
 
@@ -199,8 +199,8 @@ class ImageProcessor:
                 tile_img,
                 (
                     (0, 0),
-                    (0, config.tile_size - th),
-                    (0, config.tile_size - tw),
+                    (0, config.crop_size - th),
+                    (0, config.crop_size - tw),
                 ),
                 mode="reflect",
             )
@@ -219,12 +219,12 @@ class ImageProcessor:
     ) -> tuple[int, int]:
         """Calculate extended dimensions to fit complete tiles"""
         # Calculate number of tiles needed
-        tiles_y = ((height - config.tile_size) // config.stride) + 1
-        tiles_x = ((width - config.tile_size) // config.stride) + 1
+        tiles_y = ((height - config.crop_size) // config.stride) + 1
+        tiles_x = ((width - config.crop_size) // config.stride) + 1
 
         # Calculate extended dimensions
-        extended_height = (tiles_y - 1) * config.stride + config.tile_size
-        extended_width = (tiles_x - 1) * config.stride + config.tile_size
+        extended_height = (tiles_y - 1) * config.stride + config.crop_size
+        extended_width = (tiles_x - 1) * config.stride + config.crop_size
 
         return max(extended_height, height), max(extended_width, width)
 
@@ -237,7 +237,7 @@ class ImageProcessor:
         stride: int = None,
     ) -> Generator[Window]:
         """Generate tile windows for processing"""
-        tile_size = tile_size or config.tile_size
+        tile_size = tile_size or config.crop_size
         stride = stride or config.stride
 
         tiles_y = ((height - tile_size) // stride) + 1
@@ -318,7 +318,7 @@ class ImageProcessor:
             height, width = dst.height, dst.width
 
             # Use smaller tiles for post-processing to manage memory
-            tile_size = min(512, config.tile_size)
+            tile_size = min(512, config.crop_size)
             # Calculate stride to create overlapping tiles
             stride = tile_size - 2 * overlap
 

@@ -167,7 +167,7 @@ class ONNXModel:
         output_path: str | Path,
         *,
         batch_size: int = 1,
-        tile_size: int | None = None,
+        crop_size: int | None = None,
         blur_kernel_size: int = 5,
         morph_kernel_size: int = 0,
         band_order: list[int] | None = None,
@@ -182,7 +182,7 @@ class ONNXModel:
             input_path: Path to input raster
             output_path: Path to output segmentation raster
             batch_size: Batch size for processing
-            tile_size: Tile size for processing (uses model's preferred size if None)
+            crop_size: Tile size for processing (uses model's preferred size if None)
             blur_kernel_size: Size of median blur kernel (must be odd)
             morph_kernel_size: Size of morphological kernel (0 to disable)
         """
@@ -194,7 +194,7 @@ class ONNXModel:
             input_path=input_path,
             output_path=output_path,
             batch_size=batch_size,
-            tile_size=tile_size,
+            crop_size=crop_size,
             blur_kernel_size=blur_kernel_size,
             morph_kernel_size=morph_kernel_size,
             band_order=band_order,

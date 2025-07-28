@@ -40,7 +40,7 @@ def list_models() -> None:
             cfg = model.cfg
 
             # Check if model is cached locally
-            local_path = get_local_model_path(cfg.model_path)
+            local_path = get_local_model_path(cfg)
             if is_url(cfg.model_path):
                 status = (
                     "[green]Cached[/green]"
@@ -143,12 +143,12 @@ def segment(
             alias="--batch",
         ),
     ] = 1,
-    tile_size: Annotated[
+    crop_size: Annotated[
         int | None,
         Parameter(
-            help="Tile size for processing. Defaults to the 256 or to the size defined by the model (must be an even)",
+            help="Tile size for processing. Defaults to the 1024 or to the size defined by the model (must be an even)",
             validator=lambda _, x: (x is None) or (x % 2 == 0 and x > 0),
-            name=["--tile-size", "-z"],
+            name=["--crop-size", "-z"],
             alias="--size",
         ),
     ] = None,
@@ -219,7 +219,7 @@ def segment(
             input_path=input_file,
             output_path=Path(output_path).expanduser(),
             batch_size=batch_size,
-            tile_size=tile_size,
+            crop_size=crop_size,
             blur_kernel_size=blur_kernel_size,
             morph_kernel_size=morph_kernel_size,
             band_order=band_order,
