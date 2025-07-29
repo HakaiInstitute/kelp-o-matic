@@ -168,8 +168,8 @@ class TestWindowGenerationCoverage:
                 f"Window {i} starts beyond image width: {window}"
             )
 
-    def test_clipped_window_generation(self):
-        """Test that clipped window generation prevents out-of-bounds reads"""
+    def test_boundless_reading_approach(self):
+        """Test that boundless reading handles extended windows properly"""
         # Test case based on the error: raster of 13715x16208, requesting (12288,0) of size 2048x1024
         original_height, original_width = 16208, 13715
         crop_size = 2048
@@ -183,45 +183,43 @@ class TestWindowGenerationCoverage:
             original_height, original_width, config
         )
 
-        # Generate clipped windows
+        # Generate windows for extended dimensions
         windows = list(
-            ImageProcessor._generate_windows_clipped(
-                extended_height, extended_width, original_height, original_width, config
-            )
+            ImageProcessor._generate_windows(extended_height, extended_width, config)
         )
 
-        # Verify all windows are within original bounds
-        for i, window in enumerate(windows):
-            assert window.row_off >= 0, f"Window {i} row_off negative: {window}"
-            assert window.col_off >= 0, f"Window {i} col_off negative: {window}"
-            assert window.row_off + window.height <= original_height, (
-                f"Window {i} exceeds height {original_height}: {window}"
-            )
-            assert window.col_off + window.width <= original_width, (
-                f"Window {i} exceeds width {original_width}: {window}"
-            )
-
-            # Check that window has positive dimensions
-            assert window.width > 0, f"Window {i} has zero/negative width: {window}"
-            assert window.height > 0, f"Window {i} has zero/negative height: {window}"
-
-        # Verify we still have full coverage of the original image
+        # With boundless reading, windows can extend beyond original bounds
+        # The key is that they still provide full coverage of the original image
         assert ImageProcessor._validate_full_coverage(
             original_height, original_width, windows
         )
 
-        # Ensure we have windows that reach the edges
-        max_row_end = max(w.row_off + w.height for w in windows)
-        max_col_end = max(w.col_off + w.width for w in windows)
-        assert max_row_end == original_height, (
-            f"Bottom edge not reached: {max_row_end} vs {original_height}"
-        )
-        assert max_col_end == original_width, (
-            f"Right edge not reached: {max_col_end} vs {original_width}"
-        )
+        # Check that we have windows that cover the problematic areas
+        found_bottom_edge = False
+        found_right_edge = False
 
-    def test_specific_error_case(self):
-        """Test the specific error case: 13715x16208 raster with 2048 tile size"""
+        for window in windows:
+            # Check if this window covers the bottom edge of the original image
+            if (
+                window.row_off < original_height
+                and window.row_off + window.height >= original_height
+            ):
+                found_bottom_edge = True
+
+            # Check if this window covers the right edge of the original image
+            if (
+                window.col_off < original_width
+                and window.col_off + window.width >= original_width
+            ):
+                found_right_edge = True
+
+        assert found_bottom_edge, (
+            "No window covers the bottom edge of the original image"
+        )
+        assert found_right_edge, "No window covers the right edge of the original image"
+
+    def test_boundless_reading_with_specific_case(self):
+        """Test that boundless reading handles the specific error case properly"""
         # Error: "Access window out of range in RasterIO(). Requested (12288,0) of size 2048x1024"
         original_height, original_width = 16208, 13715
         crop_size = 2048
@@ -235,36 +233,54 @@ class TestWindowGenerationCoverage:
             original_height, original_width, config
         )
 
-        # Generate clipped windows
+        # Generate windows for extended dimensions
         windows = list(
-            ImageProcessor._generate_windows_clipped(
-                extended_height, extended_width, original_height, original_width, config
-            )
+            ImageProcessor._generate_windows(extended_height, extended_width, config)
         )
-
-        # The problematic request was (12288,0) - check this doesn't happen
-        for i, window in enumerate(windows):
-            # Check that no window starts at col_off=12288 (which would be beyond 13715)
-            assert window.col_off < original_width, (
-                f"Window {i} starts beyond image width: {window.col_off} >= {original_width}"
-            )
-
-            # Check that the specific problematic case doesn't occur
-            if window.col_off == 12288:
-                assert False, f"Found problematic window at col_off=12288: {window}"
 
         # Verify full coverage is maintained
         assert ImageProcessor._validate_full_coverage(
             original_height, original_width, windows
         )
 
-        # Verify no out-of-bounds reads would occur
-        for window in windows:
-            # These checks ensure rasterio.read(window=window) would succeed
-            assert window.col_off >= 0
-            assert window.row_off >= 0
-            assert window.col_off + window.width <= original_width
-            assert window.row_off + window.height <= original_height
+        # The problematic window may exist, but boundless reading will handle it
+        # by filling out-of-bounds areas with zeros
+
+    def test_all_windows_have_correct_size(self):
+        """Test that all generated windows have the correct tile size"""
+        test_cases = [
+            (16208, 13715, 2048, "Large image with 2048 tiles"),
+            (1000, 1000, 512, "Medium image with 512 tiles"),
+            (333, 777, 224, "Small image with 224 tiles"),
+        ]
+
+        for height, width, crop_size, description in test_cases:
+            config = ProcessingConfig(
+                crop_size=crop_size, batch_size=1, band_order=[1, 2, 3]
+            )
+
+            # Calculate extended dimensions
+            extended_height, extended_width = (
+                ImageProcessor._calculate_extended_dimensions(height, width, config)
+            )
+
+            # Generate windows
+            windows = list(
+                ImageProcessor._generate_windows(
+                    extended_height, extended_width, config
+                )
+            )
+
+            # Verify all windows have the correct size
+            for i, window in enumerate(windows):
+                assert window.width == crop_size, (
+                    f"{description}: Window {i} has incorrect width: "
+                    f"{window.width} != {crop_size} (window: {window})"
+                )
+                assert window.height == crop_size, (
+                    f"{description}: Window {i} has incorrect height: "
+                    f"{window.height} != {crop_size} (window: {window})"
+                )
 
 
 if __name__ == "__main__":

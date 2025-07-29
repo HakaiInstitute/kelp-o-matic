@@ -20,7 +20,7 @@ from rich.progress import (
 
 from kelp_o_matic.config import ProcessingConfig
 from kelp_o_matic.hann import BartlettHannKernel, NumpyMemoryRegister
-from utils import batched
+from kelp_o_matic.utils import batched
 
 
 class ImageProcessor:
@@ -128,11 +128,8 @@ class ImageProcessor:
             )
 
             # Generate tiles and process in batches
-            # Generate windows for extended dimensions but clip to original image bounds
             windows = list(
-                self._generate_windows_clipped(
-                    extended_height, extended_width, height, width, config
-                )
+                self._generate_windows(extended_height, extended_width, config)
             )
 
             # Validate that we have full coverage of the original image
@@ -174,15 +171,44 @@ class ImageProcessor:
                         for read_window, model_output in zip(
                             window_batch, result_batch
                         ):
-                            is_top = read_window.row_off == 0
-                            is_bottom = (
-                                read_window.row_off + read_window.height >= height
+                            # Create a clipped version of the window for register processing
+                            # The register expects windows that don't extend beyond image bounds
+                            clipped_height = max(
+                                0, min(read_window.height, height - read_window.row_off)
                             )
-                            is_left = read_window.col_off == 0
-                            is_right = read_window.col_off + read_window.width >= width
+                            clipped_width = max(
+                                0, min(read_window.width, width - read_window.col_off)
+                            )
+
+                            # Skip windows that are completely outside the image bounds
+                            if (
+                                clipped_height <= 0
+                                or clipped_width <= 0
+                                or read_window.row_off >= height
+                                or read_window.col_off >= width
+                            ):
+                                continue
+
+                            clipped_window = Window(
+                                col_off=read_window.col_off,
+                                row_off=read_window.row_off,
+                                height=clipped_height,
+                                width=clipped_width,
+                            )
+
+                            # Edge detection based on clipped window
+                            is_top = clipped_window.row_off == 0
+                            is_bottom = (
+                                clipped_window.row_off + clipped_window.height >= height
+                            )
+                            is_left = clipped_window.col_off == 0
+                            is_right = (
+                                clipped_window.col_off + clipped_window.width >= width
+                            )
+
                             data, write_window = register.step(
                                 model_output,
-                                read_window,
+                                clipped_window,
                                 top=is_top,
                                 bottom=is_bottom,
                                 left=is_left,
@@ -202,22 +228,25 @@ class ImageProcessor:
         windows: Iterable[Window],
         config: ProcessingConfig,
     ) -> np.ndarray:
-        """Load a batch of tiles from the source raster."""
+        """Load a batch of tiles from the source raster using boundless reading."""
         tile_data = []
         for window in windows:
-            tile_img = src.read(window=window)
+            # Use boundless reading to handle out-of-bounds areas with fill_value=0
+            tile_img = src.read(window=window, boundless=True, fill_value=0)
             _, th, tw = tile_img.shape
 
-            # Pad out to tile size
-            tile_img = np.pad(
-                tile_img,
-                (
-                    (0, 0),
-                    (0, config.crop_size - th),
-                    (0, config.crop_size - tw),
-                ),
-                mode="reflect",
-            )
+            # Pad out to tile size if needed (shouldn't be necessary with boundless reading)
+            if th < config.crop_size or tw < config.crop_size:
+                tile_img = np.pad(
+                    tile_img,
+                    (
+                        (0, 0),
+                        (0, config.crop_size - th),
+                        (0, config.crop_size - tw),
+                    ),
+                    mode="constant",
+                    constant_values=0,
+                )
 
             # Rearrange/select bands
             tile_img = tile_img[[b - 1 for b in config.band_order], ...]
@@ -301,6 +330,41 @@ class ImageProcessor:
             for x in range(tiles_x):
                 row_start = y * stride
                 col_start = x * stride
+                row_end = row_start + tile_size
+                col_end = col_start + tile_size
+
+                # Skip windows that would be entirely outside the image bounds
+                if row_start >= height or col_start >= width:
+                    continue
+
+                yield Window.from_slices(
+                    rows=(row_start, row_end), cols=(col_start, col_end)
+                )
+
+    @staticmethod
+    def _generate_windows_for_postprocessing(
+        height: int,
+        width: int,
+        tile_size: int,
+        stride: int,
+    ) -> Generator[Window]:
+        """Generate tile windows for post-processing, clipped to image bounds"""
+        # Calculate number of tiles needed to ensure full coverage
+        if height <= tile_size:
+            tiles_y = 1
+        else:
+            tiles_y = math.ceil((height - tile_size) / stride) + 1
+
+        if width <= tile_size:
+            tiles_x = 1
+        else:
+            tiles_x = math.ceil((width - tile_size) / stride) + 1
+
+        for y in range(tiles_y):
+            for x in range(tiles_x):
+                row_start = y * stride
+                col_start = x * stride
+                # For post-processing, clip to actual image bounds
                 row_end = min(row_start + tile_size, height)
                 col_end = min(col_start + tile_size, width)
 
@@ -314,78 +378,6 @@ class ImageProcessor:
 
                 yield Window.from_slices(
                     rows=(row_start, row_end), cols=(col_start, col_end)
-                )
-
-    @staticmethod
-    def _generate_windows_clipped(
-        extended_height: int,
-        extended_width: int,
-        original_height: int,
-        original_width: int,
-        config: ProcessingConfig,
-        tile_size: int = None,
-        stride: int = None,
-    ) -> Generator[Window]:
-        """
-        Generate tile windows for extended dimensions but clipped to original image bounds.
-        This ensures we have full coverage while never reading outside the original image.
-        """
-        tile_size = tile_size or config.crop_size
-        stride = stride or config.stride
-
-        # Calculate number of tiles needed using extended dimensions
-        if extended_height <= tile_size:
-            tiles_y = 1
-        else:
-            tiles_y = math.ceil((extended_height - tile_size) / stride) + 1
-
-        if extended_width <= tile_size:
-            tiles_x = 1
-        else:
-            tiles_x = math.ceil((extended_width - tile_size) / stride) + 1
-
-        for y in range(tiles_y):
-            for x in range(tiles_x):
-                row_start = y * stride
-                col_start = x * stride
-                row_end = min(row_start + tile_size, extended_height)
-                col_end = min(col_start + tile_size, extended_width)
-
-                # Clip to original image bounds to prevent reading beyond the raster
-                # But ensure we don't clip the start coordinates too aggressively
-                row_start_clipped = max(0, min(row_start, original_height - 1))
-                col_start_clipped = max(0, min(col_start, original_width - 1))
-                row_end_clipped = min(row_end, original_height)
-                col_end_clipped = min(col_end, original_width)
-
-                # Skip windows that would be entirely outside the original image
-                if (
-                    row_start_clipped >= original_height
-                    or col_start_clipped >= original_width
-                    or row_end_clipped <= row_start_clipped
-                    or col_end_clipped <= col_start_clipped
-                ):
-                    continue
-
-                # For edge windows, ensure we capture all remaining pixels
-                # If this window would extend beyond the image, adjust the start to capture everything
-                if row_end > original_height and row_start < original_height:
-                    # This window extends beyond bottom edge, adjust start to capture remaining pixels
-                    needed_height = original_height - row_start
-                    if needed_height > 0:
-                        row_start_clipped = max(0, original_height - tile_size)
-                        row_end_clipped = original_height
-
-                if col_end > original_width and col_start < original_width:
-                    # This window extends beyond right edge, adjust start to capture remaining pixels
-                    needed_width = original_width - col_start
-                    if needed_width > 0:
-                        col_start_clipped = max(0, original_width - tile_size)
-                        col_end_clipped = original_width
-
-                yield Window.from_slices(
-                    rows=(row_start_clipped, row_end_clipped),
-                    cols=(col_start_clipped, col_end_clipped),
                 )
 
     @staticmethod
@@ -457,7 +449,9 @@ class ImageProcessor:
             stride = tile_size - 2 * overlap
 
             # Generate overlapping windows for post-processing
-            windows = self._generate_windows(height, width, config, tile_size, stride)
+            windows = self._generate_windows_for_postprocessing(
+                height, width, tile_size, stride
+            )
 
             windows_list = list(windows)
             if windows_list:  # Only show progress if there are windows to process
