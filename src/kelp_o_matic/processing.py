@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import itertools
+import math
 import warnings
 from pathlib import Path
 from typing import Generator, Iterable
@@ -127,8 +128,21 @@ class ImageProcessor:
             )
 
             # Generate tiles and process in batches
-            windows = self._generate_windows(extended_height, extended_width, config)
-            window_batches = list(itertools.batched(windows, n=config.batch_size))
+            # Generate windows for extended dimensions but clip to original image bounds
+            windows = list(
+                self._generate_windows_clipped(
+                    extended_height, extended_width, height, width, config
+                )
+            )
+
+            # Validate that we have full coverage of the original image
+            if not self._validate_full_coverage(height, width, windows):
+                raise RuntimeError(
+                    f"Window generation failed to provide full coverage of image "
+                    f"(original: {height}x{width}, extended: {extended_height}x{extended_width})"
+                )
+            
+            window_batches = list(batched(windows, n=config.batch_size))
 
             with rasterio.open(output_path, "w", **profile) as dst:
                 with Progress(
@@ -218,15 +232,46 @@ class ImageProcessor:
         height: int, width: int, config: ProcessingConfig
     ) -> tuple[int, int]:
         """Calculate extended dimensions to fit complete tiles"""
-        # Calculate number of tiles needed
-        tiles_y = ((height - config.crop_size) // config.stride) + 1
-        tiles_x = ((width - config.crop_size) // config.stride) + 1
+        tile_size = config.crop_size
+        stride = config.stride
 
-        # Calculate extended dimensions
-        extended_height = (tiles_y - 1) * config.stride + config.crop_size
-        extended_width = (tiles_x - 1) * config.stride + config.crop_size
+        # Calculate number of tiles needed using same logic as _generate_windows
+        if height <= tile_size:
+            tiles_y = 1
+        else:
+            tiles_y = math.ceil((height - tile_size) / stride) + 1
+
+        if width <= tile_size:
+            tiles_x = 1
+        else:
+            tiles_x = math.ceil((width - tile_size) / stride) + 1
+
+        # Calculate extended dimensions to ensure full coverage
+        extended_height = (tiles_y - 1) * stride + tile_size
+        extended_width = (tiles_x - 1) * stride + tile_size
 
         return max(extended_height, height), max(extended_width, width)
+
+    @staticmethod
+    def _validate_full_coverage(
+        height: int,
+        width: int,
+        windows: list[Window],
+    ) -> bool:
+        """Validate that the generated windows provide full coverage of the image"""
+        # Create a coverage map to track which pixels are covered
+        coverage = np.zeros((height, width), dtype=bool)
+
+        for window in windows:
+            row_start = max(0, window.row_off)
+            row_end = min(height, window.row_off + window.height)
+            col_start = max(0, window.col_off)
+            col_end = min(width, window.col_off + window.width)
+
+            coverage[row_start:row_end, col_start:col_end] = True
+
+        # Check if all pixels are covered
+        return np.all(coverage)
 
     @staticmethod
     def _generate_windows(
@@ -240,8 +285,17 @@ class ImageProcessor:
         tile_size = tile_size or config.crop_size
         stride = stride or config.stride
 
-        tiles_y = ((height - tile_size) // stride) + 1
-        tiles_x = ((width - tile_size) // stride) + 1
+        # Calculate number of tiles needed to ensure full coverage
+        # Use ceiling division to handle cases where dimensions don't align perfectly with stride
+        if height <= tile_size:
+            tiles_y = 1
+        else:
+            tiles_y = math.ceil((height - tile_size) / stride) + 1
+
+        if width <= tile_size:
+            tiles_x = 1
+        else:
+            tiles_x = math.ceil((width - tile_size) / stride) + 1
 
         for y in range(tiles_y):
             for x in range(tiles_x):
@@ -250,8 +304,88 @@ class ImageProcessor:
                 row_end = min(row_start + tile_size, height)
                 col_end = min(col_start + tile_size, width)
 
+                # Skip windows that would be entirely outside the image bounds
+                if row_start >= height or col_start >= width:
+                    continue
+
+                # Ensure we have a valid window size
+                if row_end <= row_start or col_end <= col_start:
+                    continue
+
                 yield Window.from_slices(
                     rows=(row_start, row_end), cols=(col_start, col_end)
+                )
+
+    @staticmethod
+    def _generate_windows_clipped(
+        extended_height: int,
+        extended_width: int,
+        original_height: int,
+        original_width: int,
+        config: ProcessingConfig,
+        tile_size: int = None,
+        stride: int = None,
+    ) -> Generator[Window]:
+        """
+        Generate tile windows for extended dimensions but clipped to original image bounds.
+        This ensures we have full coverage while never reading outside the original image.
+        """
+        tile_size = tile_size or config.crop_size
+        stride = stride or config.stride
+
+        # Calculate number of tiles needed using extended dimensions
+        if extended_height <= tile_size:
+            tiles_y = 1
+        else:
+            tiles_y = math.ceil((extended_height - tile_size) / stride) + 1
+
+        if extended_width <= tile_size:
+            tiles_x = 1
+        else:
+            tiles_x = math.ceil((extended_width - tile_size) / stride) + 1
+
+        for y in range(tiles_y):
+            for x in range(tiles_x):
+                row_start = y * stride
+                col_start = x * stride
+                row_end = min(row_start + tile_size, extended_height)
+                col_end = min(col_start + tile_size, extended_width)
+
+                # Clip to original image bounds to prevent reading beyond the raster
+                # But ensure we don't clip the start coordinates too aggressively
+                row_start_clipped = max(0, min(row_start, original_height - 1))
+                col_start_clipped = max(0, min(col_start, original_width - 1))
+                row_end_clipped = min(row_end, original_height)
+                col_end_clipped = min(col_end, original_width)
+
+                # Skip windows that would be entirely outside the original image
+                if (
+                    row_start_clipped >= original_height
+                    or col_start_clipped >= original_width
+                    or row_end_clipped <= row_start_clipped
+                    or col_end_clipped <= col_start_clipped
+                ):
+                    continue
+
+                # For edge windows, ensure we capture all remaining pixels
+                # If this window would extend beyond the image, adjust the start to capture everything
+                if row_end > original_height and row_start < original_height:
+                    # This window extends beyond bottom edge, adjust start to capture remaining pixels
+                    needed_height = original_height - row_start
+                    if needed_height > 0:
+                        row_start_clipped = max(0, original_height - tile_size)
+                        row_end_clipped = original_height
+
+                if col_end > original_width and col_start < original_width:
+                    # This window extends beyond right edge, adjust start to capture remaining pixels
+                    needed_width = original_width - col_start
+                    if needed_width > 0:
+                        col_start_clipped = max(0, original_width - tile_size)
+                        col_end_clipped = original_width
+
+                yield Window.from_slices(
+                    rows=(row_start_clipped, row_end_clipped),
+                    cols=(col_start_clipped, col_end_clipped),
                 )
 
     @staticmethod
