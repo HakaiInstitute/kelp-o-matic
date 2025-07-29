@@ -13,7 +13,8 @@ from rich.progress import (
     TextColumn,
     TransferSpeedColumn,
 )
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterable, Any
+import itertools
 
 if TYPE_CHECKING:
     from kelp_o_matic import ModelConfig
@@ -101,3 +102,40 @@ def get_local_model_path(model_config: ModelConfig) -> Path:
 
     # If it doesn't match URL patterns, assume it's a local path
     return Path(model_config.model_path).expanduser().resolve()
+
+
+def batched(iterable: Iterable[Any], n: int) -> Iterable[tuple[Any, ...]]:
+    """
+    Batch data from the iterable into tuples of length n. The last batch may be shorter.
+
+    This function emulates itertools.batched() which was introduced in Python 3.12.
+
+    Args:
+        iterable: Any iterable (list, string, generator, etc.)
+        n: Batch size (positive integer)
+
+    Yields:
+        Tuples containing up to n elements from the iterable
+
+    Raises:
+        ValueError: If n is less than 1
+
+    Examples:
+        >>> list(batched('ABCDEFG', 3))
+        [('A', 'B', 'C'), ('D', 'E', 'F'), ('G',)]
+
+        >>> list(batched([1, 2, 3, 4, 5, 6, 7, 8, 9], 4))
+        [(1, 2, 3, 4), (5, 6, 7, 8), (9,)]
+
+        >>> list(batched(range(10), 2))
+        [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9)]
+    """
+    if n < 1:
+        raise ValueError("n must be at least one")
+
+    iterator = iter(iterable)
+    while True:
+        batch = tuple(itertools.islice(iterator, n))
+        if not batch:
+            break
+        yield batch

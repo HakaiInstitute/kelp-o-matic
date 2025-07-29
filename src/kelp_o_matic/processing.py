@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import itertools
 import math
 import warnings
 from pathlib import Path
@@ -21,6 +20,7 @@ from rich.progress import (
 
 from kelp_o_matic.config import ProcessingConfig
 from kelp_o_matic.hann import BartlettHannKernel, NumpyMemoryRegister
+from utils import batched
 
 
 class ImageProcessor:
@@ -141,7 +141,7 @@ class ImageProcessor:
                     f"Window generation failed to provide full coverage of image "
                     f"(original: {height}x{width}, extended: {extended_height}x{extended_width})"
                 )
-            
+
             window_batches = list(batched(windows, n=config.batch_size))
 
             with rasterio.open(output_path, "w", **profile) as dst:
