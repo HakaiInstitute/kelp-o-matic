@@ -38,6 +38,9 @@ docs = [
     "mkdocs-material>=9.6.3,<10",
     "mkdocstrings-python>=1.14.6,<2",
 ]
+examples = [
+    "jupyter>=1.1.1",
+]
 
 [tool.uv]
 default-groups = [
