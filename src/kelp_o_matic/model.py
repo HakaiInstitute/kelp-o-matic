@@ -23,6 +23,18 @@ class ONNXModel:
         cls(config=config)
 
     @property
+    def name(self) -> str:
+        return self.cfg.name
+
+    @property
+    def description(self) -> str:
+        return self.cfg.description
+
+    @property
+    def version(self) -> str:
+        return self.cfg.version
+
+    @property
     def _ort_sess(self) -> ort.InferenceSession:
         """Load and cache the ONNX Runtime session."""
         if self.__ort_sess is not None:
