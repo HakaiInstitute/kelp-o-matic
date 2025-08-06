@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-import warnings
 from pathlib import Path
 from typing import Generator, Iterable
 
@@ -71,16 +70,12 @@ class ImageProcessor:
             from rich.panel import Panel
 
             warning_panel = Panel(
-                f"[yellow]Specified tile size {crop_size} does not match model preferred size {self.model.input_tile_size}.\\n"
+                f"[yellow]Specified tile size {crop_size} does not match model preferred size {self.model.input_tile_size}. "
                 f"Using model preferred size of {self.model.input_tile_size}.[/yellow]",
                 title="[bold yellow]Tile Size Warning[/bold yellow]",
                 border_style="yellow",
             )
             self.console.print(warning_panel)
-            warnings.warn(
-                f"Specified tile size {crop_size} does not match model preferred size {self.model.input_tile_size}. "
-                f"Using model preferred size of {self.model.input_tile_size}."
-            )
             crop_size = self.model.input_tile_size
 
         # Create processing configuration

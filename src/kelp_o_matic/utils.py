@@ -77,7 +77,7 @@ def is_url(uri: str) -> bool:
     return uri.startswith(("http://", "https://", "ftp://", "ftps://"))
 
 
-def get_local_model_path(model_config: "ModelConfig") -> Path:
+def get_local_model_path(model_config: ModelConfig) -> Path:
     """
     Get the local path for a model, handling both URLs and local file paths.
 
