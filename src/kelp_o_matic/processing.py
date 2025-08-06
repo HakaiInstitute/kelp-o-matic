@@ -210,7 +210,7 @@ class ImageProcessor:
                             data = self.model.postprocess(data)
                             dst.write(data, 1, window=write_window)
 
-                        progress.update(task, advance=1)
+                        progress.update(task, advance=1, refresh=True)
 
             # Apply final post-processing
             self._apply_final_postprocessing(output_path, config)
@@ -483,4 +483,4 @@ class ImageProcessor:
 
                         # Place result, removing overlap except at boundaries
                         self._place_window_result(dst, window, tile_data, overlap)
-                        progress.update(task, advance=1)
+                        progress.update(task, advance=1, refresh=True)
