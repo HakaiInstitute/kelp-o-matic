@@ -5,6 +5,7 @@ from pathlib import Path
 import onnxruntime as ort
 import platformdirs
 import requests
+from rich.console import Console
 from rich.progress import (
     BarColumn,
     DownloadColumn,
@@ -18,6 +19,8 @@ import itertools
 
 if TYPE_CHECKING:
     from kelp_o_matic.config import ModelConfig
+
+console = Console()
 
 
 def download_file_with_progress(url: str, out_path: Path):

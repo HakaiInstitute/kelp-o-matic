@@ -5,10 +5,14 @@ from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, field_validator
-from rich.console import Console
 from rich.status import Status
 
-from kelp_o_matic.utils import download_file_with_progress, get_local_model_path, is_url
+from kelp_o_matic.utils import (
+    download_file_with_progress,
+    get_local_model_path,
+    is_url,
+    console,
+)
 
 
 class ProcessingConfig(BaseModel):
@@ -110,8 +114,6 @@ class ModelConfig(BaseModel):
         """
 
         local_path = get_local_model_path(self)
-
-        console = Console()
 
         # If it's a URL, handle download
         if is_url(self.model_path):

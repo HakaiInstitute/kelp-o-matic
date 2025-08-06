@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from rich.console import Console
 
 from kelp_o_matic.config import ModelConfig
 from kelp_o_matic.model import ONNXModel
@@ -139,7 +138,8 @@ model_registry = ModelRegistry.from_config_dir(Path(__file__).parent / "configs"
 
 if __name__ == "__main__":
     # Example usage
-    console = Console()
+    from kelp_o_matic.utils import console
+
     registry = ModelRegistry.from_config_dir("configs")
     console.print(f"[bold green]Registry:[/bold green] {registry}")
 

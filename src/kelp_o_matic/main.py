@@ -5,20 +5,18 @@ from typing import Annotated
 
 import humanize
 from cyclopts import App, Parameter
-from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm
 from rich.table import Table
 from rich.traceback import install
 
 from kelp_o_matic.registry import model_registry
-from kelp_o_matic.utils import get_local_model_dir
+from kelp_o_matic.utils import get_local_model_dir, console
 
 # Install rich traceback formatting
 install(show_locals=True, max_frames=5)
 
 app = App()
-console = Console()
 
 
 @app.command

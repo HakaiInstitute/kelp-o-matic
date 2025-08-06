@@ -8,7 +8,6 @@ import cv2
 import numpy as np
 import rasterio
 from rasterio.windows import Window
-from rich.console import Console
 from rich.progress import (
     BarColumn,
     Progress,
@@ -19,7 +18,7 @@ from rich.progress import (
 
 from kelp_o_matic.config import ProcessingConfig
 from kelp_o_matic.hann import BartlettHannKernel, NumpyMemoryRegister
-from kelp_o_matic.utils import batched
+from kelp_o_matic.utils import batched, console
 
 
 class ImageProcessor:
@@ -35,7 +34,6 @@ class ImageProcessor:
             model: The ONNXModel instance to use for inference
         """
         self.model = model
-        self.console = Console()
 
     def process(
         self,
@@ -75,7 +73,7 @@ class ImageProcessor:
                 title="[bold yellow]Tile Size Warning[/bold yellow]",
                 border_style="yellow",
             )
-            self.console.print(warning_panel)
+            console.print(warning_panel)
             crop_size = self.model.input_tile_size
 
         # Create processing configuration
@@ -143,7 +141,7 @@ class ImageProcessor:
                     TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
                     TimeElapsedColumn(),
                     TimeRemainingColumn(),
-                    console=self.console,
+                    console=console,
                 ) as progress:
                     task = progress.add_task("Processing", total=len(window_batches))
                     for window_batch in window_batches:
@@ -455,7 +453,7 @@ class ImageProcessor:
                     BarColumn(),
                     TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
                     TimeElapsedColumn(),
-                    console=self.console,
+                    console=console,
                 ) as progress:
                     task = progress.add_task("Post-processing", total=len(windows_list))
                     for window in windows_list:
