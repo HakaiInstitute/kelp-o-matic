@@ -11,7 +11,7 @@ from rich.prompt import Confirm
 from rich.table import Table
 from rich.traceback import install
 
-from kelp_o_matic import model_registry
+from kelp_o_matic.registry import model_registry
 from kelp_o_matic.utils import get_local_model_dir
 
 # Install rich traceback formatting

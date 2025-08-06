@@ -14,5 +14,6 @@
     0.224,
     0.225
   ],
-  "max_pixel_value": 255.0
+  "max_pixel_value": 255.0,
+  "activation": "softmax"
 }

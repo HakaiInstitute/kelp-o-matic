@@ -25,5 +25,6 @@
     849.0,
     914.0
   ],
-  "max_pixel_value": 1.0
+  "max_pixel_value": 1.0,
+  "activation": "sigmoid"
 }
