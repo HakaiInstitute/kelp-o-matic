@@ -31,7 +31,7 @@ class ONNXModel:
         return self.cfg.description
 
     @property
-    def version(self) -> str:
+    def revision(self) -> str:
         return self.cfg.revision
 
     @property
