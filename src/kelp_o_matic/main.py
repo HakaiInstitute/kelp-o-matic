@@ -147,7 +147,7 @@ def revisions(
 @app.command
 def clean() -> None:
     """
-    Clear the model cache to free up space. Models will be re-downloaded as needed.
+    Empty the Kelp-O-Matic model cache to free up space. Models will be re-downloaded as needed.
     """
     model_dir = get_local_model_dir()
     files = list(model_dir.glob("*.onnx"))
