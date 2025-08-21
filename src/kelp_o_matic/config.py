@@ -95,7 +95,7 @@ class ModelConfig(BaseModel):
     ) = "standard"
     mean: tuple[float, ...] | None = (0.485, 0.456, 0.406)
     std: tuple[float, ...] | None = (0.229, 0.224, 0.225)
-    max_pixel_value: float | None = 255.0
+    max_pixel_value: float | Literal["auto"] = "auto"
 
     @property
     def local_model_path(self) -> Path:

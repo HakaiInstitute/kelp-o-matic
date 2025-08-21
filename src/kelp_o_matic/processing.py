@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import sys
 from pathlib import Path
 from typing import Generator, Iterable
 
@@ -110,7 +111,28 @@ class ImageProcessor:
         with rasterio.open(input_path) as src:
             # Get raster properties
             height, width = src.height, src.width
+            dtype = src.dtypes[0]
             profile = src.profile.copy()
+
+            if self.model.cfg.max_pixel_value == "auto":
+                # Automatically determine max pixel value based on dtype
+                if dtype == "uint8":
+                    self.model.cfg.max_pixel_value = 255
+                elif dtype == "uint16":
+                    self.model.cfg.max_pixel_value = 65535
+                elif dtype in ["float16", "float32", "float64"]:
+                    # Warn that float types should be normalized
+                    console.print(
+                        "[yellow]Warning: Input image has float data type. "
+                        "Ensure pixel values are in range [0,1] to avoid unexpected results.[/yellow]"
+                    )
+                    self.model.cfg.max_pixel_value = 1.0
+                else:
+                    console.print(
+                        f"[red]Unsupported image data type {dtype} for model. "
+                        f"Convert your image to uint8 or uint16 before processing.[/red]"
+                    )
+                    sys.exit(0)
 
             # Update profile for output
             profile.update({"dtype": "uint8", "count": 1, "compress": "lzw"})
