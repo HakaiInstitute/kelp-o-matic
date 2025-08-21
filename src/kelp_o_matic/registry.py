@@ -93,7 +93,7 @@ class ModelRegistry:
             if revision not in self._models[name]:
                 available_revisions = list(self._models[name].keys())
                 raise KeyError(
-                    f"Version '{revision}' of model '{name}' is not registered. "
+                    f"Revision '{revision}' of model '{name}' is not registered. "
                     f"Available revisions: {available_revisions}"
                 )
             return self._models[name][revision]
