@@ -187,7 +187,7 @@ def segment(
     model_name: Annotated[
         str,
         Parameter(
-            help="The name of the model to run. Run `planet-kelp list-models` to see options",
+            help="The name of the model to run. Run `kom models` to see options",
             name=["--model", "-m"],
         ),
     ],
@@ -207,7 +207,7 @@ def segment(
     revision: Annotated[
         str,
         Parameter(
-            help="The revision of the model to use",
+            help="The revision of the model to use. Run `kom revisions <model_name>` to see options",
             name=["--revision", "--rev"],
         ),
     ] = "latest",
