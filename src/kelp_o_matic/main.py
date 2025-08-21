@@ -28,17 +28,17 @@ def list_models() -> None:
 
     table = Table(title="[bold green]Available Models[/bold green]")
     table.add_column("Model Name", style="cyan", no_wrap=True)
-    table.add_column("Version", style="magenta")
+    table.add_column("Revision", style="magenta")
     table.add_column("Description", style="white")
     table.add_column("Status", style="green")
 
-    # Show only the latest version of each model
+    # Show only the latest revision of each model
     model_names = model_registry.list_model_names()
     for model_name in sorted(model_names):
         try:
-            # Get the latest version of this model
-            latest_version = model_registry.get_latest_version(model_name)
-            model = model_registry[model_name]  # Gets latest version
+            # Get the latest revision of this model
+            latest_revision = model_registry.get_latest_revision(model_name)
+            model = model_registry[model_name]  # Gets latest revision
             cfg = model.cfg
 
             # Check if model is cached locally
@@ -57,7 +57,7 @@ def list_models() -> None:
                 )
 
             table.add_row(
-                model_name, latest_version, cfg.description or "No description", status
+                model_name, latest_revision, cfg.description or "No description", status
             )
         except Exception as e:
             error_panel = Panel(
@@ -77,11 +77,11 @@ def list_models() -> None:
 
 
 @app.command
-def list_versions(
+def revisions(
     model_name: str,
 ) -> None:
     """
-    List all available versions for a specific model.
+    List all available revisions for a specific model.
     """
     from kelp_o_matic.utils import get_local_model_path, is_url
 
@@ -96,19 +96,19 @@ def list_versions(
         console.print(error_panel)
         return
 
-    table = Table(title=f"[bold green]Versions for {model_name}[/bold green]")
-    table.add_column("Version", style="magenta")
+    table = Table(title=f"[bold green]Revisions for {model_name}[/bold green]")
+    table.add_column("Revision", style="magenta")
     table.add_column("Latest", style="bright_yellow", justify="center")
     table.add_column("Description", style="white")
     table.add_column("Status", style="green")
 
     try:
-        # Get all versions for this model
-        models_by_version = model_registry._models[model_name]
-        latest_version = model_registry.get_latest_version(model_name)
+        # Get all revisions for this model
+        models_by_revision = model_registry._models[model_name]
+        latest_revision = model_registry.get_latest_revision(model_name)
 
-        for version in sorted(models_by_version.keys(), reverse=True):
-            model = models_by_version[version]
+        for revision in sorted(models_by_revision.keys(), reverse=True):
+            model = models_by_revision[revision]
             cfg = model.cfg
 
             # Check if model is cached locally
@@ -126,15 +126,15 @@ def list_versions(
                     else "[red]Missing[/red]"
                 )
 
-            # Mark latest version
-            is_latest = "✓" if version == latest_version else ""
+            # Mark latest revision
+            is_latest = "✓" if revision == latest_revision else ""
 
             table.add_row(
-                version, is_latest, cfg.description or "No description", status
+                revision, is_latest, cfg.description or "No description", status
             )
     except Exception as e:
         error_panel = Panel(
-            f"[red]Error loading versions for model '{model_name}': {e}[/red]",
+            f"[red]Error loading revisions for model '{model_name}': {e}[/red]",
             title="[bold red]Model Error[/bold red]",
             border_style="red",
         )
@@ -204,11 +204,11 @@ def segment(
             name=["--output", "-o"],
         ),
     ],
-    model_version: Annotated[
+    revision: Annotated[
         str,
         Parameter(
-            help="The version of the model to use. Defaults to 'latest' for the most recent version",
-            name=["--version", "-v"],
+            help="The revision of the model to use",
+            name=["--revision", "--rev"],
         ),
     ] = "latest",
     batch_size: Annotated[
@@ -223,7 +223,7 @@ def segment(
     crop_size: Annotated[
         int | None,
         Parameter(
-            help="Tile size for processing. Defaults to the 1024 or to the size defined by the model (must be an even)",
+            help="Tile size for processing (must be even). Defaults to the 1024 or to the size required by the model",
             validator=lambda _, x: (x is None) or (x % 2 == 0 and x > 0),
             name=["--crop-size", "-z"],
             alias="--size",
@@ -234,7 +234,7 @@ def segment(
         Parameter(
             help="Size of median blur kernel (must be odd)",
             validator=lambda _, x: x % 2 == 1 and x > 0,
-            name=["--blur-kernel", "-bk"],
+            name=["--blur-kernel"],
             alias="--blur",
         ),
     ] = 5,
@@ -243,7 +243,7 @@ def segment(
         Parameter(
             help="Size of morphological kernel (must be odd, 0 to disable)",
             validator=lambda _, x: x % 2 == 1 or x == 0,
-            name=["--morph-kernel", "-mk"],
+            name=["--morph-kernel"],
             alias="--morph",
         ),
     ] = 0,
@@ -280,20 +280,18 @@ def segment(
             console.print(error_panel)
             return
 
-        # Handle version retrieval
+        # Handle revision retrieval
         try:
-            if model_version == "latest":
-                model = model_registry[model_name]  # Gets latest version
-                actual_version = model_registry.get_latest_version(model_name)
+            if revision == "latest":
+                model = model_registry[model_name]  # Gets latest revision
+                actual_revision = model_registry.get_latest_revision(model_name)
             else:
-                model = model_registry[
-                    model_name, model_version
-                ]  # Gets specific version
-                actual_version = model_version
+                model = model_registry[model_name, revision]  # Gets specific revision
+                actual_revision = revision
         except KeyError as e:
             error_panel = Panel(
                 f"[red]{e}[/red]",
-                title="[bold red]Version Error[/bold red]",
+                title="[bold red]Revision Error[/bold red]",
                 border_style="red",
             )
             console.print(error_panel)
@@ -302,7 +300,7 @@ def segment(
         # Show processing info in a panel
         info_panel = Panel(
             f"[blue]Model:[/blue] {model_name}\n"
-            f"[blue]Version:[/blue] {actual_version}\n"
+            f"[blue]Revision:[/blue] {actual_revision}\n"
             f"[blue]Input:[/blue] {input_file}\n"
             f"[blue]Output:[/blue] {Path(output_path).expanduser()}",
             title="[bold blue]Processing Configuration[/bold blue]",

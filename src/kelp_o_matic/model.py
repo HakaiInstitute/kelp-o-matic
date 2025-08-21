@@ -32,7 +32,7 @@ class ONNXModel:
 
     @property
     def version(self) -> str:
-        return self.cfg.version
+        return self.cfg.revision
 
     @property
     def _ort_sess(self) -> ort.InferenceSession:

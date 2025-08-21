@@ -100,7 +100,7 @@ def get_local_model_path(model_config: ModelConfig) -> Path:
     # Check if it's a URL
     if is_url(model_config.model_path):
         # It's a URL - use existing cache logic
-        filename = f"{model_config.name}-{model_config.version}.onnx"
+        filename = f"{model_config.name}-{model_config.revision}.onnx"
         return get_local_model_dir() / filename
 
     # If it doesn't match URL patterns, assume it's a local path

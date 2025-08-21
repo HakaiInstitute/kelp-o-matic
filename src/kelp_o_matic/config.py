@@ -82,7 +82,7 @@ class ModelConfig(BaseModel):
 
     name: str
     description: str | None = None
-    version: str
+    revision: str
     model_path: str  # URL to download model from, or local file path
     input_channels: int = 3
     activation: Literal["sigmoid", "softmax"] | None = None
@@ -152,7 +152,7 @@ class ModelConfig(BaseModel):
 if __name__ == "__main__":
     config = ModelConfig(
         name="kelp_ps8b",
-        version="20250626",
+        revision="20250626",
         description="Kelp segmentation model for 8-band PlanetScope imagery.",
         model_path="https://hakai-triton-models-bf426c24.s3.us-east-1.amazonaws.com/kelp_segmentation_ps8b_model/1/model.onnx",
         normalization="standard",

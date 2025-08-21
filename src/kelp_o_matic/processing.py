@@ -164,7 +164,7 @@ class ImageProcessor:
                         for read_window, model_output in zip(
                             window_batch, result_batch
                         ):
-                            # Create a clipped version of the window for register processing
+                            # Create a clipped revision of the window for register processing
                             # The register expects windows that don't extend beyond image bounds
                             clipped_height = max(
                                 0, min(read_window.height, height - read_window.row_off)

@@ -1,6 +1,6 @@
 {
   "name": "mussel-rgb",
-  "version": "20250711",
+  "revision": "20250711",
   "description": "Mussel segmentation model for RGB drone imagery.",
   "model_path": "https://huggingface.co/HakaiInstitute/mussel-rgb/resolve/20250711/model.onnx",
   "normalization": "standard",

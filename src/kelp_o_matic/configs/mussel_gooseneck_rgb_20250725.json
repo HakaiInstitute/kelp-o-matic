@@ -1,6 +1,6 @@
 {
   "name": "mussel-gooseneck-rgb",
-  "version": "20250725",
+  "revision": "20250725",
   "description": "Mussel and gooseneck barnacle segmentation model for RGB drone imagery.",
   "model_path": "https://huggingface.co/HakaiInstitute/mussel-gooseneck-rgb/resolve/20250725/model.onnx",
   "normalization": "standard",

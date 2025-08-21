@@ -10,27 +10,27 @@ from kelp_o_matic.model import ONNXModel
 class ModelRegistry:
     """
     A model_registry for models that allows for dynamic registration and retrieval.
-    Supports multiple versions of the same model with calendar versioning.
+    Supports multiple revisions of the same model with calendar versioning.
     """
 
     def __init__(self):
-        # Changed to nested dict: {name: {version: model}}
+        # Changed to nested dict: {name: {revision: model}}
         self._models = {}
 
     def list_models(self):
         """
-        List all registered model names and versions.
-        Returns list of (name, version) tuples.
+        List all registered model names and revisions.
+        Returns list of (name, revision) tuples.
         """
         models = []
-        for name, versions in self._models.items():
-            for version in versions.keys():
-                models.append((name, version))
+        for name, revisions in self._models.items():
+            for revision in revisions.keys():
+                models.append((name, revision))
         return models
 
     def list_model_names(self):
         """
-        List unique model names (without versions).
+        List unique model names (without revisions).
         """
         return list(self._models.keys())
 
@@ -42,18 +42,18 @@ class ModelRegistry:
             raise TypeError("model_config must be an instance of ModelConfig")
 
         name = model_config.name
-        version = model_config.version
+        revision = model_config.revision
 
         if name not in self._models:
             self._models[name] = {}
 
-        self._models[name][version] = ONNXModel(model_config)
+        self._models[name][revision] = ONNXModel(model_config)
 
     @classmethod
     def from_config_dir(cls, config_dir: str | Path):
         """
         Create a ModelRegistry instance from a directory containing model configuration files.
-        Config files should be named with pattern: {name}_{version}.json
+        Config files should be named with pattern: {name}_{revision}.json
         """
         reg = cls()
         config_path = Path(config_dir)
@@ -65,53 +65,53 @@ class ModelRegistry:
 
         return reg
 
-    def get_latest_version(self, name: str) -> str:
+    def get_latest_revision(self, name: str) -> str:
         """
-        Get the latest version of a model by calendar versioning.
+        Get the latest revision of a model by calendar versioning.
         """
         if name not in self._models:
             raise KeyError(f"Model '{name}' is not registered.")
 
-        versions = list(self._models[name].keys())
-        # Sort by version string (calendar versioning works with string sort)
-        return max(versions)
+        revisions = list(self._models[name].keys())
+        # Sort by revision string (calendar versioning works with string sort)
+        return max(revisions)
 
     def __getitem__(self, key: str | tuple[str, str]):
         """
-        Retrieve a model by its name (latest version) or by (name, version) tuple.
+        Retrieve a model by its name (latest revision) or by (name, revision) tuple.
 
         Args:
-            key: Either model name (str) for latest version, or (name, version) tuple
+            key: Either model name (str) for latest revision, or (name, revision) tuple
 
         Returns:
             ONNXModel instance
         """
         if isinstance(key, tuple):
-            name, version = key
+            name, revision = key
             if name not in self._models:
                 raise KeyError(f"Model '{name}' is not registered.")
-            if version not in self._models[name]:
-                available_versions = list(self._models[name].keys())
+            if revision not in self._models[name]:
+                available_revisions = list(self._models[name].keys())
                 raise KeyError(
-                    f"Version '{version}' of model '{name}' is not registered. "
-                    f"Available versions: {available_versions}"
+                    f"Version '{revision}' of model '{name}' is not registered. "
+                    f"Available revisions: {available_revisions}"
                 )
-            return self._models[name][version]
+            return self._models[name][revision]
         else:
-            # Single string key - get latest version
+            # Single string key - get latest revision
             name = key
             if name not in self._models:
                 raise KeyError(f"Model '{name}' is not registered.")
-            latest_version = self.get_latest_version(name)
-            return self._models[name][latest_version]
+            latest_revision = self.get_latest_revision(name)
+            return self._models[name][latest_revision]
 
     def __contains__(self, key: str | tuple[str, str]) -> bool:
         """
-        Check if a model is registered by its name or (name, version).
+        Check if a model is registered by its name or (name, revision).
         """
         if isinstance(key, tuple):
-            name, version = key
-            return name in self._models and version in self._models[name]
+            name, revision = key
+            return name in self._models and revision in self._models[name]
         else:
             return key in self._models
 
@@ -120,16 +120,16 @@ class ModelRegistry:
         String representation of the ModelRegistry.
         """
         model_info = []
-        for name, versions in self._models.items():
-            version_list = list(versions.keys())
-            model_info.append(f"{name}: {version_list}")
+        for name, revisions in self._models.items():
+            revision_list = list(revisions.keys())
+            model_info.append(f"{name}: {revision_list}")
         return f"ModelRegistry({model_info})"
 
     def __len__(self):
         """
-        Get the total number of registered model versions.
+        Get the total number of registered model revisions.
         """
-        return sum(len(versions) for versions in self._models.values())
+        return sum(len(revisions) for revisions in self._models.values())
 
 
 # Initialize the model registry from the default configuration directory

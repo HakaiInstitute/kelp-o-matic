@@ -1,6 +1,6 @@
 {
   "name": "kelp-ps8b",
-  "version": "20250814",
+  "revision": "20250814",
   "description": "Kelp segmentation model for 8-band PlanetScope imagery.",
   "model_path": "https://huggingface.co/HakaiInstitute/kelp-ps8b/resolve/20250814/model.onnx",
   "normalization": "standard",
