@@ -12,7 +12,7 @@ mkdocs:
 python:
   # Install our python package before building the docs
   install:
-    - requirements: pyproject.toml
+    - requirements: docs/requirements.txt
     - method: pip
       path: .
       extra_requirements:
