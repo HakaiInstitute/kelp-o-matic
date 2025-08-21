@@ -176,7 +176,7 @@ class ONNXModel:
 
     def process(
         self,
-        input_path: str | Path,
+        img_path: str | Path,
         output_path: str | Path,
         *,
         batch_size: int = 1,
@@ -192,7 +192,7 @@ class ONNXModel:
         TiledProcessingStrategy and processes the image.
 
         Args:
-            input_path: Path to input raster
+            img_path: Path to input raster
             output_path: Path to output segmentation raster
             batch_size: Batch size for processing
             crop_size: Tile size for processing (uses model's preferred size if None)
@@ -204,7 +204,7 @@ class ONNXModel:
 
         processor = ImageProcessor(self)
         processor.process(
-            input_path=input_path,
+            img_path=img_path,
             output_path=output_path,
             batch_size=batch_size,
             crop_size=crop_size,

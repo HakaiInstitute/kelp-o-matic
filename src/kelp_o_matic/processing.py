@@ -38,7 +38,7 @@ class ImageProcessor:
 
     def process(
         self,
-        input_path: str | Path,
+        img_path: str | Path,
         output_path: str | Path,
         *,
         batch_size: int = 1,
@@ -51,7 +51,7 @@ class ImageProcessor:
         Process an image using tiled segmentation with overlap handling.
 
         Args:
-            input_path: Path to input raster
+            img_path: Path to input raster
             output_path: Path to output segmentation raster
             batch_size: Batch size for processing
             crop_size: Tile size for processing (uses model's preferred size if None)
@@ -90,11 +90,11 @@ class ImageProcessor:
         )
 
         # Process using tiled approach
-        self._process_raster(input_path, output_path, config)
+        self._process_raster(img_path, output_path, config)
 
     def _process_raster(
         self,
-        input_path: str | Path,
+        img_path: str | Path,
         output_path: str | Path,
         config: ProcessingConfig,
     ) -> None:
@@ -102,13 +102,13 @@ class ImageProcessor:
         Process a raster file with tiled segmentation.
 
         Args:
-            input_path: Path to input raster
+            img_path: Path to input raster
             output_path: Path to output segmentation raster
             config: Processing configuration
         """
         register = None
 
-        with rasterio.open(input_path) as src:
+        with rasterio.open(img_path) as src:
             # Get raster properties
             height, width = src.height, src.width
             dtype = src.dtypes[0]
@@ -171,7 +171,7 @@ class ImageProcessor:
                         input_batch = self._load_batch(src, window_batch, config)
 
                         # Process batch through model
-                        result_batch = self.model.predict(input_batch)
+                        result_batch = self.model._predict(input_batch)
 
                         if register is None:
                             num_classes = result_batch.shape[1]
@@ -229,7 +229,7 @@ class ImageProcessor:
                                 left=is_left,
                                 right=is_right,
                             )
-                            data = self.model.postprocess(data)
+                            data = self.model._postprocess(data)
                             dst.write(data, 1, window=write_window)
 
                         progress.update(task, advance=1, refresh=True)

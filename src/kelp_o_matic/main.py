@@ -309,7 +309,7 @@ def segment(
         console.print(info_panel)
 
         model.process(
-            input_path=input_file,
+            img_path=input_file,
             output_path=Path(output_path).expanduser(),
             batch_size=batch_size,
             crop_size=crop_size,
