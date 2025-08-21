@@ -20,9 +20,9 @@ app = App()
 
 
 @app.command
-def list_models() -> None:
+def models() -> None:
     """
-    List all available models with their latest versions.
+    List all available models with their latest revisions.
     """
     from kelp_o_matic.utils import get_local_model_path, is_url
 
