@@ -10,7 +10,7 @@ dependencies = [
     "cyclopts>=3.22.2",
     "humanize>=4.12.3",
     "numpy>=2.2.6",
-    "onnxruntime>=1.22.0; extra != 'cuda'",
+    "onnxruntime>=1.22.0",
     "opencv-python-headless>=4.11.0.86",
     "platformdirs>=4.3.8",
     "pydantic>=2.11.7",
