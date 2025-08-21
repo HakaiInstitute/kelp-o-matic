@@ -218,7 +218,7 @@ All statistics are for the latest model revisions on the validation split of our
     Model Architecture: Two UNet++ EfficientNetV2-M, one for kelp presence/absence.
       One model is trained for kelp presence/absence detection, and the other kelp species classification.
       Models are ensembled for final output using learned weights.
-    
+
       | Class      |    IoU | Precision | Recall | F1     |
       |:-----------|-------:|----------:|-------:|-------:|
       | Macro      | 0.8816 |    0.9111 | 0.9645 | 0.9371 |
@@ -230,7 +230,7 @@ All statistics are for the latest model revisions on the validation split of our
     Model Architecture: Two UNet++ EfficientNetB3 (SCSE decoder attention).
       One model is trained for kelp presence/absence detection, and the other kelp species classification.
       Models are ensembled for final output using learned weights.
-    
+
       | Class      |    IoU | Precision | Recall |     F1 |
       |:-----------|-------:|----------:|-------:|-------:|
       | Macro      | 0.9670 |    0.9787 | 0.9878 | 0.9832 |
@@ -240,7 +240,7 @@ All statistics are for the latest model revisions on the validation split of our
 === "**kelp-ps8b**"
 
     Model Architecture: SegFormer mit-b3
-    
+
       | Class |    IoU | Precision | Recall |     F1 |
       |:------|-------:|----------:|-------:|-------:|
       | Kelp  | 0.8901 |    0.9367 | 0.9472 | 0.9419 |
@@ -248,7 +248,7 @@ All statistics are for the latest model revisions on the validation split of our
 === "**mussel-rgb**"
 
     Model Architecture: SegFormer mit-b3
-    
+
       | Class   |    IoU | Precision |   Recall |     F1 |
       |:--------|-------:|----------:|---------:|-------:|
       | Mussels | 0.8869 |    0.9343 |   0.9459 | 0.9401 |
@@ -256,7 +256,7 @@ All statistics are for the latest model revisions on the validation split of our
 === "**mussel-gooseneck-rgb**"
 
     Model Architecture: SegFormer mit-b3
-    
+
       | Class        |    IoU | Precision | Recall |     F1 |
       |:-------------|-------:|----------:|-------:|-------:|
       | Mussels      | 0.8288 |    0.9119 | 0.9010 | 0.9064 |

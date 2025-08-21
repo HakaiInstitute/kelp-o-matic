@@ -135,11 +135,11 @@ The options are flags that can be used to enable or disable certain features of 
     ```console
     # First, see what models are available
     kom models
-    
+
     # Choose a model based on your image type and target organism
     # For example, if you want to detect mussels in RGB imagery:
     kom segment mussel-rgb --input ./my_image.tif --output ./mussel_results.tif
-    
+
     # Or if you want to detect kelp in 4-band RGBI imagery:
     kom segment kelp-rgbi --input ./rgbi_image.tif --output ./kelp_results.tif
     ```
@@ -149,7 +149,7 @@ The options are flags that can be used to enable or disable certain features of 
     ```console
     # First, check what revisions are available for a model
     kom revisions kelp-rgb
-    
+
     # Use a specific revision instead of the latest
     kom segment kelp-rgb --revision 20240722 --input ./my_image.tif --output ./results.tif
     ```

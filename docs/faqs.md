@@ -38,7 +38,7 @@ for certain models) bands to determine if kelp/mussels are present.
 **The output image is all black. I think it didn't find anything!**
 
 The model outputs images with pixel values in the range of 0 to 3, depending on which model was
-used ([see here](about.md#model-outputs) for a summary). Make sure that you visualize the outputs in your GIS by 
+used ([see here](about.md#model-outputs) for a summary). Make sure that you visualize the outputs in your GIS by
 "unique values" to see the output.
 
 **When I open my outputs in a GIS they are not in the same place as the ortho!**

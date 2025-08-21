@@ -62,10 +62,7 @@ class ImageProcessor:
         if crop_size is None:
             # Default to 1024 if model does not specify
             crop_size = self.model.input_size or 1024
-        elif (
-                self.model.input_size is not None
-                and crop_size != self.model.input_size
-        ):
+        elif self.model.input_size is not None and crop_size != self.model.input_size:
             from rich.panel import Panel
 
             warning_panel = Panel(

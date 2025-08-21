@@ -95,7 +95,7 @@ List all available models with their latest versions.
 ```bash
 $ kom models
 
-                                                  Available Models                                                   
+                                                  Available Models
 ┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
 ┃ Model Name           ┃ Revision ┃ Description                                                         ┃ Status    ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
@@ -130,8 +130,8 @@ List all available revisions for a specific model.
     List all available revisions for a specific model.
 
     ```bash
-    $ kom revisions kelp-rgb                                                                                      (base) 
-                              Revisions for kelp-rgb                              
+    $ kom revisions kelp-rgb
+                              Revisions for kelp-rgb
     ┏━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
     ┃ Revision ┃ Latest ┃ Description                                    ┃ Status    ┃
     ┡━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
@@ -145,7 +145,7 @@ Clear the model cache to free up space. Models will be re-downloaded as needed.
 You'll be prompted to confirm before any cached models are removed from your system.
 
 ```
-$ kom clean --help                                                                                            (base) 
+$ kom clean --help
 Usage: kom clean
 
 Empty the Kelp-O-Matic model cache to free up space. Models will be re-downloaded as needed.
