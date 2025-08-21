@@ -13,9 +13,17 @@ Kelp-O-Matic is currently available for Python versions 3.10 through 3.13.
 
 We recommend using a virtual environment to manage your Python packages. This will help avoid conflicts with other packages and system installations.
 
-```bash
-pip install kelp-o-matic
-```
+=== "CPU"
+
+    ```bash
+    pip install kelp-o-matic
+    ```
+
+=== "GPU"
+
+    ```bash
+    pip install kelp-o-matic[cuda]
+    ```
 
 ## Verify Installation
 
