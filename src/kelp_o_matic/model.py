@@ -70,7 +70,7 @@ class ONNXModel:
         return inputs[0].name
 
     @cached_property
-    def input_tile_size(self) -> int | None:
+    def input_size(self) -> int | None:
         """
         Get the input tile size from the model configuration.
         Returns:

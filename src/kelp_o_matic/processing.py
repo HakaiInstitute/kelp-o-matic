@@ -61,21 +61,21 @@ class ImageProcessor:
         # Determine tile size
         if crop_size is None:
             # Default to 1024 if model does not specify
-            crop_size = self.model.input_tile_size or 1024
+            crop_size = self.model.input_size or 1024
         elif (
-            self.model.input_tile_size is not None
-            and crop_size != self.model.input_tile_size
+                self.model.input_size is not None
+                and crop_size != self.model.input_size
         ):
             from rich.panel import Panel
 
             warning_panel = Panel(
-                f"[yellow]Specified tile size {crop_size} does not match model preferred size {self.model.input_tile_size}. "
-                f"Using model preferred size of {self.model.input_tile_size}.[/yellow]",
+                f"[yellow]Specified tile size {crop_size} does not match model preferred size {self.model.input_size}. "
+                f"Using model preferred size of {self.model.input_size}.[/yellow]",
                 title="[bold yellow]Tile Size Warning[/bold yellow]",
                 border_style="yellow",
             )
             console.print(warning_panel)
-            crop_size = self.model.input_tile_size
+            crop_size = self.model.input_size
 
         # Create processing configuration
         if band_order is None:
