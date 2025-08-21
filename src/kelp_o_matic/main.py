@@ -11,7 +11,12 @@ from rich.table import Table
 from rich.traceback import install
 
 from kelp_o_matic.registry import model_registry
-from kelp_o_matic.utils import get_local_model_dir, console
+from kelp_o_matic.utils import (
+    get_local_model_dir,
+    console,
+    is_url,
+    get_local_model_path,
+)
 
 # Install rich traceback formatting
 install(show_locals=True, max_frames=5)
@@ -24,8 +29,6 @@ def models() -> None:
     """
     List all available models with their latest revisions.
     """
-    from kelp_o_matic.utils import get_local_model_path, is_url
-
     table = Table(title="[bold green]Available Models[/bold green]")
     table.add_column("Model Name", style="cyan", no_wrap=True)
     table.add_column("Revision", style="magenta")
@@ -83,8 +86,6 @@ def revisions(
     """
     List all available revisions for a specific model.
     """
-    from kelp_o_matic.utils import get_local_model_path, is_url
-
     # Check if model exists
     if model_name not in model_registry:
         available_models = ", ".join(sorted(model_registry.list_model_names()))
