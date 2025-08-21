@@ -24,6 +24,7 @@ import itertools
 if TYPE_CHECKING:
     from kelp_o_matic.config import ModelConfig
 
+
 console = Console()
 
 
@@ -153,42 +154,24 @@ def setup_cuda_paths():
     if sys.platform != "win32":
         return
 
-    # Get the site-packages directory
-    site_packages = site.getsitepackages()
-    if isinstance(site_packages, str):
-        site_packages = [site_packages]
+    # Find all NVIDIA bin directories in site-packages
+    dll_paths = []
+    for site_dir in site.getsitepackages():
+        nvidia_path = Path(site_dir) / "nvidia"
+        if nvidia_path.exists():
+            # Find all bin directories under nvidia/*
+            dll_paths.extend(str(p) for p in nvidia_path.glob("*/bin") if p.is_dir())
 
-    # List of NVIDIA package directories that contain DLLs
-    nvidia_dirs = [
-        "nvidia/cublas/bin",
-        "nvidia/cuda_nvrtc/bin",
-        "nvidia/cuda_runtime/bin",
-        "nvidia/cudnn/bin",
-        "nvidia/cufft/bin",
-        "nvidia/curand/bin",
-        "nvidia/cusolver/bin",
-        "nvidia/cusparse/bin",
-        "nvidia/nccl/bin",
-        "nvidia/nvtx/bin",
-        "nvidia/nvjitlink/bin",
-    ]
+    if not dll_paths:
+        return
 
-    # Add each directory to PATH if it exists
-    paths_to_add = []
-    for sp in site_packages:
-        for nvidia_dir in nvidia_dirs:
-            dll_path = os.path.join(sp, nvidia_dir)
-            if os.path.exists(dll_path):
-                paths_to_add.append(dll_path)
+    # Add to PATH environment variable
+    os.environ["PATH"] = ";".join(dll_paths) + ";" + os.environ.get("PATH", "")
 
-    # Prepend to PATH
-    if paths_to_add:
-        os.environ["PATH"] = ";".join(paths_to_add) + ";" + os.environ.get("PATH", "")
-
-        # Also add to DLL directories (Python 3.8+)
-        if hasattr(os, "add_dll_directory"):
-            for path in paths_to_add:
-                try:
-                    os.add_dll_directory(path)
-                except (OSError, AttributeError):
-                    pass
+    # Add as DLL directories for Python 3.8+
+    if hasattr(os, "add_dll_directory"):
+        for path in dll_paths:
+            try:
+                os.add_dll_directory(path)
+            except OSError:
+                pass
