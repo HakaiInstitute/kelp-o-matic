@@ -155,8 +155,8 @@ def setup_cuda_paths():
 
     # Get the site-packages directory
     site_packages = site.getsitepackages()
-    if isinstance(site_packages, list):
-        site_packages = site_packages[0]
+    if isinstance(site_packages, str):
+        site_packages = [site_packages]
 
     # List of NVIDIA package directories that contain DLLs
     nvidia_dirs = [
@@ -175,10 +175,11 @@ def setup_cuda_paths():
 
     # Add each directory to PATH if it exists
     paths_to_add = []
-    for nvidia_dir in nvidia_dirs:
-        dll_path = os.path.join(site_packages, nvidia_dir)
-        if os.path.exists(dll_path):
-            paths_to_add.append(dll_path)
+    for sp in site_packages:
+        for nvidia_dir in nvidia_dirs:
+            dll_path = os.path.join(sp, nvidia_dir)
+            if os.path.exists(dll_path):
+                paths_to_add.append(dll_path)
 
     # Prepend to PATH
     if paths_to_add:
