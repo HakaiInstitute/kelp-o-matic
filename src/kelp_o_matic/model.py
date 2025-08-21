@@ -10,7 +10,7 @@ from kelp_o_matic.config import ModelConfig
 from kelp_o_matic.utils import get_ort_providers
 
 # Load CUDA and CUDNN DLLs
-ort.preload_dlls(cuda=True, cudnn=True, msvc=True, directory="")
+ort.preload_dlls()
 
 ort.set_default_logger_severity(3)  # Set to 3=ERROR
 
