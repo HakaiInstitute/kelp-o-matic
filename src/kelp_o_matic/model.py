@@ -4,13 +4,18 @@ from functools import cached_property
 from pathlib import Path
 
 import numpy as np
-import onnxruntime as ort
 
-from kelp_o_matic.config import ModelConfig
-from kelp_o_matic.utils import get_ort_providers
+from utils import setup_cuda_paths
+
+setup_cuda_paths()  # Must be called before importing onnxruntime
+
+import onnxruntime as ort  # noqa: E402
+
+from kelp_o_matic.config import ModelConfig  # noqa: E402
+from kelp_o_matic.utils import get_ort_providers  # noqa: E402
 
 # Load CUDA and CUDNN DLLs
-ort.preload_dlls(cuda=True, cudnn=True, msvc=True, directory="")
+ort.preload_dlls(directory="")
 
 ort.set_default_logger_severity(3)  # Set to 3=ERROR
 
