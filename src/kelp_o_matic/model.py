@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
-from utils import setup_cuda_paths
+from kelp_o_matic.utils import setup_cuda_paths
 
 setup_cuda_paths()  # Must be called before importing onnxruntime
 
