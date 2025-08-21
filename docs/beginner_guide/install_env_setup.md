@@ -90,7 +90,7 @@ Now that you have your virtual environment set up, you can install Kelp-O-Matic 
     === "Windows"
         If you have a NVIDIA GPU:
         ```powershell
-        uv pip install kelp-o-matic --extra-index-url https://download.pytorch.org/whl/cu124
+        uv pip install kelp-o-matic[cuda]
         ```
         Otherwise:
         ```powershell

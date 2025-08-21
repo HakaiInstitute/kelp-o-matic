@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import os
+import site
+import sys
+
 from pathlib import Path
 
 import onnxruntime as ort
@@ -142,3 +146,49 @@ def batched(iterable: Iterable[Any], n: int) -> Iterable[tuple[Any, ...]]:
         if not batch:
             break
         yield batch
+
+
+def setup_cuda_paths():
+    """Add CUDA DLL directories to PATH on Windows"""
+    if sys.platform != "win32":
+        return
+
+    # Get the site-packages directory
+    site_packages = site.getsitepackages()
+    if isinstance(site_packages, str):
+        site_packages = [site_packages]
+
+    # List of NVIDIA package directories that contain DLLs
+    nvidia_dirs = [
+        "nvidia/cublas/bin",
+        "nvidia/cuda_nvrtc/bin",
+        "nvidia/cuda_runtime/bin",
+        "nvidia/cudnn/bin",
+        "nvidia/cufft/bin",
+        "nvidia/curand/bin",
+        "nvidia/cusolver/bin",
+        "nvidia/cusparse/bin",
+        "nvidia/nccl/bin",
+        "nvidia/nvtx/bin",
+        "nvidia/nvjitlink/bin",
+    ]
+
+    # Add each directory to PATH if it exists
+    paths_to_add = []
+    for sp in site_packages:
+        for nvidia_dir in nvidia_dirs:
+            dll_path = os.path.join(sp, nvidia_dir)
+            if os.path.exists(dll_path):
+                paths_to_add.append(dll_path)
+
+    # Prepend to PATH
+    if paths_to_add:
+        os.environ["PATH"] = ";".join(paths_to_add) + ";" + os.environ.get("PATH", "")
+
+        # Also add to DLL directories (Python 3.8+)
+        if hasattr(os, "add_dll_directory"):
+            for path in paths_to_add:
+                try:
+                    os.add_dll_directory(path)
+                except (OSError, AttributeError):
+                    pass
