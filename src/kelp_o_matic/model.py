@@ -129,7 +129,7 @@ class ONNXModel:
         else:
             raise NotImplementedError("Normalization method not implemented.")
 
-    def postprocess(self, batch: np.ndarray) -> np.ndarray:
+    def _postprocess(self, batch: np.ndarray) -> np.ndarray:
         """
         Postprocess the output to get class label from logits or probs.
 
@@ -157,7 +157,7 @@ class ONNXModel:
 
         return batch
 
-    def predict(self, batch: np.ndarray) -> np.ndarray:
+    def _predict(self, batch: np.ndarray) -> np.ndarray:
         """
         Run inference on a batch of image tiles.
 
