@@ -9,6 +9,9 @@ import onnxruntime as ort
 from kelp_o_matic.config import ModelConfig
 from kelp_o_matic.utils import get_ort_providers
 
+# Load CUDA and CUDNN DLLs
+ort.preload_dlls(cuda=True, cudnn=True, msvc=True, directory="")
+
 ort.set_default_logger_severity(3)  # Set to 3=ERROR
 
 
@@ -42,9 +45,6 @@ class ONNXModel:
 
         # Get local model path (handles download if needed)
         local_model_path = self.cfg.local_model_path
-
-        # Load CUDA and CUDNN DLLs
-        ort.preload_dlls(directory="")
 
         # Load appropriate ONNX providers for OS capabilities
         providers = get_ort_providers()
