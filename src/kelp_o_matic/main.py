@@ -318,7 +318,7 @@ def segment(
             band_order=band_order,
         )
 
-        # Show success message
+        # Show a success message
         success_panel = Panel(
             f"[green]✓ Successfully processed {input_file.name}\n"
             f"Output saved to: {Path(output_path).expanduser()}[/green]",
