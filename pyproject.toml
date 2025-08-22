@@ -1,6 +1,6 @@
 [project]
 name = "kelp-o-matic"
-dynamic = ["version"]
+version = "0.14.0.dev2"
 description = "Habitat segmentation with AI"
 readme = "README.md"
 authors = [{ name = "Taylor Denouden", email = "taylor.denouden@hakai.org" }]
@@ -51,9 +51,6 @@ default-groups = [
     "dev",
     "docs",
 ]
-
-[tool.hatch.version]
-path = "src/kelp_o_matic/__init__.py"
 
 [build-system]
 requires = ["hatchling"]

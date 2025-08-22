@@ -41,6 +41,6 @@ jobs:
       env:
         UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
       run: |
-        sed -i "s/0.0.0/${{ env.tag }}/g" src/kelp_o_matic/__init__.py
+        uv version ${{ env.tag }}
         uv build
         uv publish

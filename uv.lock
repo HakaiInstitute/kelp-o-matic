@@ -1109,6 +1109,7 @@ wheels = [
 
 [[package]]
 name = "kelp-o-matic"
+version = "0.14.0.dev2"
 source = { editable = "." }
 dependencies = [
     { name = "cyclopts" },
