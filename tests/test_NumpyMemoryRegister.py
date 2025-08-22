@@ -37,9 +37,10 @@ def create_dummy_tiff(
         crs="+proj=latlong",
         transform=transform,
     ) as dst:
+        rng = np.random.default_rng(0)
         # Write dummy data to each band
         for i in range(1, num_bands + 1):
-            data = np.random.randint(0, 255, (height, width)).astype(dtype)
+            data = rng.uniform(0, 255, (height, width)).astype(dtype)
             dst.write(data, i)
 
 
@@ -99,7 +100,8 @@ def test_initialization(memory_register):
 
 def test_step_method(memory_register):
     # Test typical case
-    new_logits = np.random.rand(2, 256, 256)
+    rng = np.random.default_rng(0)
+    new_logits = rng.uniform(size=(2, 256, 256))
 
     img_window = rasterio.windows.Window(0, 0, 256, 256)
     preds, preds_win = memory_register._step(
@@ -146,7 +148,8 @@ def test_step_method(memory_register):
 
 def test_small_img_edge_case(small_img_memory_register):
     # Test small image
-    new_logits = np.random.rand(2, 256, 256)
+    rng = np.random.default_rng(0)
+    new_logits = rng.uniform(size=(2, 256, 256))
 
     img_window = rasterio.windows.Window(0, 0, 200, 200)
     preds, preds_win = small_img_memory_register._step(
@@ -207,7 +210,8 @@ def test_small_img_edge_case(small_img_memory_register):
 
 def test_full_window_sizes(full_window_memory_register):
     # Test case that image size is equal to the register window size
-    new_logits = np.random.rand(2, 200, 200)
+    rng = np.random.default_rng(0)
+    new_logits = rng.uniform(size=(2, 200, 200))
 
     img_window = rasterio.windows.Window(0, 0, 200, 200)
     preds, preds_win = full_window_memory_register._step(
@@ -240,7 +244,8 @@ def test_full_window_sizes(full_window_memory_register):
 
 def test_odd_window_size(odd_window_memory_register):
     # Test case where the register size is an odd number
-    new_logits = np.random.rand(2, 125, 125)
+    rng = np.random.default_rng(0)
+    new_logits = rng.uniform(size=(2, 125, 125))
 
     assert odd_window_memory_register.hws == 62
 

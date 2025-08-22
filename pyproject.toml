@@ -73,6 +73,7 @@ select = [
     "T",
     "UP",
     "D",
+    "NPY",
 ]
 
 [tool.ruff.lint.per-file-ignores]
