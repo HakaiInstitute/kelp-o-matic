@@ -10,21 +10,14 @@ dependencies = [
     "cyclopts>=3.22.2",
     "humanize>=4.12.3",
     "numpy>=2.2.6",
-    "onnxruntime>=1.22.0",
+    "onnxruntime>=1.22.0; sys_platform == 'darwin'",
+    "onnxruntime-gpu[cuda,cudnn]>=1.22.0; sys_platform != 'darwin'",
     "opencv-python-headless>=4.11.0.86",
     "platformdirs>=4.3.8",
     "pydantic>=2.11.7",
     "rasterio>=1.4.3",
     "requests>=2.32.4",
     "rich>=13.0.0",
-]
-default-optional-dependency-keys = [
-    "cpu",
-]
-
-[project.optional-dependencies]
-cuda = [
-    "onnxruntime-gpu[cuda,cudnn]>=1.22.0",
 ]
 
 [project.urls]
