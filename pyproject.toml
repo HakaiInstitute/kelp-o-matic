@@ -18,6 +18,9 @@ dependencies = [
     "requests>=2.32.4",
     "rich>=13.0.0",
 ]
+default-optional-dependency-keys = [
+    "cpu",
+]
 
 [project.optional-dependencies]
 cuda = [
