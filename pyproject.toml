@@ -46,12 +46,6 @@ examples = [
     "jupyter>=1.1.1",
 ]
 
-[tool.uv]
-default-groups = [
-    "dev",
-    "docs",
-]
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
