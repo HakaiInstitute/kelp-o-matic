@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import math
 import sys
-from collections.abc import Generator, Iterable
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import cv2
 import numpy as np
@@ -23,11 +22,17 @@ from kelp_o_matic.config import ProcessingConfig
 from kelp_o_matic.hann import BartlettHannKernel, NumpyMemoryRegister
 from kelp_o_matic.utils import batched, console
 
+if TYPE_CHECKING:
+    from collections.abc import Generator, Iterable
+    from pathlib import Path
+
+    from kelp_o_matic.model import ONNXModel
+
 
 class ImageProcessor:
     """High-level image processor that orchestrates model inference and tiled processing."""
 
-    def __init__(self, model):
+    def __init__(self, model: ONNXModel) -> None:
         """Initialize the ImageProcessor.
 
         Args:
@@ -103,6 +108,8 @@ class ImageProcessor:
             output_path: Path to output segmentation raster
             config: Processing configuration
 
+        Raises:
+            RuntimeError: If the window generation fails to provide full coverage of the image.
         """
         register = None
 
@@ -243,7 +250,16 @@ class ImageProcessor:
         windows: Iterable[Window],
         config: ProcessingConfig,
     ) -> np.ndarray:
-        """Load a batch of tiles from the source raster using boundless reading."""
+        """Load a batch of tiles from the source raster using boundless reading.
+
+        Args:
+            src: Rasterio dataset reader for the source raster.
+            windows: Iterable of windows to load.
+            config: Processing configuration.
+
+        Returns:
+            Numpy array of shape [batch_size, channels, height, width] containing the tile data.
+        """
         tile_data = []
         for window in windows:
             # Use boundless reading to handle out-of-bounds areas with fill_value=0
@@ -283,7 +299,16 @@ class ImageProcessor:
         width: int,
         config: ProcessingConfig,
     ) -> tuple[int, int]:
-        """Calculate extended dimensions to fit complete tiles."""
+        """Calculate extended dimensions to fit complete tiles.
+
+        Args:
+            height: Original height of the image.
+            width: Original width of the image.
+            config: Processing configuration.
+
+        Returns:
+            Tuple of (extended_height, extended_width) that ensures full tile coverage.
+        """
         tile_size = config.crop_size
         stride = config.stride
 
@@ -310,7 +335,16 @@ class ImageProcessor:
         width: int,
         windows: list[Window],
     ) -> bool:
-        """Validate that the generated windows provide full coverage of the image."""
+        """Validate that the generated windows provide full coverage of the image.
+
+        Args:
+            height: Original height of the image.
+            width: Original width of the image.
+            windows: Iterable of windows to validate.
+
+        Returns:
+            True if all pixels are covered, False otherwise.
+        """
         # Create a coverage map to track which pixels are covered
         coverage = np.zeros((height, width), dtype=bool)
 
@@ -333,7 +367,18 @@ class ImageProcessor:
         tile_size: int = None,
         stride: int = None,
     ) -> Generator[Window]:
-        """Generate tile windows for processing."""
+        """Generate tile windows for processing.
+
+        Args:
+            height: Original height of the image.
+            width: Original width of the image.
+            config: Processing configuration.
+            tile_size: Size of each tile (defaults to config.crop_size).
+            stride: Size of each tile stride (defaults to config.stride).
+
+        Yields:
+            Window objects for each tile.
+        """
         tile_size = tile_size or config.crop_size
         stride = stride or config.stride
 
@@ -372,7 +417,17 @@ class ImageProcessor:
         tile_size: int,
         stride: int,
     ) -> Generator[Window]:
-        """Generate tile windows for post-processing, clipped to image bounds."""
+        """Generate tile windows for post-processing, clipped to image bounds.
+
+        Args:
+            height: Original height of the image.
+            width: Original width of the image.
+            tile_size: Size of each tile (defaults to config.crop_size).
+            stride: Size of each tile stride (defaults to config.stride).
+
+        Yields:
+            Window objects for post-processing tiles.
+        """
         # Calculate number of tiles needed to ensure full coverage
         if height <= tile_size:
             tiles_y = 1
@@ -412,7 +467,14 @@ class ImageProcessor:
         tile_result: np.ndarray,
         overlap: int,
     ) -> None:
-        """Place tile result into the full result array using overlap strategy."""
+        """Place tile result into the full result array using overlap strategy.
+
+        Args:
+            dst: Destination rasterio dataset writer.
+            window: Window object defining the region to write.
+            tile_result: Result array from the model for the tile.
+            overlap: Overlap size to handle edge cases.
+        """
         # Calculate the region to copy (excluding overlap except at image boundaries)
         copy_row_start = window.row_off
         copy_col_start = window.col_off
@@ -450,7 +512,12 @@ class ImageProcessor:
         dst_path: str,
         config: ProcessingConfig,
     ) -> None:
-        """Apply final post-processing using tiled approach for large rasters."""
+        """Apply final post-processing using tiled approach for large rasters.
+
+        Args:
+            dst_path: Destination rasterio dataset writer.
+            config: ProcessingConfig object.
+        """
         if not (config.apply_median_blur or config.apply_morphological_ops):
             return  # No processing needed
 

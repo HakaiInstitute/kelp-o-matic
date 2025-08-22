@@ -46,14 +46,14 @@ class ProcessingConfig(BaseModel):
 
     @field_validator("crop_size")
     @staticmethod
-    def _is_even(value: int):
+    def _is_even(value: int) -> int:
         if value % 2 == 1:
             raise ValueError(f"{value} is not an even number")
         return value
 
     @field_validator("blur_kernel_size", "morph_kernel_size")
     @staticmethod
-    def _is_odd_or_zero(value: int):
+    def _is_odd_or_zero(value: int) -> int:
         if value == 0:
             return value
         if value % 2 == 0:
@@ -62,14 +62,14 @@ class ProcessingConfig(BaseModel):
 
     @field_validator("batch_size")
     @staticmethod
-    def _is_gte_1(value: int):
+    def _is_gte_1(value: int) -> int:
         if value < 1:
             raise ValueError(f"{value} is not greater than 1")
         return value
 
     @field_validator("batch_size", "crop_size")
     @staticmethod
-    def _is_positive(value: int):
+    def _is_positive(value: int) -> int:
         if value < 0:
             raise ValueError(
                 f"{value} is not positive",
@@ -116,7 +116,7 @@ class ModelConfig(BaseModel):
         Raises:
             FileNotFoundError: If local file doesn't exist
             RuntimeError: If download fails
-
+            ValueError: If the local path is not a file or does not have .onnx extension
         """
         local_path = get_local_model_path(self)
 

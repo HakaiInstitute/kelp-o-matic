@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import sys
 from functools import cached_property
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import numpy as np
 import onnxruntime as ort
@@ -13,6 +13,9 @@ from rich.console import Console
 
 from kelp_o_matic.config import ModelConfig
 from kelp_o_matic.utils import get_ort_providers, setup_cuda_paths
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 # Load CUDA and CUDNN DLLs
 setup_cuda_paths()  # Workaround for Windows to ensure CUDA paths are set correctly
@@ -26,19 +29,24 @@ console = Console()
 class ONNXModel:
     """A class representing an ONNX model for image segmentation."""
 
-    def __init__(self, config: ModelConfig):
+    def __init__(self, config: ModelConfig) -> None:
         """Create a new ONNXModel instance.
 
-        config: Configuration for the model.
+        Args:
+            config: Configuration for the model.
         """
         self.cfg = config
         self.__ort_sess = None
 
     @classmethod
-    def from_json_config(cls, config_path: str):
-        """Create an ONNXModel instance from a JSON configuration file."""
+    def from_json_config(cls, config_path: str) -> ONNXModel:
+        """Create an ONNXModel instance from a JSON configuration file.
+
+        Returns:
+            An instance of the ONNXModel class initialized with the configuration.
+        """
         config = ModelConfig.model_validate_json(open(config_path).read())
-        cls(config=config)
+        return cls(config=config)
 
     @property
     def name(self) -> str:
@@ -88,6 +96,8 @@ class ONNXModel:
         Returns:
             Input name as a string.
 
+        Raises:
+            ValueError: If the model has no inputs defined.
         """
         inputs = self._ort_sess.get_inputs()
         if not inputs:
@@ -101,6 +111,8 @@ class ONNXModel:
         Returns:
             Tuple of (height, width) or None if not specified.
 
+        Raises:
+            ValueError: If the model input shape is not valid.
         """
         inputs = self._ort_sess.get_inputs()
         if not inputs:
@@ -132,7 +144,11 @@ class ONNXModel:
         raise ValueError(msg)
 
     def _preprocess(self, batch: np.ndarray) -> np.ndarray:
-        """Preprocess the input image according to the model's configuration."""
+        """Preprocess the input image according to the model's configuration.
+
+        Returns:
+            Batch of preprocessed images with shape [batch_size, channels, height, width]
+        """
         batch = batch.astype(np.float32) / self.cfg.max_pixel_value
 
         if self.cfg.normalization is None:
@@ -160,6 +176,9 @@ class ONNXModel:
         """Postprocess the output to get class label from logits or probs.
 
         Supports batch inputs and single samples.
+
+        Returns:
+            Batch of class labels with shape [batch_size, height, width] or [height, width]
         """
         undo_batch = False
         if len(batch.shape) == 3:

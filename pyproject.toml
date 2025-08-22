@@ -61,6 +61,7 @@ build-backend = "hatchling.build"
 
 [tool.ruff]
 line-length = 120
+preview = true
 
 [tool.ruff.lint]
 select = [
@@ -72,6 +73,9 @@ select = [
     "S",
     "T",
     "UP",
+    "ANN",
+    "TC",
+    "DOC",
     "D",
     "NPY",
 ]
@@ -82,3 +86,6 @@ select = [
     "N999",  # Invalid module name
     "D",     # Docstrings
 ]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

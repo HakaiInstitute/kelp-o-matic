@@ -14,15 +14,16 @@ class ModelRegistry:
     Supports multiple revisions of the same model with calendar versioning.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Create a new ModelRegistry instance."""
         # Changed to nested dict: {name: {revision: model}}
         self._models = {}
 
-    def list_models(self):
+    def list_models(self) -> list[tuple[str, str]]:
         """List all registered model names and revisions.
 
-        Returns list of (name, revision) tuples.
+        Returns:
+             A list of (name, revision) tuples.
         """
         models = []
         for name, revisions in self._models.items():
@@ -30,12 +31,20 @@ class ModelRegistry:
                 models.append((name, revision))
         return models
 
-    def list_model_names(self):
-        """List unique model names (without revisions)."""
+    def list_model_names(self) -> list[str]:
+        """List unique model names (without revisions).
+
+        Returns:
+            List of unique model names registered in the registry.
+        """
         return list(self._models.keys())
 
-    def register_model(self, model_config: ModelConfig):
-        """Register a model configuration."""
+    def register_model(self, model_config: ModelConfig) -> None:
+        """Register a model configuration.
+
+        Raises:
+            TypeError: If model_config is not an instance of ModelConfig.
+        """
         if not isinstance(model_config, ModelConfig):
             raise TypeError("model_config must be an instance of ModelConfig")
 
@@ -48,10 +57,13 @@ class ModelRegistry:
         self._models[name][revision] = ONNXModel(model_config)
 
     @classmethod
-    def from_config_dir(cls, config_dir: str | Path):
+    def from_config_dir(cls, config_dir: str | Path) -> ModelRegistry:
         """Create a ModelRegistry instance from a directory containing model configuration files.
 
         Config files should be named with pattern: {name}_{revision}.json
+
+        Returns:
+            ModelRegistry instance with models loaded from the specified directory.
         """
         reg = cls()
         config_path = Path(config_dir)
@@ -64,7 +76,14 @@ class ModelRegistry:
         return reg
 
     def get_latest_revision(self, name: str) -> str:
-        """Get the latest revision of a model by calendar versioning."""
+        """Get the latest revision of a model by calendar versioning.
+
+        Returns:
+            Latest revision string
+
+        Raises:
+            KeyError: If the model is not registered.
+        """
         if name not in self._models:
             raise KeyError(f"Model '{name}' is not registered.")
 
@@ -72,7 +91,7 @@ class ModelRegistry:
         # Sort by revision string (calendar versioning works with string sort)
         return max(revisions)
 
-    def __getitem__(self, key: str | tuple[str, str]):
+    def __getitem__(self, key: str | tuple[str, str]) -> ONNXModel:
         """Retrieve a model by its name (latest revision) or by (name, revision) tuple.
 
         Args:
@@ -81,6 +100,8 @@ class ModelRegistry:
         Returns:
             ONNXModel instance
 
+        Raises:
+            KeyError: If the model or revision is not registered.
         """
         if isinstance(key, tuple):
             name, revision = key
@@ -101,22 +122,34 @@ class ModelRegistry:
         return self._models[name][latest_revision]
 
     def __contains__(self, key: str | tuple[str, str]) -> bool:
-        """Check if a model is registered by its name or (name, revision)."""
+        """Check if a model is registered by its name or (name, revision).
+
+        Returns:
+            True if the model or revision exists, False otherwise.
+        """
         if isinstance(key, tuple):
             name, revision = key
             return name in self._models and revision in self._models[name]
         return key in self._models
 
-    def __repr__(self):
-        """Get a representative string describing this instance."""
+    def __repr__(self) -> str:
+        """Get a representative string describing this instance.
+
+        Returns:
+            Representative string of the ModelRegistry instance.
+        """
         model_info = []
         for name, revisions in self._models.items():
             revision_list = list(revisions.keys())
             model_info.append(f"{name}: {revision_list}")
         return f"ModelRegistry({model_info})"
 
-    def __len__(self):
-        """Get the total number of registered model revisions."""
+    def __len__(self) -> int:
+        """Get the total number of registered model revisions.
+
+        Returns:
+            Total number of model revisions registered.
+        """
         return sum(len(revisions) for revisions in self._models.values())
 
 

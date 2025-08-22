@@ -23,10 +23,11 @@ from rasterio.windows import Window
 class Kernel(metaclass=ABCMeta):
     """Base class for different window kernels."""
 
-    def __init__(self, size: int = 512):
+    def __init__(self, size: int = 512) -> None:
         """Initialize the kernel with a specified size.
 
-        size: Size of the kernel. Must be an even number and should be equal to the image tile size.
+        Args:
+            size: Size of the kernel. Must be an even number and should be equal to the image tile size.
         """
         super().__init__()
         self.size = size
@@ -47,10 +48,14 @@ class Kernel(metaclass=ABCMeta):
     ) -> np.ndarray:
         """Get the kernel matrix with specified modifications.
 
-        top: If True, the kernel is modified to not reweight the top part of the data.
-        bottom: If True, the kernel is modified to not reweight the bottom part of the data.
-        left: If True, the kernel is modified to not reweight the left part of the data.
-        right: If True, the kernel is modified to not reweight the right part of the data.
+        Args:
+            top: If True, the kernel is modified to not reweight the top part of the data.
+            bottom: If True, the kernel is modified to not reweight the bottom part of the data.
+            left: If True, the kernel is modified to not reweight the left part of the data.
+            right: If True, the kernel is modified to not reweight the right part of the data.
+
+        Returns:
+            np.ndarray: The input array x multiplied by the kernel.
         """
         wi, wj = self.wi.copy(), self.wj.copy()
 
@@ -76,11 +81,15 @@ class Kernel(metaclass=ABCMeta):
     ) -> np.ndarray:
         """Apply the kernel to the input array.
 
-        x: Input array to which the kernel will be applied.
-        top: If True, the kernel is modified to not reweight the top part of the x data.
-        bottom: If True, the kernel is modified to not reweight the bottom part of the x data.
-        left: If True, the kernel is modified to not reweight the left part of the x data.
-        right: If True, the kernel is modified to not reweight the right part of the x data.
+        Args:
+            x: Input array to which the kernel will be applied.
+            top: If True, the kernel is modified to not reweight the top part of the x data.
+            bottom: If True, the kernel is modified to not reweight the bottom part of the x data.
+            left: If True, the kernel is modified to not reweight the left part of the x data.
+            right: If True, the kernel is modified to not reweight the right part of the x data.
+
+        Returns:
+            np.ndarray: The input array x multiplied by the kernel.
         """
         kernel = self.get_kernel(top=top, bottom=bottom, left=left, right=right)
         return np.multiply(x, kernel)
@@ -139,13 +148,14 @@ class NumpyMemoryRegister:
         register_depth: Annotated[int, "Generally equal to the number of classes"],
         window_size: Annotated[int, "Moving window size"],
         kernel: type[Kernel],
-    ):
+    ) -> None:
         """Create a new NumpyMemoryRegister instance.
 
-        image_width: Width of the image in pixels.
-        register_depth: Generally equal to the number of classes.
-        window_size: Size of the moving window.
-        kernel: Kernel class to use for weighting the logits.
+        Args:
+            image_width: Width of the image in pixels.
+            register_depth: Generally equal to the number of classes.
+            window_size: Size of the moving window.
+            kernel: Kernel class to use for weighting the logits.
         """
         super().__init__()
         self.n = register_depth
@@ -158,7 +168,7 @@ class NumpyMemoryRegister:
         self.register = np.zeros((self.n, self.height, self.width))
 
     @property
-    def _zero_chip(self):
+    def _zero_chip(self) -> np.ndarray:
         return np.zeros((self.n, self.hws, self.hws), dtype=np.float32)
 
     def _step(
@@ -170,7 +180,7 @@ class NumpyMemoryRegister:
         bottom: bool,
         left: bool,
         right: bool,
-    ):
+    ) -> tuple[np.ndarray, Window]:
         # Read data from the registry to update with the new logits
         # |a|b| |
         # |c|d| |

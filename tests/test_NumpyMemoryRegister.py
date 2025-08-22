@@ -8,12 +8,12 @@ from kelp_o_matic.hann import BartlettHannKernel, Kernel, NumpyMemoryRegister
 
 
 def create_dummy_tiff(
-    filename,
-    width=512,
-    height=512,
-    num_bands=3,
-    dtype=rasterio.uint8,
-):
+    filename: str,
+    width: int = 512,
+    height: int = 512,
+    num_bands: int = 3,
+    dtype: np.dtype = rasterio.uint8,
+) -> None:
     """Create a dummy TIFF file for testing.
 
     :param filename: Path to the file to be created.
@@ -45,7 +45,7 @@ def create_dummy_tiff(
 
 
 @pytest.fixture
-def memory_register(tmp_path):
+def memory_register() -> NumpyMemoryRegister:
     # Initialize NumpyMemoryRegister with the dummy image
     return NumpyMemoryRegister(
         image_width=1000,
@@ -56,7 +56,7 @@ def memory_register(tmp_path):
 
 
 @pytest.fixture
-def small_img_memory_register():
+def small_img_memory_register() -> NumpyMemoryRegister:
     # Initialize NumpyMemoryRegister with the dummy image
     return NumpyMemoryRegister(
         image_width=200,
@@ -67,7 +67,7 @@ def small_img_memory_register():
 
 
 @pytest.fixture
-def full_window_memory_register():
+def full_window_memory_register() -> NumpyMemoryRegister:
     # Initialize NumpyMemoryRegister with the dummy image
     return NumpyMemoryRegister(
         image_width=200,
@@ -78,7 +78,7 @@ def full_window_memory_register():
 
 
 @pytest.fixture
-def odd_window_memory_register():
+def odd_window_memory_register() -> NumpyMemoryRegister:
     # Initialize NumpyMemoryRegister with the dummy image
     return NumpyMemoryRegister(
         image_width=200,
@@ -88,7 +88,7 @@ def odd_window_memory_register():
     )
 
 
-def test_initialization(memory_register):
+def test_initialization(memory_register: NumpyMemoryRegister) -> None:
     assert memory_register.n == 2
     assert memory_register.ws == 256
     assert memory_register.hws == 256 // 2
@@ -98,7 +98,7 @@ def test_initialization(memory_register):
     assert memory_register.register.shape == (2, 256, width)
 
 
-def test_step_method(memory_register):
+def test_step_method(memory_register: NumpyMemoryRegister) -> None:
     # Test typical case
     rng = np.random.default_rng(0)
     new_logits = rng.uniform(size=(2, 256, 256))
@@ -146,7 +146,7 @@ def test_step_method(memory_register):
     assert preds_win == rasterio.windows.Window(896, 0, 104, 128)
 
 
-def test_small_img_edge_case(small_img_memory_register):
+def test_small_img_edge_case(small_img_memory_register: NumpyMemoryRegister) -> None:
     # Test small image
     rng = np.random.default_rng(0)
     new_logits = rng.uniform(size=(2, 256, 256))
@@ -208,7 +208,7 @@ def test_small_img_edge_case(small_img_memory_register):
     assert preds_win == rasterio.windows.Window(128, 128, 72, 72)
 
 
-def test_full_window_sizes(full_window_memory_register):
+def test_full_window_sizes(full_window_memory_register: NumpyMemoryRegister) -> None:
     # Test case that image size is equal to the register window size
     rng = np.random.default_rng(0)
     new_logits = rng.uniform(size=(2, 200, 200))
@@ -242,7 +242,7 @@ def test_full_window_sizes(full_window_memory_register):
     assert preds_win == rasterio.windows.Window(100, 0, 100, 100)
 
 
-def test_odd_window_size(odd_window_memory_register):
+def test_odd_window_size(odd_window_memory_register: NumpyMemoryRegister) -> None:
     # Test case where the register size is an odd number
     rng = np.random.default_rng(0)
     new_logits = rng.uniform(size=(2, 125, 125))
@@ -320,7 +320,7 @@ def test_odd_window_size(odd_window_memory_register):
     assert preds_win == rasterio.windows.Window(0, 124, 62, 1)
 
 
-def test_moving_window():
+def test_moving_window() -> None:
     class DummyKernel(Kernel):
         @staticmethod
         def _init_wi(size: int) -> np.ndarray:
@@ -394,7 +394,7 @@ def test_moving_window():
     assert np.allclose(a[1 : h - 1, 1 : w - 1], 4.0)
 
 
-def test_kernel_sum():
+def test_kernel_sum() -> None:
     h, w, s = 600, 600, 20
 
     register = NumpyMemoryRegister(

@@ -8,7 +8,6 @@ import shutil
 import site
 import sys
 import tempfile
-from collections.abc import Iterable
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -27,6 +26,8 @@ from rich.progress import (
 from rich.prompt import Confirm
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from kelp_o_matic.config import ModelConfig
 
 
@@ -73,8 +74,12 @@ def download_file_with_progress(url: str, out_path: Path, timeout: tuple[int, in
         console.print(f"[red]Download failed: {e}[/red]")
 
 
-def get_ort_providers():
-    """Get the ORT provider list for the current system and installation."""
+def get_ort_providers() -> list[str]:
+    """Get the ORT provider list for the current system and installation.
+
+    Returns:
+       list[str]: List of available ONNX Runtime providers in order of preference.
+    """
     available_providers = ort.get_available_providers()
     providers = []
 
@@ -89,7 +94,11 @@ def get_ort_providers():
 
 
 def get_local_model_dir() -> Path:
-    """Get the path to the directory containing cached models."""
+    """Get the path to the directory containing cached models.
+
+    Returns:
+        Path: The path to the local model directory, creating it if it doesn't exist.
+    """
     cache_dir = platformdirs.user_cache_dir(appname="kelp_o_matic", appauthor="hakai")
     model_dir = Path(cache_dir) / "models"
     model_dir.mkdir(exist_ok=True, parents=True)
@@ -173,7 +182,7 @@ def batched(iterable: Iterable[Any], n: int) -> Iterable[tuple[Any, ...]]:
         yield batch
 
 
-def setup_cuda_paths():
+def setup_cuda_paths() -> None:
     """Add CUDA DLL directories to PATH on Windows."""
     if sys.platform != "win32":
         return
