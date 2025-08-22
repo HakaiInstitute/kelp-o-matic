@@ -8,10 +8,10 @@ from pydantic import BaseModel, field_validator
 from rich.status import Status
 
 from kelp_o_matic.utils import (
+    console,
     download_file_with_progress,
     get_local_model_path,
     is_url,
-    console,
 )
 
 
@@ -26,8 +26,7 @@ class ProcessingConfig(BaseModel):
 
     @property
     def stride(self) -> int:
-        """
-        Calculate the stride based on tile size and 50% overlap.
+        """Calculate the stride based on tile size and 50% overlap.
         The stride is the distance to move the tile window.
         """
         return int(self.crop_size * 0.5)
@@ -70,15 +69,15 @@ class ProcessingConfig(BaseModel):
     def _is_positive(value: int):
         if value < 0:
             raise ValueError(
-                f"{value} is not positive", "blur_kernel_size", "morph_kernel_size"
+                f"{value} is not positive",
+                "blur_kernel_size",
+                "morph_kernel_size",
             )
         return value
 
 
 class ModelConfig(BaseModel):
-    """
-    ONNXModel configuration for ONNX semantic segmentation models.
-    """
+    """ONNXModel configuration for ONNX semantic segmentation models."""
 
     name: str
     description: str | None = None
@@ -89,7 +88,11 @@ class ModelConfig(BaseModel):
 
     normalization: (
         Literal[
-            "standard", "image", "image_per_channel", "min_max", "min_max_per_channel"
+            "standard",
+            "image",
+            "image_per_channel",
+            "min_max",
+            "min_max_per_channel",
         ]
         | None
     ) = "standard"
@@ -99,8 +102,7 @@ class ModelConfig(BaseModel):
 
     @property
     def local_model_path(self) -> Path:
-        """
-        Get the local path to the ONNX model file.
+        """Get the local path to the ONNX model file.
 
         For URLs: Downloads the model to cache if not already present.
         For local paths: Returns the path directly after validation.
@@ -111,22 +113,24 @@ class ModelConfig(BaseModel):
         Raises:
             FileNotFoundError: If local file doesn't exist
             RuntimeError: If download fails
-        """
 
+        """
         local_path = get_local_model_path(self)
 
         # If it's a URL, handle download
         if is_url(self.model_path):
             if local_path.exists():
                 with Status(
-                    "[green]Loading cached model...", console=console, spinner="dots"
+                    "[green]Loading cached model...",
+                    console=console,
+                    spinner="dots",
                 ):
                     # Brief pause to show the status
                     import time
 
                     time.sleep(0.5)
                 console.print(
-                    f"[green]✓ Loaded cached model from: {local_path}[/green]"
+                    f"[green]✓ Loaded cached model from: {local_path}[/green]",
                 )
             else:
                 console.print(f"[blue]Downloading model to: {local_path}[/blue]")
@@ -135,7 +139,7 @@ class ModelConfig(BaseModel):
                     console.print("[green]✓ Model downloaded successfully[/green]")
                 except Exception as e:
                     raise RuntimeError(
-                        f"Failed to download model from {self.model_path}: {e}"
+                        f"Failed to download model from {self.model_path}: {e}",
                     )
         else:
             # It's a local path - validate it exists

@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import itertools
 import os
+import shutil
 import site
 import sys
-
+import tempfile
+from collections.abc import Iterable
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 import onnxruntime as ort
 import platformdirs
@@ -18,8 +22,7 @@ from rich.progress import (
     TextColumn,
     TransferSpeedColumn,
 )
-from typing import TYPE_CHECKING, Iterable, Any
-import itertools
+from rich.prompt import Confirm
 
 if TYPE_CHECKING:
     from kelp_o_matic.config import ModelConfig
@@ -28,27 +31,43 @@ if TYPE_CHECKING:
 console = Console()
 
 
-def download_file_with_progress(url: str, out_path: Path):
-    response = requests.get(url, stream=True)
-    response.raise_for_status()
+def download_file_with_progress(url: str, out_path: Path, timeout: tuple[int, int] = (15, 120)) -> None:
+    try:
+        response = requests.get(url, stream=True, timeout=timeout)
+        response.raise_for_status()
 
-    # Get total file size
-    total_size = int(response.headers.get("content-length", 0))
+        # Get total file size
+        total_size = int(response.headers.get("content-length", 0))
 
-    # Download with progress
-    with open(out_path, "wb") as f:
-        with Progress(
-            SpinnerColumn(),
-            TextColumn("[bold blue]{task.description}"),
-            BarColumn(),
-            DownloadColumn(),
-            TransferSpeedColumn(),
-            console=None,  # Use default console
-        ) as progress:
+        # Download with progress to temp location
+        with (
+            tempfile.TemporaryDirectory() as tmp_dir,
+            open(tmp_out := Path(tmp_dir) / out_path.name, "wb") as f,
+            Progress(
+                SpinnerColumn(),
+                TextColumn("[bold blue]{task.description}"),
+                BarColumn(),
+                DownloadColumn(),
+                TransferSpeedColumn(),
+                console=None,  # Use default console
+            ) as progress,
+        ):
             task = progress.add_task(f"Downloading {out_path.name}", total=total_size)
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
                 progress.update(task, advance=len(chunk))
+
+            # Move the completed file to the proper location
+            shutil.move(tmp_out, out_path)
+    except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
+        console.print(f"[red]Download timed out: {e}[/red]")
+
+        if Confirm.ask("Do you want to retry the download?"):
+            console.print("Retrying download...")
+            # Retry with longer timeout
+            download_file_with_progress(url, out_path, timeout=(timeout[0] * 2, timeout[1] * 2))
+    except requests.exceptions.RequestException as e:
+        console.print(f"[red]Download failed: {e}[/red]")
 
 
 def get_ort_providers():
@@ -73,27 +92,27 @@ def get_local_model_dir() -> Path:
 
 
 def is_url(uri: str) -> bool:
-    """
-    Check if a URI is a URL or a local file path.
+    """Check if a URI is a URL or a local file path.
 
     Args:
         uri: The URI to check
 
     Returns:
         True if it's a URL, False if it's a local path
+
     """
     return uri.startswith(("http://", "https://", "ftp://", "ftps://"))
 
 
 def get_local_model_path(model_config: ModelConfig) -> Path:
-    """
-    Get the local path for a model, handling both URLs and local file paths.
+    """Get the local path for a model, handling both URLs and local file paths.
 
     Args:
         model_config: Either a URL to download from or a local file path
 
     Returns:
         Path to the local model file
+
     """
     # Check if it's a local file path
     if model_config.model_path.startswith(("/", "./", "../", "~")) or (
@@ -113,8 +132,7 @@ def get_local_model_path(model_config: ModelConfig) -> Path:
 
 
 def batched(iterable: Iterable[Any], n: int) -> Iterable[tuple[Any, ...]]:
-    """
-    Batch data from the iterable into tuples of length n. The last batch may be shorter.
+    """Batch data from the iterable into tuples of length n. The last batch may be shorter.
 
     This function emulates itertools.batched() which was introduced in Python 3.12.
 
@@ -137,6 +155,7 @@ def batched(iterable: Iterable[Any], n: int) -> Iterable[tuple[Any, ...]]:
 
         >>> list(batched(range(10), 2))
         [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9)]
+
     """
     if n < 1:
         raise ValueError("n must be at least one")

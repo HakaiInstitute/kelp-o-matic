@@ -8,10 +8,13 @@ from kelp_o_matic.hann import BartlettHannKernel, Kernel, NumpyMemoryRegister
 
 
 def create_dummy_tiff(
-    filename, width=512, height=512, num_bands=3, dtype=rasterio.uint8
+    filename,
+    width=512,
+    height=512,
+    num_bands=3,
+    dtype=rasterio.uint8,
 ):
-    """
-    Create a dummy TIFF file for testing.
+    """Create a dummy TIFF file for testing.
 
     :param filename: Path to the file to be created.
     :param width: Width of the image.
@@ -100,7 +103,12 @@ def test_step_method(memory_register):
 
     img_window = rasterio.windows.Window(0, 0, 256, 256)
     preds, preds_win = memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 128, 128)
@@ -109,7 +117,12 @@ def test_step_method(memory_register):
 
     img_window = rasterio.windows.Window(768, 0, 232, 256)
     preds, preds_win = memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 128, 128)
@@ -118,7 +131,12 @@ def test_step_method(memory_register):
 
     img_window = rasterio.windows.Window(896, 0, 104, 256)
     preds, preds_win = memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 128, 104)
@@ -132,7 +150,12 @@ def test_small_img_edge_case(small_img_memory_register):
 
     img_window = rasterio.windows.Window(0, 0, 200, 200)
     preds, preds_win = small_img_memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 128, 128)
@@ -141,7 +164,12 @@ def test_small_img_edge_case(small_img_memory_register):
 
     img_window = rasterio.windows.Window(128, 0, 72, 200)
     preds, preds_win = small_img_memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 128, 72)
@@ -150,7 +178,12 @@ def test_small_img_edge_case(small_img_memory_register):
 
     img_window = rasterio.windows.Window(0, 128, 128, 72)
     preds, preds_win = small_img_memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 72, 128)
@@ -159,7 +192,12 @@ def test_small_img_edge_case(small_img_memory_register):
 
     img_window = rasterio.windows.Window(128, 128, 72, 72)
     preds, preds_win = small_img_memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 72, 72)
@@ -173,7 +211,12 @@ def test_full_window_sizes(full_window_memory_register):
 
     img_window = rasterio.windows.Window(0, 0, 200, 200)
     preds, preds_win = full_window_memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 100, 100)
@@ -182,7 +225,12 @@ def test_full_window_sizes(full_window_memory_register):
 
     img_window = rasterio.windows.Window(100, 0, 100, 200)
     preds, preds_win = full_window_memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 100, 100)
@@ -198,7 +246,12 @@ def test_odd_window_size(odd_window_memory_register):
 
     img_window = rasterio.windows.Window(0, 0, 125, 125)
     preds, preds_win = odd_window_memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 62, 62)
@@ -207,7 +260,12 @@ def test_odd_window_size(odd_window_memory_register):
 
     img_window = rasterio.windows.Window(62, 0, 63, 125)
     preds, preds_win = odd_window_memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 62, 62)
@@ -216,7 +274,12 @@ def test_odd_window_size(odd_window_memory_register):
 
     img_window = rasterio.windows.Window(124, 0, 1, 125)
     preds, preds_win = odd_window_memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 62, 1)
@@ -225,7 +288,12 @@ def test_odd_window_size(odd_window_memory_register):
 
     img_window = rasterio.windows.Window(0, 62, 125, 63)
     preds, preds_win = odd_window_memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 62, 62)
@@ -234,7 +302,12 @@ def test_odd_window_size(odd_window_memory_register):
 
     img_window = rasterio.windows.Window(0, 124, 125, 1)
     preds, preds_win = odd_window_memory_register.step(
-        new_logits, img_window, top=False, left=False, bottom=False, right=False
+        new_logits,
+        img_window,
+        top=False,
+        left=False,
+        bottom=False,
+        right=False,
     )
 
     assert preds.shape == (2, 1, 62)

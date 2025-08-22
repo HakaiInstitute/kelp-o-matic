@@ -12,10 +12,10 @@ from rich.traceback import install
 
 from kelp_o_matic.registry import model_registry
 from kelp_o_matic.utils import (
-    get_local_model_dir,
     console,
-    is_url,
+    get_local_model_dir,
     get_local_model_path,
+    is_url,
 )
 
 # Install rich traceback formatting
@@ -26,9 +26,7 @@ app = App()
 
 @app.command
 def models() -> None:
-    """
-    List all available models with their latest revisions.
-    """
+    """List all available models with their latest revisions."""
     table = Table(title="[bold green]Available Models[/bold green]")
     table.add_column("Model Name", style="cyan", no_wrap=True)
     table.add_column("Revision", style="magenta")
@@ -47,20 +45,15 @@ def models() -> None:
             # Check if model is cached locally
             local_path = get_local_model_path(cfg)
             if is_url(cfg.model_path):
-                status = (
-                    "[green]Cached[/green]"
-                    if local_path.exists()
-                    else "[yellow]Available[/yellow]"
-                )
+                status = "[green]Cached[/green]" if local_path.exists() else "[yellow]Available[/yellow]"
             else:
-                status = (
-                    "[green]Local[/green]"
-                    if local_path.exists()
-                    else "[red]Missing[/red]"
-                )
+                status = "[green]Local[/green]" if local_path.exists() else "[red]Missing[/red]"
 
             table.add_row(
-                model_name, latest_revision, cfg.description or "No description", status
+                model_name,
+                latest_revision,
+                cfg.description or "No description",
+                status,
             )
         except Exception as e:
             error_panel = Panel(
@@ -83,9 +76,7 @@ def models() -> None:
 def revisions(
     model_name: str,
 ) -> None:
-    """
-    List all available revisions for a specific model.
-    """
+    """List all available revisions for a specific model."""
     # Check if model exists
     if model_name not in model_registry:
         available_models = ", ".join(sorted(model_registry.list_model_names()))
@@ -115,23 +106,18 @@ def revisions(
             # Check if model is cached locally
             local_path = get_local_model_path(cfg)
             if is_url(cfg.model_path):
-                status = (
-                    "[green]Cached[/green]"
-                    if local_path.exists()
-                    else "[yellow]Available[/yellow]"
-                )
+                status = "[green]Cached[/green]" if local_path.exists() else "[yellow]Available[/yellow]"
             else:
-                status = (
-                    "[green]Local[/green]"
-                    if local_path.exists()
-                    else "[red]Missing[/red]"
-                )
+                status = "[green]Local[/green]" if local_path.exists() else "[red]Missing[/red]"
 
             # Mark latest revision
             is_latest = "✓" if revision == latest_revision else ""
 
             table.add_row(
-                revision, is_latest, cfg.description or "No description", status
+                revision,
+                is_latest,
+                cfg.description or "No description",
+                status,
             )
     except Exception as e:
         error_panel = Panel(
@@ -147,9 +133,7 @@ def revisions(
 
 @app.command
 def clean() -> None:
-    """
-    Empty the Kelp-O-Matic model cache to free up space. Models will be re-downloaded as needed.
-    """
+    """Empty the Kelp-O-Matic model cache to free up space. Models will be re-downloaded as needed."""
     model_dir = get_local_model_dir()
     files = list(model_dir.glob("*.onnx"))
     if not files:
@@ -195,7 +179,8 @@ def segment(
     img_path: Annotated[
         Path,
         Parameter(
-            help="Path to input 8 band PlanetScope raster file", name=["--input", "-i"]
+            help="Path to input 8 band PlanetScope raster file",
+            name=["--input", "-i"],
         ),
     ],
     output_path: Annotated[
@@ -332,8 +317,7 @@ def segment(
         console.print("\n[yellow]Processing interrupted by user[/yellow]")
     except Exception as e:
         error_panel = Panel(
-            f"[red]Processing failed: {e}[/red]\n\n"
-            f"[dim]Use --help for usage information[/dim]",
+            f"[red]Processing failed: {e}[/red]\n\n[dim]Use --help for usage information[/dim]",
             title="[bold red]Processing Error[/bold red]",
             border_style="red",
         )

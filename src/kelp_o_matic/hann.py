@@ -1,6 +1,6 @@
 import math
 from abc import ABCMeta, abstractmethod
-from typing import Annotated, Type
+from typing import Annotated
 
 import numpy as np
 from rasterio.windows import Window
@@ -69,11 +69,7 @@ class BartlettHannKernel(Kernel):
         # IEEE Transactions on Acoustics, Speech, and Signal Processing.
         # 1989;37(2):298–301.
         i = np.arange(0, size)
-        return (
-            0.62
-            - 0.48 * np.abs(i / size - 1 / 2)
-            + 0.38 * np.cos(2 * np.pi * np.abs(i / size - 1 / 2))
-        )
+        return 0.62 - 0.48 * np.abs(i / size - 1 / 2) + 0.38 * np.cos(2 * np.pi * np.abs(i / size - 1 / 2))
 
 
 class TriangularKernel(Kernel):
@@ -87,11 +83,7 @@ class BlackmanKernel(Kernel):
     @staticmethod
     def _init_wi(size: int) -> np.ndarray:
         i = np.arange(0, size)
-        return (
-            0.42
-            - 0.5 * np.cos(2 * np.pi * i / size)
-            + 0.08 * np.cos(4 * np.pi * i / size)
-        )
+        return 0.42 - 0.5 * np.cos(2 * np.pi * i / size) + 0.08 * np.cos(4 * np.pi * i / size)
 
 
 class NumpyMemoryRegister:
@@ -100,7 +92,7 @@ class NumpyMemoryRegister:
         image_width: Annotated[int, "Width of the image in pixels"],
         register_depth: Annotated[int, "Generally equal to the number of classes"],
         window_size: Annotated[int, "Moving window size"],
-        kernel: Type[Kernel],
+        kernel: type[Kernel],
     ):
         super().__init__()
         self.n = register_depth
@@ -130,10 +122,16 @@ class NumpyMemoryRegister:
         # |a|b| |
         # |c|d| |
         logits_abcd = self.register[
-            :, :, img_window.col_off : img_window.col_off + self.ws
+            :,
+            :,
+            img_window.col_off : img_window.col_off + self.ws,
         ].copy()
         logits_abcd += self.kernel(
-            new_logits, top=top, bottom=bottom, left=left, right=right
+            new_logits,
+            top=top,
+            bottom=bottom,
+            left=left,
+            right=right,
         )
 
         if right and bottom:
@@ -153,10 +151,14 @@ class NumpyMemoryRegister:
 
             # write cd and 00
             self.register[
-                :, : self.hws, img_window.col_off : img_window.col_off + self.ws
+                :,
+                : self.hws,
+                img_window.col_off : img_window.col_off + self.ws,
             ] = logits_cd
             self.register[
-                :, self.hws :, img_window.col_off : img_window.col_off + self.ws
+                :,
+                self.hws :,
+                img_window.col_off : img_window.col_off + self.ws,
             ] = logits_00
 
             logits_win = Window(
@@ -181,7 +183,9 @@ class NumpyMemoryRegister:
                 logits_00  # Not really necessary since this is the last row
             )
             self.register[
-                :, :, img_window.col_off + self.hws : img_window.col_off + self.ws
+                :,
+                :,
+                img_window.col_off + self.hws : img_window.col_off + self.ws,
             ] = logits_bd
 
             logits_win = Window(
@@ -203,15 +207,11 @@ class NumpyMemoryRegister:
             logits_bd = logits_abcd[:, :, self.hws :]
 
             # write c0
-            self.register[:, :, img_window.col_off : img_window.col_off + self.hws] = (
-                logits_c0
-            )
+            self.register[:, :, img_window.col_off : img_window.col_off + self.hws] = logits_c0
 
             # write bd
             col_off_bd = img_window.col_off + self.hws
-            self.register[:, :, col_off_bd : col_off_bd + (self.ws - self.hws)] = (
-                logits_bd
-            )
+            self.register[:, :, col_off_bd : col_off_bd + (self.ws - self.hws)] = logits_bd
 
             logits_win = Window(
                 col_off=img_window.col_off,

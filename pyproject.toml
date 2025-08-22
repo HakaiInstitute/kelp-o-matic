@@ -59,5 +59,23 @@ path = "src/kelp_o_matic/__init__.py"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tools.ruff]
+[tool.ruff]
 line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "N",
+    "Q",
+    "S",
+    "T",
+    "UP",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101",  # Ignore use of assert in tests
+    "N999",  # Invalid module name
+]

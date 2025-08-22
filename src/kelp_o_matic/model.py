@@ -1,23 +1,24 @@
 from __future__ import annotations
 
+import sys
 from functools import cached_property
 from pathlib import Path
 
 import numpy as np
+import onnxruntime as ort
+from onnxruntime.capi.onnxruntime_pybind11_state import InvalidProtobuf
+from rich.console import Console
 
-from kelp_o_matic.utils import setup_cuda_paths
-
-setup_cuda_paths()  # Must be called before importing onnxruntime
-
-import onnxruntime as ort  # noqa: E402
-
-from kelp_o_matic.config import ModelConfig  # noqa: E402
-from kelp_o_matic.utils import get_ort_providers  # noqa: E402
+from kelp_o_matic.config import ModelConfig
+from kelp_o_matic.utils import get_ort_providers, setup_cuda_paths
 
 # Load CUDA and CUDNN DLLs
+setup_cuda_paths()  # Workaround for Windows to ensure CUDA paths are set correctly
 ort.preload_dlls(directory="")
 
 ort.set_default_logger_severity(3)  # Set to 3=ERROR
+
+console = Console()
 
 
 class ONNXModel:
@@ -55,19 +56,26 @@ class ONNXModel:
         providers = get_ort_providers()
 
         # Load the model
-        self.__ort_sess = ort.InferenceSession(
-            str(local_model_path), providers=providers
-        )
-        self.__ort_sess.enable_fallback()
+        try:
+            self.__ort_sess = ort.InferenceSession(
+                str(local_model_path),
+                providers=providers,
+            )
+            self.__ort_sess.enable_fallback()
+        except InvalidProtobuf:
+            console.print("Failed to load ONNX model. Removing corrupted model file. Please try again.")
+            local_model_path.unlink()
+            sys.exit(1)
 
         return self.__ort_sess
 
     @cached_property
     def _input_name(self) -> str:
-        """
-        Get the input name for the model.
+        """Get the input name for the model.
+
         Returns:
             Input name as a string.
+
         """
         inputs = self._ort_sess.get_inputs()
         if not inputs:
@@ -76,10 +84,11 @@ class ONNXModel:
 
     @cached_property
     def input_size(self) -> int | None:
-        """
-        Get the input tile size from the model configuration.
+        """Get the input tile size from the model configuration.
+
         Returns:
             Tuple of (height, width) or None if not specified.
+
         """
         inputs = self._ort_sess.get_inputs()
         if not inputs:
@@ -87,7 +96,7 @@ class ONNXModel:
         input_shape = inputs[0].shape
         if len(input_shape) < 3:
             raise ValueError(
-                "ONNX model input shape must have at least 3 dimensions (batch, channels, height, width)."
+                "ONNX model input shape must have at least 3 dimensions (batch, channels, height, width).",
             )
 
         h, w = input_shape[2], input_shape[3]
@@ -95,7 +104,7 @@ class ONNXModel:
         if isinstance(h, str) and isinstance(w, str):
             return None  # Dynamic shape, no fixed tile size
 
-        elif isinstance(h, int) and h > 0:
+        if isinstance(h, int) and h > 0:
             if h == w or isinstance(w, str):
                 return h
 
@@ -103,40 +112,40 @@ class ONNXModel:
             if w == h or isinstance(h, str):
                 return w
 
-        msg = f"Model input shape must be square or dynamic (e.g., [1, 8, 224, 224]). Bad model input shape: {input_shape}"
+        msg = (
+            f""
+            f"Model input shape must be square or dynamic (e.g., [1, 8, 224, 224]). "
+            f"Bad model input shape: {input_shape}"
+        )
         raise ValueError(msg)
 
     def _preprocess(self, batch: np.ndarray) -> np.ndarray:
-        """
-        Preprocess the input image according to the model's configuration.
-        """
+        """Preprocess the input image according to the model's configuration."""
         batch = batch.astype(np.float32) / self.cfg.max_pixel_value
 
         if self.cfg.normalization is None:
             return batch
 
-        elif self.cfg.normalization == "standard":
+        if self.cfg.normalization == "standard":
             # Expand dims for broadcasting
             mean = np.array(self.cfg.mean)[None, :, None, None]
             std = np.array(self.cfg.std)[None, :, None, None]
             return (batch - mean) / std
 
-        elif self.cfg.normalization == "min_max":
+        if self.cfg.normalization == "min_max":
             bmin = batch.min(axis=(1, 2, 3), keepdims=True)
             bmax = batch.max(axis=(1, 2, 3), keepdims=True)
             return (batch - bmin) / (bmax - bmin + 1e-8)
 
-        elif self.cfg.normalization == "min_max_per_channel":
+        if self.cfg.normalization == "min_max_per_channel":
             bcmin = batch.min(axis=(2, 3), keepdims=True)
             bcmax = batch.max(axis=(2, 3), keepdims=True)
             return (batch - bcmin) / (bcmax - bcmin + 1e-8)
 
-        else:
-            raise NotImplementedError("Normalization method not implemented.")
+        raise NotImplementedError("Normalization method not implemented.")
 
     def _postprocess(self, batch: np.ndarray) -> np.ndarray:
-        """
-        Postprocess the output to get class label from logits or probs.
+        """Postprocess the output to get class label from logits or probs.
 
         Supports batch inputs and single samples.
         """
@@ -163,19 +172,20 @@ class ONNXModel:
         return batch
 
     def _predict(self, batch: np.ndarray) -> np.ndarray:
-        """
-        Run inference on a batch of image tiles.
+        """Run inference on a batch of image tiles.
 
         Args:
             batch: Input batch with shape [batch_size, channels, height, width]
 
         Returns:
             Predictions with shape [batch_size, height, width]
+
         """
         batch = self._preprocess(batch)
 
         batch = self._ort_sess.run(
-            None, {f"{self._input_name}": batch.astype(np.float32)}
+            None,
+            {f"{self._input_name}": batch.astype(np.float32)},
         )
         return batch[0]
 
@@ -190,8 +200,7 @@ class ONNXModel:
         morph_kernel_size: int = 0,
         band_order: list[int] | None = None,
     ) -> None:
-        """
-        Process an image using the default tiled processing strategy.
+        """Process an image using the default tiled processing strategy.
 
         This is a convenience method that creates an ImageProcessor with
         TiledProcessingStrategy and processes the image.
@@ -203,6 +212,7 @@ class ONNXModel:
             crop_size: Tile size for processing (uses model's preferred size if None)
             blur_kernel_size: Size of median blur kernel (must be odd)
             morph_kernel_size: Size of morphological kernel (0 to disable)
+
         """
         # Import here to avoid circular imports
         from kelp_o_matic.processing import ImageProcessor

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import math
 import sys
+from collections.abc import Generator, Iterable
 from pathlib import Path
-from typing import Generator, Iterable
 
 import cv2
 import numpy as np
@@ -23,16 +23,14 @@ from kelp_o_matic.utils import batched, console
 
 
 class ImageProcessor:
-    """
-    High-level image processor that orchestrates model inference and tiled processing.
-    """
+    """High-level image processor that orchestrates model inference and tiled processing."""
 
     def __init__(self, model):
-        """
-        Initialize the ImageProcessor.
+        """Initialize the ImageProcessor.
 
         Args:
             model: The ONNXModel instance to use for inference
+
         """
         self.model = model
 
@@ -47,8 +45,7 @@ class ImageProcessor:
         morph_kernel_size: int = 0,
         band_order: list[int] | None = None,
     ) -> None:
-        """
-        Process an image using tiled segmentation with overlap handling.
+        """Process an image using tiled segmentation with overlap handling.
 
         Args:
             img_path: Path to input raster
@@ -57,6 +54,7 @@ class ImageProcessor:
             crop_size: Tile size for processing (uses model's preferred size if None)
             blur_kernel_size: Size of median blur kernel (must be odd)
             morph_kernel_size: Size of morphological kernel (0 to disable)
+
         """
         # Determine tile size
         if crop_size is None:
@@ -95,13 +93,13 @@ class ImageProcessor:
         output_path: str | Path,
         config: ProcessingConfig,
     ) -> None:
-        """
-        Process a raster file with tiled segmentation.
+        """Process a raster file with tiled segmentation.
 
         Args:
             img_path: Path to input raster
             output_path: Path to output segmentation raster
             config: Processing configuration
+
         """
         register = None
 
@@ -121,13 +119,13 @@ class ImageProcessor:
                     # Warn that float types should be normalized
                     console.print(
                         "[yellow]Warning: Input image has float data type. "
-                        "Ensure pixel values are in range [0,1] to avoid unexpected results.[/yellow]"
+                        "Ensure pixel values are in range [0,1] to avoid unexpected results.[/yellow]",
                     )
                     self.model.cfg.max_pixel_value = 1.0
                 else:
                     console.print(
                         f"[red]Unsupported image data type {dtype} for model. "
-                        f"Convert your image to uint8 or uint16 before processing.[/red]"
+                        f"Convert your image to uint8 or uint16 before processing.[/red]",
                     )
                     sys.exit(0)
 
@@ -136,19 +134,21 @@ class ImageProcessor:
 
             # Calculate extended dimensions to accommodate full tiles
             extended_height, extended_width = self._calculate_extended_dimensions(
-                height, width, config
+                height,
+                width,
+                config,
             )
 
             # Generate tiles and process in batches
             windows = list(
-                self._generate_windows(extended_height, extended_width, config)
+                self._generate_windows(extended_height, extended_width, config),
             )
 
             # Validate that we have full coverage of the original image
             if not self._validate_full_coverage(height, width, windows):
                 raise RuntimeError(
                     f"Window generation failed to provide full coverage of image "
-                    f"(original: {height}x{width}, extended: {extended_height}x{extended_width})"
+                    f"(original: {height}x{width}, extended: {extended_height}x{extended_width})",
                 )
 
             window_batches = list(batched(windows, n=config.batch_size))
@@ -181,15 +181,19 @@ class ImageProcessor:
 
                         # Apply post-processing to each result
                         for read_window, model_output in zip(
-                            window_batch, result_batch
+                            window_batch,
+                            result_batch,
+                            strict=False,
                         ):
                             # Create a clipped revision of the window for register processing
                             # The register expects windows that don't extend beyond image bounds
                             clipped_height = max(
-                                0, min(read_window.height, height - read_window.row_off)
+                                0,
+                                min(read_window.height, height - read_window.row_off),
                             )
                             clipped_width = max(
-                                0, min(read_window.width, width - read_window.col_off)
+                                0,
+                                min(read_window.width, width - read_window.col_off),
                             )
 
                             # Skip windows that are completely outside the image bounds
@@ -210,13 +214,9 @@ class ImageProcessor:
 
                             # Edge detection based on clipped window
                             is_top = clipped_window.row_off == 0
-                            is_bottom = (
-                                clipped_window.row_off + clipped_window.height >= height
-                            )
+                            is_bottom = clipped_window.row_off + clipped_window.height >= height
                             is_left = clipped_window.col_off == 0
-                            is_right = (
-                                clipped_window.col_off + clipped_window.width >= width
-                            )
+                            is_right = clipped_window.col_off + clipped_window.width >= width
 
                             data, write_window = register.step(
                                 model_output,
@@ -261,8 +261,14 @@ class ImageProcessor:
                 )
 
             # Rearrange/select bands
-            tile_img = tile_img[[b - 1 for b in config.band_order], ...]
-
+            try:
+                tile_img = tile_img[[b - 1 for b in config.band_order], ...]
+            except IndexError:
+                console.print(
+                    f"[bold red]Band order {config.band_order} is invalid for image with {src.count} bands.\n"
+                    f"You may be using a model intended for images with a {len(config.band_order)} bands.",
+                )
+                sys.exit(1)
             tile_data.append(tile_img)
 
         # Stack into batch array [b, c, h, w]
@@ -270,7 +276,9 @@ class ImageProcessor:
 
     @staticmethod
     def _calculate_extended_dimensions(
-        height: int, width: int, config: ProcessingConfig
+        height: int,
+        width: int,
+        config: ProcessingConfig,
     ) -> tuple[int, int]:
         """Calculate extended dimensions to fit complete tiles"""
         tile_size = config.crop_size
@@ -350,7 +358,8 @@ class ImageProcessor:
                     continue
 
                 yield Window.from_slices(
-                    rows=(row_start, row_end), cols=(col_start, col_end)
+                    rows=(row_start, row_end),
+                    cols=(col_start, col_end),
                 )
 
     @staticmethod
@@ -389,7 +398,8 @@ class ImageProcessor:
                     continue
 
                 yield Window.from_slices(
-                    rows=(row_start, row_end), cols=(col_start, col_end)
+                    rows=(row_start, row_end),
+                    cols=(col_start, col_end),
                 )
 
     @staticmethod
@@ -433,19 +443,17 @@ class ImageProcessor:
         dst.write(result, 1, window=write_window)
 
     def _apply_final_postprocessing(
-        self, dst_path: str, config: ProcessingConfig
+        self,
+        dst_path: str,
+        config: ProcessingConfig,
     ) -> None:
         """Apply final post-processing using tiled approach for large rasters"""
         if not (config.apply_median_blur or config.apply_morphological_ops):
             return  # No processing needed
 
         # Calculate required overlap for operations
-        blur_overlap = (
-            (config.blur_kernel_size - 1) // 2 if config.apply_median_blur else 0
-        )
-        morph_overlap = (
-            (config.morph_kernel_size - 1) // 2 if config.apply_morphological_ops else 0
-        )
+        blur_overlap = (config.blur_kernel_size - 1) // 2 if config.apply_median_blur else 0
+        morph_overlap = (config.morph_kernel_size - 1) // 2 if config.apply_morphological_ops else 0
         overlap = max(blur_overlap, morph_overlap)
 
         if overlap == 0:
@@ -462,7 +470,10 @@ class ImageProcessor:
 
             # Generate overlapping windows for post-processing
             windows = self._generate_windows_for_postprocessing(
-                height, width, tile_size, stride
+                height,
+                width,
+                tile_size,
+                stride,
             )
 
             windows_list = list(windows)
@@ -493,11 +504,15 @@ class ImageProcessor:
 
                             # Opening (remove noise)
                             tile_data = cv2.morphologyEx(
-                                tile_data, cv2.MORPH_OPEN, kernel
+                                tile_data,
+                                cv2.MORPH_OPEN,
+                                kernel,
                             )
                             # Closing (fill gaps)
                             tile_data = cv2.morphologyEx(
-                                tile_data, cv2.MORPH_CLOSE, kernel
+                                tile_data,
+                                cv2.MORPH_CLOSE,
+                                kernel,
                             )
 
                         # Place result, removing overlap except at boundaries

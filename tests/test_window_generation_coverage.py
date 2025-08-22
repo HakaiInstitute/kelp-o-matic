@@ -1,13 +1,12 @@
-"""
-Test cases to verify that window generation provides full coverage of input images,
+"""Test cases to verify that window generation provides full coverage of input images,
 especially for edge cases where the final rows/columns might be missed.
 """
 
-import pytest
 import numpy as np
+import pytest
 
-from kelp_o_matic.processing import ImageProcessor
 from kelp_o_matic.config import ProcessingConfig
+from kelp_o_matic.processing import ImageProcessor
 
 
 class TestWindowGenerationCoverage:
@@ -27,7 +26,9 @@ class TestWindowGenerationCoverage:
 
         for height, width, tile_size, stride, description in problematic_cases:
             config = ProcessingConfig(
-                crop_size=tile_size, batch_size=1, band_order=[1, 2, 3]
+                crop_size=tile_size,
+                batch_size=1,
+                band_order=[1, 2, 3],
             )
 
             # Generate windows
@@ -37,8 +38,7 @@ class TestWindowGenerationCoverage:
             is_covered = ImageProcessor._validate_full_coverage(height, width, windows)
 
             assert is_covered, (
-                f"Failed coverage test for {description}: "
-                f"Generated {len(windows)} windows for {height}x{width} image"
+                f"Failed coverage test for {description}: Generated {len(windows)} windows for {height}x{width} image"
             )
 
     def test_edge_cases_small_images(self):
@@ -52,7 +52,9 @@ class TestWindowGenerationCoverage:
 
         for height, width, tile_size, stride, description in edge_cases:
             config = ProcessingConfig(
-                crop_size=tile_size, batch_size=1, band_order=[1, 2, 3]
+                crop_size=tile_size,
+                batch_size=1,
+                band_order=[1, 2, 3],
             )
 
             windows = list(ImageProcessor._generate_windows(height, width, config))
@@ -71,7 +73,9 @@ class TestWindowGenerationCoverage:
 
         for height, width, tile_size, stride, description in exact_cases:
             config = ProcessingConfig(
-                crop_size=tile_size, batch_size=1, band_order=[1, 2, 3]
+                crop_size=tile_size,
+                batch_size=1,
+                band_order=[1, 2, 3],
             )
 
             windows = list(ImageProcessor._generate_windows(height, width, config))
@@ -85,7 +89,9 @@ class TestWindowGenerationCoverage:
         tile_size = 512
 
         config = ProcessingConfig(
-            crop_size=tile_size, batch_size=1, band_order=[1, 2, 3]
+            crop_size=tile_size,
+            batch_size=1,
+            band_order=[1, 2, 3],
         )
 
         windows = list(ImageProcessor._generate_windows(height, width, config))
@@ -124,17 +130,21 @@ class TestWindowGenerationCoverage:
 
         for height, width, tile_size, stride in test_cases:
             config = ProcessingConfig(
-                crop_size=tile_size, batch_size=1, band_order=[1, 2, 3]
+                crop_size=tile_size,
+                batch_size=1,
+                band_order=[1, 2, 3],
             )
 
             # Calculate extended dimensions
             ext_height, ext_width = ImageProcessor._calculate_extended_dimensions(
-                height, width, config
+                height,
+                width,
+                config,
             )
 
             # Generate windows for extended dimensions
             windows = list(
-                ImageProcessor._generate_windows(ext_height, ext_width, config)
+                ImageProcessor._generate_windows(ext_height, ext_width, config),
             )
 
             # Validate that windows cover the original image
@@ -161,12 +171,8 @@ class TestWindowGenerationCoverage:
             assert window.col_off >= 0, f"Window {i} starts before image: {window}"
 
             # Check that window doesn't start beyond image
-            assert window.row_off < height, (
-                f"Window {i} starts beyond image height: {window}"
-            )
-            assert window.col_off < width, (
-                f"Window {i} starts beyond image width: {window}"
-            )
+            assert window.row_off < height, f"Window {i} starts beyond image height: {window}"
+            assert window.col_off < width, f"Window {i} starts beyond image width: {window}"
 
     def test_boundless_reading_approach(self):
         """Test that boundless reading handles extended windows properly"""
@@ -175,23 +181,29 @@ class TestWindowGenerationCoverage:
         crop_size = 2048
 
         config = ProcessingConfig(
-            crop_size=crop_size, batch_size=1, band_order=[1, 2, 3]
+            crop_size=crop_size,
+            batch_size=1,
+            band_order=[1, 2, 3],
         )
 
         # Calculate extended dimensions
         extended_height, extended_width = ImageProcessor._calculate_extended_dimensions(
-            original_height, original_width, config
+            original_height,
+            original_width,
+            config,
         )
 
         # Generate windows for extended dimensions
         windows = list(
-            ImageProcessor._generate_windows(extended_height, extended_width, config)
+            ImageProcessor._generate_windows(extended_height, extended_width, config),
         )
 
         # With boundless reading, windows can extend beyond original bounds
         # The key is that they still provide full coverage of the original image
         assert ImageProcessor._validate_full_coverage(
-            original_height, original_width, windows
+            original_height,
+            original_width,
+            windows,
         )
 
         # Check that we have windows that cover the problematic areas
@@ -200,22 +212,14 @@ class TestWindowGenerationCoverage:
 
         for window in windows:
             # Check if this window covers the bottom edge of the original image
-            if (
-                window.row_off < original_height
-                and window.row_off + window.height >= original_height
-            ):
+            if window.row_off < original_height and window.row_off + window.height >= original_height:
                 found_bottom_edge = True
 
             # Check if this window covers the right edge of the original image
-            if (
-                window.col_off < original_width
-                and window.col_off + window.width >= original_width
-            ):
+            if window.col_off < original_width and window.col_off + window.width >= original_width:
                 found_right_edge = True
 
-        assert found_bottom_edge, (
-            "No window covers the bottom edge of the original image"
-        )
+        assert found_bottom_edge, "No window covers the bottom edge of the original image"
         assert found_right_edge, "No window covers the right edge of the original image"
 
     def test_boundless_reading_with_specific_case(self):
@@ -225,22 +229,28 @@ class TestWindowGenerationCoverage:
         crop_size = 2048
 
         config = ProcessingConfig(
-            crop_size=crop_size, batch_size=1, band_order=[1, 2, 3]
+            crop_size=crop_size,
+            batch_size=1,
+            band_order=[1, 2, 3],
         )
 
         # Calculate extended dimensions
         extended_height, extended_width = ImageProcessor._calculate_extended_dimensions(
-            original_height, original_width, config
+            original_height,
+            original_width,
+            config,
         )
 
         # Generate windows for extended dimensions
         windows = list(
-            ImageProcessor._generate_windows(extended_height, extended_width, config)
+            ImageProcessor._generate_windows(extended_height, extended_width, config),
         )
 
         # Verify full coverage is maintained
         assert ImageProcessor._validate_full_coverage(
-            original_height, original_width, windows
+            original_height,
+            original_width,
+            windows,
         )
 
         # The problematic window may exist, but boundless reading will handle it
@@ -256,30 +266,30 @@ class TestWindowGenerationCoverage:
 
         for height, width, crop_size, description in test_cases:
             config = ProcessingConfig(
-                crop_size=crop_size, batch_size=1, band_order=[1, 2, 3]
+                crop_size=crop_size,
+                batch_size=1,
+                band_order=[1, 2, 3],
             )
 
             # Calculate extended dimensions
-            extended_height, extended_width = (
-                ImageProcessor._calculate_extended_dimensions(height, width, config)
-            )
+            extended_height, extended_width = ImageProcessor._calculate_extended_dimensions(height, width, config)
 
             # Generate windows
             windows = list(
                 ImageProcessor._generate_windows(
-                    extended_height, extended_width, config
-                )
+                    extended_height,
+                    extended_width,
+                    config,
+                ),
             )
 
             # Verify all windows have the correct size
             for i, window in enumerate(windows):
                 assert window.width == crop_size, (
-                    f"{description}: Window {i} has incorrect width: "
-                    f"{window.width} != {crop_size} (window: {window})"
+                    f"{description}: Window {i} has incorrect width: {window.width} != {crop_size} (window: {window})"
                 )
                 assert window.height == crop_size, (
-                    f"{description}: Window {i} has incorrect height: "
-                    f"{window.height} != {crop_size} (window: {window})"
+                    f"{description}: Window {i} has incorrect height: {window.height} != {crop_size} (window: {window})"
                 )
 
 
