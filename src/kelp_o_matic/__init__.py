@@ -1,5 +1,7 @@
 """Kelp-O-Matic: A tool for segmenting audio files using machine learning models."""
 
+from importlib.metadata import version
+
 from kelp_o_matic.config import ModelConfig
 from kelp_o_matic.main import clean, models, revisions, segment
 from kelp_o_matic.model import ONNXModel
@@ -14,3 +16,5 @@ __all__ = [
     "revisions",
     "segment",
 ]
+
+__version__ = version("kelp_o_matic")
