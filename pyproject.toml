@@ -72,10 +72,12 @@ select = [
     "S",
     "T",
     "UP",
+    "D",
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
     "S101",  # Ignore use of assert in tests
     "N999",  # Invalid module name
+    "D",     # Docstrings
 ]

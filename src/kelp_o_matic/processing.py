@@ -1,3 +1,5 @@
+"""High-level image processing with tiled segmentation and post-processing."""
+
 from __future__ import annotations
 
 import math
@@ -54,6 +56,7 @@ class ImageProcessor:
             crop_size: Tile size for processing (uses model's preferred size if None)
             blur_kernel_size: Size of median blur kernel (must be odd)
             morph_kernel_size: Size of morphological kernel (0 to disable)
+            band_order: Band order for rearranging input image bands
 
         """
         # Determine tile size
@@ -218,7 +221,7 @@ class ImageProcessor:
                             is_left = clipped_window.col_off == 0
                             is_right = clipped_window.col_off + clipped_window.width >= width
 
-                            data, write_window = register.step(
+                            data, write_window = register._step(
                                 model_output,
                                 clipped_window,
                                 top=is_top,
@@ -280,7 +283,7 @@ class ImageProcessor:
         width: int,
         config: ProcessingConfig,
     ) -> tuple[int, int]:
-        """Calculate extended dimensions to fit complete tiles"""
+        """Calculate extended dimensions to fit complete tiles."""
         tile_size = config.crop_size
         stride = config.stride
 
@@ -307,7 +310,7 @@ class ImageProcessor:
         width: int,
         windows: list[Window],
     ) -> bool:
-        """Validate that the generated windows provide full coverage of the image"""
+        """Validate that the generated windows provide full coverage of the image."""
         # Create a coverage map to track which pixels are covered
         coverage = np.zeros((height, width), dtype=bool)
 
@@ -330,7 +333,7 @@ class ImageProcessor:
         tile_size: int = None,
         stride: int = None,
     ) -> Generator[Window]:
-        """Generate tile windows for processing"""
+        """Generate tile windows for processing."""
         tile_size = tile_size or config.crop_size
         stride = stride or config.stride
 
@@ -369,7 +372,7 @@ class ImageProcessor:
         tile_size: int,
         stride: int,
     ) -> Generator[Window]:
-        """Generate tile windows for post-processing, clipped to image bounds"""
+        """Generate tile windows for post-processing, clipped to image bounds."""
         # Calculate number of tiles needed to ensure full coverage
         if height <= tile_size:
             tiles_y = 1
@@ -409,7 +412,7 @@ class ImageProcessor:
         tile_result: np.ndarray,
         overlap: int,
     ) -> None:
-        """Place tile result into the full result array using overlap strategy"""
+        """Place tile result into the full result array using overlap strategy."""
         # Calculate the region to copy (excluding overlap except at image boundaries)
         copy_row_start = window.row_off
         copy_col_start = window.col_off
@@ -447,7 +450,7 @@ class ImageProcessor:
         dst_path: str,
         config: ProcessingConfig,
     ) -> None:
-        """Apply final post-processing using tiled approach for large rasters"""
+        """Apply final post-processing using tiled approach for large rasters."""
         if not (config.apply_median_blur or config.apply_morphological_ops):
             return  # No processing needed
 

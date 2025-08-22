@@ -1,3 +1,5 @@
+"""Kelp-O-Matic CLI for managing and using segmentation models."""
+
 from __future__ import annotations
 
 from pathlib import Path

@@ -1,3 +1,5 @@
+"""Utilities and helper functions for the Kelp-O-Matic package."""
+
 from __future__ import annotations
 
 import itertools
@@ -32,6 +34,7 @@ console = Console()
 
 
 def download_file_with_progress(url: str, out_path: Path, timeout: tuple[int, int] = (15, 120)) -> None:
+    """Download the file at url to out_path."""
     try:
         response = requests.get(url, stream=True, timeout=timeout)
         response.raise_for_status()
@@ -71,6 +74,7 @@ def download_file_with_progress(url: str, out_path: Path, timeout: tuple[int, in
 
 
 def get_ort_providers():
+    """Get the ORT provider list for the current system and installation."""
     available_providers = ort.get_available_providers()
     providers = []
 
@@ -85,6 +89,7 @@ def get_ort_providers():
 
 
 def get_local_model_dir() -> Path:
+    """Get the path to the directory containing cached models."""
     cache_dir = platformdirs.user_cache_dir(appname="kelp_o_matic", appauthor="hakai")
     model_dir = Path(cache_dir) / "models"
     model_dir.mkdir(exist_ok=True, parents=True)
@@ -169,7 +174,7 @@ def batched(iterable: Iterable[Any], n: int) -> Iterable[tuple[Any, ...]]:
 
 
 def setup_cuda_paths():
-    """Add CUDA DLL directories to PATH on Windows"""
+    """Add CUDA DLL directories to PATH on Windows."""
     if sys.platform != "win32":
         return
 

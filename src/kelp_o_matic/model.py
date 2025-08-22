@@ -1,3 +1,5 @@
+"""ONNX model handling and inference."""
+
 from __future__ import annotations
 
 import sys
@@ -22,25 +24,35 @@ console = Console()
 
 
 class ONNXModel:
+    """A class representing an ONNX model for image segmentation."""
+
     def __init__(self, config: ModelConfig):
+        """Create a new ONNXModel instance.
+
+        config: Configuration for the model.
+        """
         self.cfg = config
         self.__ort_sess = None
 
     @classmethod
     def from_json_config(cls, config_path: str):
+        """Create an ONNXModel instance from a JSON configuration file."""
         config = ModelConfig.model_validate_json(open(config_path).read())
         cls(config=config)
 
     @property
     def name(self) -> str:
+        """Get the model name."""
         return self.cfg.name
 
     @property
     def description(self) -> str:
+        """Get a description of the model."""
         return self.cfg.description
 
     @property
     def revision(self) -> str:
+        """Get the model revision string."""
         return self.cfg.revision
 
     @property
@@ -212,6 +224,7 @@ class ONNXModel:
             crop_size: Tile size for processing (uses model's preferred size if None)
             blur_kernel_size: Size of median blur kernel (must be odd)
             morph_kernel_size: Size of morphological kernel (0 to disable)
+            band_order: A list of integers used to rearrange the input image channels
 
         """
         # Import here to avoid circular imports

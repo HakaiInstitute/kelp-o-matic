@@ -1,5 +1,7 @@
-"""Test cases to verify that window generation provides full coverage of input images,
-especially for edge cases where the final rows/columns might be missed.
+"""Tests for window generation logic.
+
+Verifies that window generation provides full coverage of input images, especially for edge cases where the final
+rows and columns might be missed.
 """
 
 import numpy as np
@@ -10,10 +12,10 @@ from kelp_o_matic.processing import ImageProcessor
 
 
 class TestWindowGenerationCoverage:
-    """Test coverage issues with window generation"""
+    """Test coverage issues with window generation."""
 
     def test_problematic_image_dimensions(self):
-        """Test image dimensions that previously caused missing final rows/columns"""
+        """Test image dimensions that previously caused missing final rows/columns."""
         problematic_cases = [
             # (height, width, tile_size, stride, description)
             (1000, 1000, 512, 256, "1000x1000 with 512 tiles and 256 stride"),
@@ -42,7 +44,7 @@ class TestWindowGenerationCoverage:
             )
 
     def test_edge_cases_small_images(self):
-        """Test edge cases with very small images"""
+        """Test edge cases with very small images."""
         edge_cases = [
             (50, 50, 512, 256, "Tiny image much smaller than tile"),
             (1, 1, 224, 112, "Single pixel image"),
@@ -64,7 +66,7 @@ class TestWindowGenerationCoverage:
             assert len(windows) > 0, f"No windows generated for {description}"
 
     def test_exact_multiples(self):
-        """Test cases where dimensions are exact multiples of stride"""
+        """Test cases where dimensions are exact multiples of stride."""
         exact_cases = [
             (512, 512, 256, 128, "Exact 4x multiple"),
             (768, 768, 256, 128, "Exact 6x multiple"),
@@ -84,7 +86,7 @@ class TestWindowGenerationCoverage:
             assert is_covered, f"Failed coverage test for {description}"
 
     def test_coverage_map_detailed(self):
-        """Test detailed coverage analysis for a specific problematic case"""
+        """Test detailed coverage analysis for a specific problematic case."""
         height, width = 1000, 1000
         tile_size = 512
 
@@ -121,7 +123,7 @@ class TestWindowGenerationCoverage:
         assert coverage[:, 0].min() > 0, "Left edge pixels not covered"
 
     def test_extended_dimensions_consistency(self):
-        """Test that extended dimensions calculation is consistent with window generation"""
+        """Test that extended dimensions calculation is consistent with window generation."""
         test_cases = [
             (1000, 1000, 512, 256),
             (768, 1024, 256, 128),
@@ -155,7 +157,7 @@ class TestWindowGenerationCoverage:
             )
 
     def test_window_bounds_validation(self):
-        """Test that all generated windows have valid bounds"""
+        """Test that all generated windows have valid bounds."""
         height, width = 1000, 800
         config = ProcessingConfig(crop_size=512, batch_size=1, band_order=[1, 2, 3])
 
@@ -175,7 +177,7 @@ class TestWindowGenerationCoverage:
             assert window.col_off < width, f"Window {i} starts beyond image width: {window}"
 
     def test_boundless_reading_approach(self):
-        """Test that boundless reading handles extended windows properly"""
+        """Test that boundless reading handles extended windows properly."""
         # Test case based on the error: raster of 13715x16208, requesting (12288,0) of size 2048x1024
         original_height, original_width = 16208, 13715
         crop_size = 2048
@@ -223,7 +225,7 @@ class TestWindowGenerationCoverage:
         assert found_right_edge, "No window covers the right edge of the original image"
 
     def test_boundless_reading_with_specific_case(self):
-        """Test that boundless reading handles the specific error case properly"""
+        """Test that boundless reading handles the specific error case properly."""
         # Error: "Access window out of range in RasterIO(). Requested (12288,0) of size 2048x1024"
         original_height, original_width = 16208, 13715
         crop_size = 2048
@@ -257,7 +259,7 @@ class TestWindowGenerationCoverage:
         # by filling out-of-bounds areas with zeros
 
     def test_all_windows_have_correct_size(self):
-        """Test that all generated windows have the correct tile size"""
+        """Test that all generated windows have the correct tile size."""
         test_cases = [
             (16208, 13715, 2048, "Large image with 2048 tiles"),
             (1000, 1000, 512, "Medium image with 512 tiles"),

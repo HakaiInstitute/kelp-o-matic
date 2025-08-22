@@ -1,3 +1,5 @@
+"""A module containing the ModelRegistry class that indexes the available models for inference."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -8,15 +10,18 @@ from kelp_o_matic.model import ONNXModel
 
 class ModelRegistry:
     """A model_registry for models that allows for dynamic registration and retrieval.
+
     Supports multiple revisions of the same model with calendar versioning.
     """
 
     def __init__(self):
+        """Create a new ModelRegistry instance."""
         # Changed to nested dict: {name: {revision: model}}
         self._models = {}
 
     def list_models(self):
         """List all registered model names and revisions.
+
         Returns list of (name, revision) tuples.
         """
         models = []
@@ -45,6 +50,7 @@ class ModelRegistry:
     @classmethod
     def from_config_dir(cls, config_dir: str | Path):
         """Create a ModelRegistry instance from a directory containing model configuration files.
+
         Config files should be named with pattern: {name}_{revision}.json
         """
         reg = cls()
@@ -102,7 +108,7 @@ class ModelRegistry:
         return key in self._models
 
     def __repr__(self):
-        """String representation of the ModelRegistry."""
+        """Get a representative string describing this instance."""
         model_info = []
         for name, revisions in self._models.items():
             revision_list = list(revisions.keys())

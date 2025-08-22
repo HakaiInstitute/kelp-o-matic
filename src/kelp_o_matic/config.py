@@ -1,3 +1,5 @@
+"""Configuration models for segmentation processing and ONNX models."""
+
 from __future__ import annotations
 
 import warnings
@@ -16,7 +18,7 @@ from kelp_o_matic.utils import (
 
 
 class ProcessingConfig(BaseModel):
-    """Configuration for segmentation processing"""
+    """Configuration for segmentation processing."""
 
     crop_size: int = 224
     batch_size: int = 4
@@ -27,6 +29,7 @@ class ProcessingConfig(BaseModel):
     @property
     def stride(self) -> int:
         """Calculate the stride based on tile size and 50% overlap.
+
         The stride is the distance to move the tile window.
         """
         return int(self.crop_size * 0.5)

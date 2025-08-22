@@ -1,3 +1,14 @@
+"""Classes for windowed processing and weighted combination of overlapping tiles.
+
+This module provides classes for creating different window kernels and a memory register
+for handling logits in a moving window fashion.
+
+This is an implemtation of the paper:
+
+N. Pielawski and C. Wählby, “Introducing Hann windows for reducing edge-effects in patch-based image segmentation,”
+PLOS ONE, vol. 15, no. 3, p. e0229839, Mar. 2020, doi: https://doi.org/10.1371/journal.pone.0229839.
+"""
+
 import math
 from abc import ABCMeta, abstractmethod
 from typing import Annotated
@@ -10,7 +21,13 @@ from rasterio.windows import Window
 
 
 class Kernel(metaclass=ABCMeta):
+    """Base class for different window kernels."""
+
     def __init__(self, size: int = 512):
+        """Initialize the kernel with a specified size.
+
+        size: Size of the kernel. Must be an even number and should be equal to the image tile size.
+        """
         super().__init__()
         self.size = size
         self.wi = self._init_wi(size)
@@ -28,6 +45,13 @@ class Kernel(metaclass=ABCMeta):
         left: bool = False,
         right: bool = False,
     ) -> np.ndarray:
+        """Get the kernel matrix with specified modifications.
+
+        top: If True, the kernel is modified to not reweight the top part of the data.
+        bottom: If True, the kernel is modified to not reweight the bottom part of the data.
+        left: If True, the kernel is modified to not reweight the left part of the data.
+        right: If True, the kernel is modified to not reweight the right part of the data.
+        """
         wi, wj = self.wi.copy(), self.wj.copy()
 
         if top:
@@ -50,11 +74,21 @@ class Kernel(metaclass=ABCMeta):
         left: bool = False,
         right: bool = False,
     ) -> np.ndarray:
+        """Apply the kernel to the input array.
+
+        x: Input array to which the kernel will be applied.
+        top: If True, the kernel is modified to not reweight the top part of the x data.
+        bottom: If True, the kernel is modified to not reweight the bottom part of the x data.
+        left: If True, the kernel is modified to not reweight the left part of the x data.
+        right: If True, the kernel is modified to not reweight the right part of the x data.
+        """
         kernel = self.get_kernel(top=top, bottom=bottom, left=left, right=right)
         return np.multiply(x, kernel)
 
 
 class HannKernel(Kernel):
+    """Hann window kernel."""
+
     @staticmethod
     def _init_wi(size: int) -> np.ndarray:
         i = np.arange(0, size)
@@ -62,6 +96,8 @@ class HannKernel(Kernel):
 
 
 class BartlettHannKernel(Kernel):
+    """Bartlett-Hann window kernel."""
+
     @staticmethod
     def _init_wi(size: int) -> np.ndarray:
         # Follows original paper:
@@ -73,6 +109,8 @@ class BartlettHannKernel(Kernel):
 
 
 class TriangularKernel(Kernel):
+    """Triangular window kernel."""
+
     @staticmethod
     def _init_wi(size: int) -> np.ndarray:
         i = np.arange(0, size)
@@ -80,6 +118,8 @@ class TriangularKernel(Kernel):
 
 
 class BlackmanKernel(Kernel):
+    """Blackman window kernel."""
+
     @staticmethod
     def _init_wi(size: int) -> np.ndarray:
         i = np.arange(0, size)
@@ -87,6 +127,12 @@ class BlackmanKernel(Kernel):
 
 
 class NumpyMemoryRegister:
+    """A memory register for storing logits in a moving window fashion.
+
+    This class handles the weighting and merging of overlapping image tiles
+        using a moving window approach with a specified kernel.
+    """
+
     def __init__(
         self,
         image_width: Annotated[int, "Width of the image in pixels"],
@@ -94,6 +140,13 @@ class NumpyMemoryRegister:
         window_size: Annotated[int, "Moving window size"],
         kernel: type[Kernel],
     ):
+        """Create a new NumpyMemoryRegister instance.
+
+        image_width: Width of the image in pixels.
+        register_depth: Generally equal to the number of classes.
+        window_size: Size of the moving window.
+        kernel: Kernel class to use for weighting the logits.
+        """
         super().__init__()
         self.n = register_depth
         self.ws = window_size
@@ -108,7 +161,7 @@ class NumpyMemoryRegister:
     def _zero_chip(self):
         return np.zeros((self.n, self.hws, self.hws), dtype=np.float32)
 
-    def step(
+    def _step(
         self,
         new_logits: np.ndarray,
         img_window: Window,
