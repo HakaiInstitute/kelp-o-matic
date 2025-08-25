@@ -10,7 +10,6 @@ dependencies = [
     "cyclopts>=3.22.2",
     "humanize>=4.12.3",
     "numpy>=2.2.6",
-    "onnxruntime>=1.22.0 ; extra != 'cuda'",
     "opencv-python-headless>=4.11.0.86",
     "platformdirs>=4.3.8",
     "pydantic>=2.11.7",
@@ -20,15 +19,20 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+cpu = [
+    "onnxruntime>=1.22.1",
+]
 cuda = [
-    "onnxruntime-gpu[cuda,cudnn]>=1.22.0"
+    "onnxruntime-gpu>=1.22.0",
 ]
 
-[project.urls]
-Documentation = "https://kelp-o-matic.readthedocs.io"
-
-[project.scripts]
-kom = "kelp_o_matic.main:app"
+[tool.uv]
+conflicts = [
+    [
+        { extra = "cpu" },
+        { extra = "cuda" },
+    ],
+]
 
 [dependency-groups]
 dev = [
@@ -45,6 +49,12 @@ docs = [
 examples = [
     "jupyter>=1.1.1",
 ]
+
+[project.urls]
+Documentation = "https://kelp-o-matic.readthedocs.io"
+
+[project.scripts]
+kom = "kelp_o_matic.main:app"
 
 [build-system]
 requires = ["hatchling"]
