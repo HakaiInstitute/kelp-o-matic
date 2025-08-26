@@ -11,7 +11,6 @@ import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-import onnxruntime as ort
 import platformdirs
 import requests
 from rich.console import Console
@@ -24,6 +23,14 @@ from rich.progress import (
     TransferSpeedColumn,
 )
 from rich.prompt import Confirm
+
+try:
+    import onnxruntime as ort
+except ImportError as e:
+    raise ImportError(
+        "onnxruntime is required but not installed. Please install kelp-o-matic with "
+        "'pip install kelp-o-matic[cpu]' or 'pip install kelp-o-matic[cuda]' if you have a compatible GPU."
+    ) from e
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

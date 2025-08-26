@@ -7,12 +7,20 @@ from functools import cached_property
 from typing import TYPE_CHECKING
 
 import numpy as np
-import onnxruntime as ort
-from onnxruntime.capi.onnxruntime_pybind11_state import InvalidProtobuf
 from rich.console import Console
 
 from kelp_o_matic.config import ModelConfig
 from kelp_o_matic.utils import get_ort_providers, setup_cuda_paths
+
+try:
+    import onnxruntime as ort
+    from onnxruntime.capi.onnxruntime_pybind11_state import InvalidProtobuf
+
+except ImportError as e:
+    raise ImportError(
+        "onnxruntime is required but not installed. Please install kelp-o-matic with "
+        "'pip install kelp-o-matic[cpu]' or 'pip install kelp-o-matic[cuda]' if you have a compatible GPU."
+    ) from e
 
 if TYPE_CHECKING:
     from pathlib import Path

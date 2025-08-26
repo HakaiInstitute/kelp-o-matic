@@ -10,7 +10,8 @@ dependencies = [
     "cyclopts>=3.22.2",
     "humanize>=4.12.3",
     "numpy>=2.2.6",
-    "onnxruntime>=1.22.0",
+    "onnxruntime>=1.22.1 ; platform_system == 'Darwin'",
+    "onnxruntime-gpu>=1.22.0 ; platform_system != 'Darwin'",
     "opencv-python-headless>=4.11.0.86",
     "platformdirs>=4.3.8",
     "pydantic>=2.11.7",
@@ -18,17 +19,6 @@ dependencies = [
     "requests>=2.32.4",
     "rich>=13.0.0",
 ]
-
-[project.optional-dependencies]
-cuda = [
-    "onnxruntime-gpu[cuda,cudnn]>=1.22.0",
-]
-
-[project.urls]
-Documentation = "https://kelp-o-matic.readthedocs.io"
-
-[project.scripts]
-kom = "kelp_o_matic.main:app"
 
 [dependency-groups]
 dev = [
@@ -45,6 +35,12 @@ docs = [
 examples = [
     "jupyter>=1.1.1",
 ]
+
+[project.urls]
+Documentation = "https://kelp-o-matic.readthedocs.io"
+
+[project.scripts]
+kom = "kelp_o_matic.main:app"
 
 [build-system]
 requires = ["hatchling"]
