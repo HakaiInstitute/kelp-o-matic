@@ -10,28 +10,14 @@ dependencies = [
     "cyclopts>=3.22.2",
     "humanize>=4.12.3",
     "numpy>=2.2.6",
+    "onnxruntime>=1.22.1 ; platform_system == 'Darwin'",
+    "onnxruntime-gpu>=1.22.0 ; platform_system != 'Darwin'",
     "opencv-python-headless>=4.11.0.86",
     "platformdirs>=4.3.8",
     "pydantic>=2.11.7",
     "rasterio>=1.4.3",
     "requests>=2.32.4",
     "rich>=13.0.0",
-]
-
-[project.optional-dependencies]
-cpu = [
-    "onnxruntime>=1.22.1",
-]
-cuda = [
-    "onnxruntime-gpu>=1.22.0",
-]
-
-[tool.uv]
-conflicts = [
-    [
-        { extra = "cpu" },
-        { extra = "cuda" },
-    ],
 ]
 
 [dependency-groups]
