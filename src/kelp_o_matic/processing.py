@@ -184,7 +184,10 @@ class ImageProcessor:
 
                                 # Skip windows that are completely outside the image bounds
                                 if clipped_window is not None:
-                                    data = np.zeros((clipped_window.height, clipped_window.width), dtype=np.uint8)
+                                    data = (
+                                        np.ones((clipped_window.height, clipped_window.width), dtype=np.uint8)
+                                        * self.model.cfg.default_output_value
+                                    )
                                     dst.write(data, 1, window=clipped_window)
 
                                 # Remove from batch
