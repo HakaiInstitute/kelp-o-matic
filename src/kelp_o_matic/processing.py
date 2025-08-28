@@ -177,6 +177,48 @@ class ImageProcessor:
                         # Read tile data from source raster
                         input_batch = self._load_batch(src, window_batch, config)
 
+                        # Shortcut to write zeros if all pixels have the same value in each img
+                        for i, (window, img) in enumerate(zip(window_batch, input_batch)):
+                            if np.all(img == img.flatten()[0]):
+                                # Create a clipped revision of the window for register processing
+                                # The register expects windows that don't extend beyond image bounds
+                                clipped_height = max(
+                                    0,
+                                    min(window.height, height - window.row_off),
+                                )
+                                clipped_width = max(
+                                    0,
+                                    min(window.width, width - window.col_off),
+                                )
+
+                                # Skip windows that are completely outside the image bounds
+                                if (
+                                    clipped_height <= 0
+                                    or clipped_width <= 0
+                                    or window.row_off >= height
+                                    or window.col_off >= width
+                                ):
+                                    continue
+
+                                clipped_window = Window(
+                                    col_off=window.col_off,
+                                    row_off=window.row_off,
+                                    height=clipped_height,
+                                    width=clipped_width,
+                                )
+
+                                data = np.zeros((clipped_window.height, clipped_window.width), dtype=np.uint8)
+                                dst.write(data, 1, window=clipped_window)
+
+                                window_batch = list(window_batch)
+                                window_batch.pop(i)
+                                window_batch = tuple(window_batch)
+                                input_batch = np.delete(input_batch, i, axis=0)
+
+                        if len(window_batch) == 0:
+                            progress.update(task, advance=1, refresh=True)
+                            continue
+
                         # Process batch through model
                         result_batch = self.model._predict(input_batch)
 
