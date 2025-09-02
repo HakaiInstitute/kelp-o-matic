@@ -17,7 +17,7 @@ class ModelRegistry:
     def __init__(self) -> None:
         """Create a new ModelRegistry instance."""
         # Changed to nested dict: {name: {revision: model}}
-        self._models = {}
+        self._models: dict[str, dict[str, ONNXModel]] = {}
 
     def list_models(self) -> list[tuple[str, str]]:
         """List all registered model names and revisions.

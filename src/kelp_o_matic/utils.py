@@ -208,3 +208,17 @@ def setup_cuda_paths() -> None:
                 os.add_dll_directory(path)
             except OSError:
                 pass
+
+
+def _is_odd_or_zero(value: int) -> int:
+    if value == 0:
+        return value
+    if value % 2 == 0:
+        raise ValueError(f"{value} is not an odd number")
+    return value
+
+
+def _all_positive(value: list[int]) -> list[int]:
+    if any(v <= 0 for v in value):
+        raise ValueError("All values must be positive integers")
+    return value

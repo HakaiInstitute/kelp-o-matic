@@ -22,10 +22,12 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "mypy>=1.17.1",
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
     "pyupgrade>=3.20.0",
     "ruff>=0.12.5",
+    "types-requests>=2.32.4.20250809",
 ]
 docs = [
     "mkdocs>=1.6.1,<2",
@@ -79,3 +81,17 @@ convention = "google"
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = false
+warn_unused_configs = true
+strict = true
+
+# Third-party libraries without stubs
+[[tool.mypy.overrides]]
+module = [
+    "onnxruntime.*",
+    "rasterio.*"
+]
+ignore_missing_imports = true

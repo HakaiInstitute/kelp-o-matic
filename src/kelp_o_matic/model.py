@@ -12,6 +12,7 @@ from onnxruntime.capi.onnxruntime_pybind11_state import InvalidProtobuf
 from rich.console import Console
 
 from kelp_o_matic.config import ModelConfig
+from kelp_o_matic.processing import ImageProcessor
 from kelp_o_matic.utils import get_ort_providers, setup_cuda_paths
 
 if TYPE_CHECKING:
@@ -36,7 +37,7 @@ class ONNXModel:
             config: Configuration for the model.
         """
         self.cfg = config
-        self.__ort_sess = None
+        self.__ort_sess: ort.InferenceSession | None = None
 
     @classmethod
     def from_json_config(cls, config_path: str) -> ONNXModel:
@@ -56,7 +57,7 @@ class ONNXModel:
     @property
     def description(self) -> str:
         """Get a description of the model."""
-        return self.cfg.description
+        return self.cfg.description or ""
 
     @property
     def revision(self) -> str:
@@ -149,6 +150,9 @@ class ONNXModel:
         Returns:
             Batch of preprocessed images with shape [batch_size, channels, height, width]
         """
+        if self.cfg.max_pixel_value == "auto":
+            self.cfg.max_pixel_value = np.iinfo(batch.dtype).max
+
         batch = batch.astype(np.float32) / self.cfg.max_pixel_value
 
         if self.cfg.normalization is None:
@@ -243,19 +247,16 @@ class ONNXModel:
             crop_size: Tile size for processing (uses model's preferred size if None)
             blur_kernel_size: Size of median blur kernel (must be odd)
             morph_kernel_size: Size of morphological kernel (0 to disable)
-            band_order: A list of integers used to rearrange the input image channels
+            band_order: A list of integers used to rearrange the input image channels. Indexed from 1 (like GDAL).
 
         """
-        # Import here to avoid circular imports
-        from kelp_o_matic.processing import ImageProcessor
-
-        processor = ImageProcessor(self)
-        processor.process(
-            img_path=img_path,
-            output_path=output_path,
+        processor = ImageProcessor.from_model(
+            model=self,
             batch_size=batch_size,
             crop_size=crop_size,
             blur_kernel_size=blur_kernel_size,
             morph_kernel_size=morph_kernel_size,
             band_order=band_order,
         )
+
+        processor.run(img_path=img_path, output_path=output_path)

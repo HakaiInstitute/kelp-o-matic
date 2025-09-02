@@ -4,11 +4,18 @@ Verifies that window generation provides full coverage of input images, especial
 rows and columns might be missed.
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import numpy as np
 import pytest
 
 from kelp_o_matic.config import ProcessingConfig
 from kelp_o_matic.processing import ImageProcessor
+
+if TYPE_CHECKING:
+    from rasterio.windows import Window
 
 
 class TestWindowGenerationCoverage:
@@ -34,10 +41,12 @@ class TestWindowGenerationCoverage:
             )
 
             # Generate windows
-            windows = list(ImageProcessor._generate_windows(height, width, config))
+            windows = list(
+                ImageProcessor._generate_windows(height, width, tile_size=config.crop_size, stride=config.stride)
+            )
 
             # Validate full coverage
-            is_covered = ImageProcessor._validate_full_coverage(height, width, windows)
+            is_covered = _validate_full_coverage(height, width, windows)
 
             assert is_covered, (
                 f"Failed coverage test for {description}: Generated {len(windows)} windows for {height}x{width} image"
@@ -59,8 +68,10 @@ class TestWindowGenerationCoverage:
                 band_order=[1, 2, 3],
             )
 
-            windows = list(ImageProcessor._generate_windows(height, width, config))
-            is_covered = ImageProcessor._validate_full_coverage(height, width, windows)
+            windows = list(
+                ImageProcessor._generate_windows(height, width, tile_size=config.crop_size, stride=config.stride)
+            )
+            is_covered = _validate_full_coverage(height, width, windows)
 
             assert is_covered, f"Failed coverage test for {description}"
             assert len(windows) > 0, f"No windows generated for {description}"
@@ -80,8 +91,10 @@ class TestWindowGenerationCoverage:
                 band_order=[1, 2, 3],
             )
 
-            windows = list(ImageProcessor._generate_windows(height, width, config))
-            is_covered = ImageProcessor._validate_full_coverage(height, width, windows)
+            windows = list(
+                ImageProcessor._generate_windows(height, width, tile_size=config.crop_size, stride=config.stride)
+            )
+            is_covered = _validate_full_coverage(height, width, windows)
 
             assert is_covered, f"Failed coverage test for {description}"
 
@@ -96,7 +109,9 @@ class TestWindowGenerationCoverage:
             band_order=[1, 2, 3],
         )
 
-        windows = list(ImageProcessor._generate_windows(height, width, config))
+        windows = list(
+            ImageProcessor._generate_windows(height, width, tile_size=config.crop_size, stride=config.stride)
+        )
 
         # Create detailed coverage map
         coverage = np.zeros((height, width), dtype=int)
@@ -146,11 +161,13 @@ class TestWindowGenerationCoverage:
 
             # Generate windows for extended dimensions
             windows = list(
-                ImageProcessor._generate_windows(ext_height, ext_width, config),
+                ImageProcessor._generate_windows(
+                    ext_height, ext_width, tile_size=config.crop_size, stride=config.stride
+                ),
             )
 
             # Validate that windows cover the original image
-            is_covered = ImageProcessor._validate_full_coverage(height, width, windows)
+            is_covered = _validate_full_coverage(height, width, windows)
             assert is_covered, (
                 f"Extended dimensions ({ext_height}x{ext_width}) don't provide "
                 f"full coverage for original ({height}x{width})"
@@ -161,7 +178,9 @@ class TestWindowGenerationCoverage:
         height, width = 1000, 800
         config = ProcessingConfig(crop_size=512, batch_size=1, band_order=[1, 2, 3])
 
-        windows = list(ImageProcessor._generate_windows(height, width, config))
+        windows = list(
+            ImageProcessor._generate_windows(height, width, tile_size=config.crop_size, stride=config.stride)
+        )
 
         for i, window in enumerate(windows):
             # Check that window has positive dimensions
@@ -197,12 +216,14 @@ class TestWindowGenerationCoverage:
 
         # Generate windows for extended dimensions
         windows = list(
-            ImageProcessor._generate_windows(extended_height, extended_width, config),
+            ImageProcessor._generate_windows(
+                extended_height, extended_width, tile_size=config.crop_size, stride=config.stride
+            ),
         )
 
         # With boundless reading, windows can extend beyond original bounds
         # The key is that they still provide full coverage of the original image
-        assert ImageProcessor._validate_full_coverage(
+        assert _validate_full_coverage(
             original_height,
             original_width,
             windows,
@@ -245,11 +266,13 @@ class TestWindowGenerationCoverage:
 
         # Generate windows for extended dimensions
         windows = list(
-            ImageProcessor._generate_windows(extended_height, extended_width, config),
+            ImageProcessor._generate_windows(
+                extended_height, extended_width, tile_size=config.crop_size, stride=config.stride
+            ),
         )
 
         # Verify full coverage is maintained
-        assert ImageProcessor._validate_full_coverage(
+        assert _validate_full_coverage(
             original_height,
             original_width,
             windows,
@@ -281,7 +304,8 @@ class TestWindowGenerationCoverage:
                 ImageProcessor._generate_windows(
                     extended_height,
                     extended_width,
-                    config,
+                    tile_size=config.crop_size,
+                    stride=config.stride,
                 ),
             )
 
@@ -297,3 +321,33 @@ class TestWindowGenerationCoverage:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+def _validate_full_coverage(
+    height: int,
+    width: int,
+    windows: list[Window],
+) -> bool:
+    """Validate that the generated windows provide full coverage of the image.
+
+    Args:
+        height: Original height of the image.
+        width: Original width of the image.
+        windows: Iterable of windows to validate.
+
+    Returns:
+        True if all pixels are covered, False otherwise.
+    """
+    # Create a coverage map to track which pixels are covered
+    coverage = np.zeros((height, width), dtype=bool)
+
+    for window in windows:
+        row_start = max(0, window.row_off)
+        row_end = min(height, window.row_off + window.height)
+        col_start = max(0, window.col_off)
+        col_end = min(width, window.col_off + window.width)
+
+        coverage[row_start:row_end, col_start:col_end] = True
+
+    # Check if all pixels are covered
+    return bool(np.all(coverage))

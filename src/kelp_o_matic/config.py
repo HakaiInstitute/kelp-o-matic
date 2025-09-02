@@ -4,79 +4,18 @@ from __future__ import annotations
 
 import warnings
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, field_validator
-from rich.status import Status
+from pydantic import AfterValidator, BaseModel, Field, PositiveInt
 
 from kelp_o_matic.utils import (
+    _all_positive,
+    _is_odd_or_zero,
     console,
     download_file_with_progress,
     get_local_model_path,
     is_url,
 )
-
-
-class ProcessingConfig(BaseModel):
-    """Configuration for segmentation processing."""
-
-    crop_size: int = 224
-    batch_size: int = 4
-    blur_kernel_size: int = 5
-    morph_kernel_size: int = 0
-    band_order: list[int]
-
-    @property
-    def stride(self) -> int:
-        """Calculate the stride based on tile size and 50% overlap.
-
-        The stride is the distance to move the tile window.
-        """
-        return int(self.crop_size * 0.5)
-
-    @property
-    def apply_morphological_ops(self) -> bool:
-        """Whether to apply morphological operations."""
-        return self.morph_kernel_size > 1
-
-    @property
-    def apply_median_blur(self) -> bool:
-        """Whether to apply median blur."""
-        return self.blur_kernel_size > 1
-
-    @field_validator("crop_size")
-    @staticmethod
-    def _is_even(value: int) -> int:
-        if value % 2 == 1:
-            raise ValueError(f"{value} is not an even number")
-        return value
-
-    @field_validator("blur_kernel_size", "morph_kernel_size")
-    @staticmethod
-    def _is_odd_or_zero(value: int) -> int:
-        if value == 0:
-            return value
-        if value % 2 == 0:
-            raise ValueError(f"{value} is not an odd number")
-        return value
-
-    @field_validator("batch_size")
-    @staticmethod
-    def _is_gte_1(value: int) -> int:
-        if value < 1:
-            raise ValueError(f"{value} is not greater than 1")
-        return value
-
-    @field_validator("batch_size", "crop_size")
-    @staticmethod
-    def _is_positive(value: int) -> int:
-        if value < 0:
-            raise ValueError(
-                f"{value} is not positive",
-                "blur_kernel_size",
-                "morph_kernel_size",
-            )
-        return value
 
 
 class ModelConfig(BaseModel):
@@ -86,7 +25,7 @@ class ModelConfig(BaseModel):
     description: str | None = None
     revision: str
     model_path: str  # URL to download model from, or local file path
-    input_channels: int = 3
+    input_channels: PositiveInt = 3
     activation: Literal["sigmoid", "softmax"] | None = None
 
     normalization: (
@@ -124,17 +63,8 @@ class ModelConfig(BaseModel):
         # If it's a URL, handle download
         if is_url(self.model_path):
             if local_path.exists():
-                with Status(
-                    "[green]Loading cached model...",
-                    console=console,
-                    spinner="dots",
-                ):
-                    # Brief pause to show the status
-                    import time
-
-                    time.sleep(0.5)
                 console.print(
-                    f"[green]✓ Loaded cached model from: {local_path}[/green]",
+                    f"[green]✓ Loaded model from: {local_path}[/green]",
                 )
             else:
                 console.print(f"[blue]Downloading model to: {local_path}[/blue]")
@@ -155,6 +85,31 @@ class ModelConfig(BaseModel):
                 warnings.warn(f"File does not have .onnx extension: {local_path}")
 
         return local_path
+
+
+class ProcessingConfig(BaseModel):
+    """Configuration for image processing parameters."""
+
+    crop_size: Annotated[int, Field(gt=0, multiple_of=2)]
+    band_order: Annotated[list[int], Field(min_length=1), AfterValidator(_all_positive)]
+    batch_size: PositiveInt = 1
+    blur_kernel_size: Annotated[int, Field(ge=0), AfterValidator(_is_odd_or_zero)] = 5
+    morph_kernel_size: Annotated[int, Field(ge=0), AfterValidator(_is_odd_or_zero)] = 0
+
+    @property
+    def stride(self) -> int:
+        """Calculate the stride based on tile size and 50% overlap."""
+        return int(self.crop_size * 0.5)
+
+    @property
+    def apply_morphological_ops(self) -> bool:
+        """Whether to apply morphological operations."""
+        return self.morph_kernel_size > 1
+
+    @property
+    def apply_median_blur(self) -> bool:
+        """Whether to apply median blur."""
+        return self.blur_kernel_size > 1
 
 
 if __name__ == "__main__":
