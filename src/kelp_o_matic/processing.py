@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING
 import cv2
 import numpy as np
 import rasterio
-from pydantic import BaseModel
 from rasterio.windows import Window
 from rich.progress import (
     BarColumn,
@@ -33,7 +32,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class ImageProcessor(BaseModel):
+class ImageProcessor:
     """High-level image processor that orchestrates model inference and tiled processing."""
 
     model: ONNXModel
