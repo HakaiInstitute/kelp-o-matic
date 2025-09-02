@@ -21,6 +21,7 @@ from kelp_o_matic.utils import (
 class ModelConfig(BaseModel):
     """ONNXModel configuration for ONNX semantic segmentation models."""
 
+    cls_name: str = "kelp_o_matic.model.ONNXModel"  # For dynamic loading of model class in registry
     name: str
     description: str | None = None
     revision: str
