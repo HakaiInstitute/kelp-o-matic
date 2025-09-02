@@ -101,7 +101,8 @@ class ModelConfig(BaseModel):
     ) = "standard"
     mean: tuple[float, ...] | None = (0.485, 0.456, 0.406)
     std: tuple[float, ...] | None = (0.229, 0.224, 0.225)
-    max_pixel_value: float | Literal["auto"] = "auto"
+    max_pixel_value: float | Literal["auto"] = "auto"  # Value to scale input pixels by prior to normalization
+    default_output_value: int = 0  # Value to use as default output (e.g. for black areas in image)
 
     @property
     def local_model_path(self) -> Path:

@@ -177,6 +177,30 @@ class ImageProcessor:
                         # Read tile data from source raster
                         input_batch = self._load_batch(src, window_batch, config)
 
+                        # Shortcut to write zeros if all pixels have the same value in each img
+                        for i, (window, img) in enumerate(zip(window_batch, input_batch)):
+                            if np.all(img == img.flatten()[0]):
+                                clipped_window = self._clip_window_to_image_bounds(window, height, width)
+
+                                # Skip windows that are completely outside the image bounds
+                                if clipped_window is not None:
+                                    data = (
+                                        np.ones((clipped_window.height, clipped_window.width), dtype=np.uint8)
+                                        * self.model.cfg.default_output_value
+                                    )
+                                    dst.write(data, 1, window=clipped_window)
+
+                                # Remove from batch
+                                window_batch = list(window_batch)
+                                window_batch.pop(i)
+                                window_batch = tuple(window_batch)
+                                input_batch = np.delete(input_batch, i, axis=0)
+
+                        # If all windows were removed, skip processing and update progress
+                        if len(window_batch) == 0:
+                            progress.update(task, advance=1, refresh=True)
+                            continue
+
                         # Process batch through model
                         result_batch = self.model._predict(input_batch)
 
@@ -195,32 +219,11 @@ class ImageProcessor:
                             result_batch,
                             strict=False,
                         ):
-                            # Create a clipped revision of the window for register processing
-                            # The register expects windows that don't extend beyond image bounds
-                            clipped_height = max(
-                                0,
-                                min(read_window.height, height - read_window.row_off),
-                            )
-                            clipped_width = max(
-                                0,
-                                min(read_window.width, width - read_window.col_off),
-                            )
+                            clipped_window = self._clip_window_to_image_bounds(read_window, height, width)
 
                             # Skip windows that are completely outside the image bounds
-                            if (
-                                clipped_height <= 0
-                                or clipped_width <= 0
-                                or read_window.row_off >= height
-                                or read_window.col_off >= width
-                            ):
+                            if clipped_window is None:
                                 continue
-
-                            clipped_window = Window(
-                                col_off=read_window.col_off,
-                                row_off=read_window.row_off,
-                                height=clipped_height,
-                                width=clipped_width,
-                            )
 
                             # Edge detection based on clipped window
                             is_top = clipped_window.row_off == 0
@@ -243,6 +246,36 @@ class ImageProcessor:
 
             # Apply final post-processing
             self._apply_final_postprocessing(output_path, config)
+
+    def _clip_window_to_image_bounds(
+        self,
+        window: Window,
+        height: int,
+        width: int,
+    ) -> Window | None:
+        """Clip a window to fit within image bounds.
+
+        Args:
+            window: The original window.
+            height: Height of the image.
+            width: Width of the image.
+
+        Returns:
+            A new Window object clipped to the image bounds or None if the window is completely outside the image.
+        """
+        clipped_height = max(0, min(window.height, height - window.row_off))
+        clipped_width = max(0, min(window.width, width - window.col_off))
+
+        # Test if windows is completely outside the image bounds
+        if clipped_height <= 0 or clipped_width <= 0 or window.row_off >= height or window.col_off >= width:
+            return None
+
+        return Window(
+            col_off=window.col_off,
+            row_off=window.row_off,
+            height=clipped_height,
+            width=clipped_width,
+        )
 
     @staticmethod
     def _load_batch(
