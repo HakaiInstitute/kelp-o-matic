@@ -21,13 +21,20 @@ from kelp_o_matic.utils import (
 class ModelConfig(BaseModel):
     """ONNXModel configuration for ONNX semantic segmentation models."""
 
-    cls_name: str = "kelp_o_matic.model.ONNXModel"  # For dynamic loading of model class in registry
-    name: str
-    description: str | None = None
-    revision: str
-    model_path: str  # URL to download model from, or local file path
+    cls_name: Annotated[str, "For dynamic loading of model class in registry"] = "kelp_o_matic.model.ONNXModel"
+    name: Annotated[str, "The name of the model for the model registry"]
+    description: Annotated[str | None, "Brief description of the model for the model registry"] = None
+    revision: Annotated[str, "Model revision number. Date based versioning is preferred"]
+    model_path: Annotated[str, "URL to download model from, or local file path"]
     input_channels: PositiveInt = 3
-    activation: Literal["sigmoid", "softmax"] | None = None
+    activation: (
+        Annotated[
+            Literal["sigmoid", "softmax"],
+            "Final activation to apply to model outputs. "
+            "If None, it is assumed that the output of the ONNX model are probabilities",
+        ]
+        | None
+    ) = None
 
     normalization: (
         Literal[
@@ -41,8 +48,19 @@ class ModelConfig(BaseModel):
     ) = "standard"
     mean: tuple[float, ...] | None = (0.485, 0.456, 0.406)
     std: tuple[float, ...] | None = (0.229, 0.224, 0.225)
-    max_pixel_value: float | Literal["auto"] = "auto"  # Value to scale input pixels by prior to normalization
-    default_output_value: int = 0  # Value to use as default output (e.g. for black areas in image)
+
+    max_pixel_value: Annotated[
+        float | Literal["auto"],
+        "Value to scale input pixels by prior to normalization, or 'auto' to infer from the image datatype.",
+    ] = "auto"
+    default_output_value: Annotated[
+        int,
+        (
+            "Value the model should output for tiles that are all the same colour (used to speed up processing by "
+            "skipping background areas)"
+        ),
+    ] = 0
+    nodata_value: Annotated[int, "The nodata value for the output raster"] = 0
 
     @property
     def local_model_path(self) -> Path:

@@ -11,6 +11,7 @@ import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+import numpy as np
 import onnxruntime as ort
 import platformdirs
 import requests
@@ -222,3 +223,29 @@ def _all_positive(value: list[int]) -> list[int]:
     if any(v <= 0 for v in value):
         raise ValueError("All values must be positive integers")
     return value
+
+
+def softmax(x: np.ndarray, axis: int = 0, keepdims: bool = False) -> np.ndarray:
+    """Apply softmax function to ndarray x.
+
+    Args:
+        x: A numpy array
+        axis: Axis along which to apply the softmax function
+        keepdims: Whether to keep dimensions or not
+
+    Returns:
+        A numpy array representing the softmax output
+    """
+    return np.exp(x) / np.sum(np.exp(x), axis=axis, keepdims=keepdims)
+
+
+def sigmoid(x: np.ndarray) -> np.ndarray:
+    """Apply the sigmoid activation function to array x.
+
+    Args:
+        x: A numpy array
+
+    Returns:
+        A numpy array of the sigmoid output
+    """
+    return 1 / (1 + np.exp(-x))

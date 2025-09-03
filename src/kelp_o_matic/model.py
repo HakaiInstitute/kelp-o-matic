@@ -13,7 +13,7 @@ from rich.console import Console
 
 from kelp_o_matic.config import ModelConfig
 from kelp_o_matic.processing import ImageProcessor
-from kelp_o_matic.utils import get_ort_providers, setup_cuda_paths
+from kelp_o_matic.utils import get_ort_providers, setup_cuda_paths, sigmoid, softmax
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -191,9 +191,9 @@ class ONNXModel:
             batch = np.expand_dims(batch, axis=0)
 
         if self.cfg.activation == "softmax":
-            batch = np.exp(batch) / np.sum(np.exp(batch), axis=1, keepdims=True)
+            batch = softmax(batch, axis=1, keepdims=True)
         elif self.cfg.activation == "sigmoid":
-            batch = 1 / (1 + np.exp(-batch))
+            batch = sigmoid(-batch)
 
         if batch.shape[1] == 1:
             # If single dim class, make into binary tensor

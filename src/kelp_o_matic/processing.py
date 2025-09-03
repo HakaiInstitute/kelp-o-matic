@@ -132,7 +132,7 @@ class ImageProcessor:
                     sys.exit(0)
 
             # Update profile for output
-            profile.update({"dtype": "uint8", "count": 1, "compress": "lzw"})
+            profile.update({"dtype": "uint8", "count": 1, "compress": "lzw", "nodata": self.model.cfg.nodata_value})
 
             # Calculate extended dimensions to accommodate full tiles
             extended_height, extended_width = self._calculate_extended_dimensions(
