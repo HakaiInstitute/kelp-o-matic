@@ -1,10 +1,10 @@
 {
+  "cls_name": "kelp_o_matic.model.LegacyKelpRGBIModel",
   "name": "kelp-rgbi",
   "revision": "20231214",
   "description": "Kelp segmentation model for 4-band RGB+NIR drone imagery.",
   "model_path": "https://huggingface.co/HakaiInstitute/kelp-rgbi/resolve/20231214/model.onnx",
   "input_channels": 4,
   "normalization": "min_max",
-  "max_pixel_value": 1.0,
-  "activation": "softmax"
+  "max_pixel_value": 1.0
 }

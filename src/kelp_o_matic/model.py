@@ -260,3 +260,61 @@ class ONNXModel:
         )
 
         processor.run(img_path=img_path, output_path=output_path)
+
+
+class LegacyKelpRGBModel(ONNXModel):
+    """A legacy model class for Kelp Species Segmentation in 3-band imagery.
+
+    This class is used to handle the multi-model kelp detection models.
+
+    Previous kelp models used one model for kelp presence detection and one model for species detection.
+
+    This class should be considered deprecated and should not be used for new model development.
+    """
+
+    def _postprocess(self, batch: np.ndarray) -> np.ndarray:
+        """Postprocess the output to get class label from logits or probs.
+
+        Supports batch inputs and single samples.
+
+        Returns:
+            Batch of class labels with shape [batch_size, height, width] or [height, width]
+        """
+        presence_logits = batch[:1, :, :]
+        species_logits = batch[1:, :, :]
+
+        pa_probs = sigmoid(presence_logits)
+        pa_label = (pa_probs > 0.5).astype(np.uint8).squeeze(0)  # 0 = bg, 1 = kelp
+
+        sp_probs = softmax(species_logits, axis=0, keepdims=True)
+        sp_label = np.argmax(sp_probs, axis=0).astype(np.uint8) + 1  # 1 = macro, 2 = nereo
+        return pa_label * sp_label
+
+
+class LegacyKelpRGBIModel(ONNXModel):
+    """A legacy model class for Kelp Species Segmentation in 4-band imagery.
+
+    This class is used to handle the multi-model kelp detection models.
+
+    Previous kelp models used one model for kelp presence detection and one model for species detection.
+
+    This class should be considered deprecated and should not be used for new model development.
+    """
+
+    def _postprocess(self, batch: np.ndarray) -> np.ndarray:
+        """Postprocess the output to get class label from logits or probs.
+
+        Supports batch inputs and single samples.
+
+        Returns:
+            Batch of class labels with shape [batch_size, height, width] or [height, width]
+        """
+        presence_logits = batch[:2, :, :]
+        species_logits = batch[2:, :, :]
+
+        pa_probs = softmax(presence_logits, axis=0, keepdims=True)
+        pa_label = np.argmax(pa_probs, axis=0).astype(np.uint8)  # 0 = bg, 1 = kelp
+
+        sp_probs = softmax(species_logits, axis=0, keepdims=True)
+        sp_label = np.argmax(sp_probs, axis=0).astype(np.uint8) + 1  # 1 = macro, 2 = nereo
+        return pa_label * sp_label
