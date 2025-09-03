@@ -12,6 +12,7 @@ Nvidia CUDA-compatible GPU that will make things run faster, but it's not requir
 **What resolution should my data be?**
 
 Kelp-O-Matic was designed to work best on imagery with 1cm to 10cm pixel resolution. 5cm resolution is likely optimal.
+For the PlanetScope model, the input resolution should be 3m or better and use the surface reflectance bands.
 
 **When I run the tool, it starts giving me warnings. Should I worry?**
 
@@ -37,8 +38,8 @@ for certain models) bands to determine if kelp/mussels are present.
 **The output image is all black. I think it didn't find anything!**
 
 The model outputs images with pixel values in the range of 0 to 3, depending on which model was
-used ([see here](about.md#model-outputs) for a summary). Make sure you
-visualize the outputs in your GIS by "unique values" to see the output.
+used ([see here](about.md#model-outputs) for a summary). Make sure that you visualize the outputs in your GIS by
+"unique values" to see the output.
 
 **When I open my outputs in a GIS they are not in the same place as the ortho!**
 

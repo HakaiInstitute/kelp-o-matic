@@ -6,6 +6,10 @@ on:
       - '**'
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+.dev[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+.post[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+a[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+b[0-9]+'
       - 'v[0-9]+.[0-9]+.[0-9]+rc[0-9]+'
 
 jobs:
@@ -13,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Get tag
       id: tag
@@ -22,7 +26,7 @@ jobs:
     - name: Install uv
       uses: astral-sh/setup-uv@v5
       with:
-        version: "0.5.26"
+        version: "0.8.14"
         enable-cache: true
 
     - name: "Set up Python"
@@ -37,6 +41,6 @@ jobs:
       env:
         UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
       run: |
-        sed -i "s/0.0.0/${{ env.tag }}/g" kelp_o_matic/__init__.py
+        uv version ${{ env.tag }}
         uv build
         uv publish

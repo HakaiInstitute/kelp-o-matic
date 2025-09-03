@@ -3,7 +3,7 @@
     <img alt="🧪 Test" src="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/test.yml/badge.svg" height="20px" />
 </a>
 
-<a href="https://github.com/HakaiInstitute/kelp-o-matic/blob/main/LICENSE.txt">
+<a href="https://github.com/HakaiInstitute/kelp-o-matic/blob/main/LICENSE">
     <img alt="License" src="https://anaconda.org/conda-forge/kelp-o-matic/badges/license.svg" height="20px" />
 </a>
 

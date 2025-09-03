@@ -306,3 +306,5 @@ conda/index.html
 *.profile
 
 output
+
+modelfiles/
