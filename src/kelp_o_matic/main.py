@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from importlib.metadata import version
 from pathlib import Path
 from typing import Annotated
@@ -27,8 +28,6 @@ from kelp_o_matic.utils import (
 app = App()
 console = Console()
 
-logger.remove()
-
 
 def _log_formatter(record: dict) -> str:
     """Log message formatter.
@@ -49,12 +48,28 @@ def _log_formatter(record: dict) -> str:
     return f"[not bold cyan]{{time:YYYY-MM-DD HH:mm:ss}}[/not bold cyan] | [{lvl_color}]{{message}}[/{lvl_color}]"
 
 
+DEBUG = bool(os.getenv("DEBUG", False))
+
+# Setup Rich logger handler
+logger.remove()
 logger.add(
     console.print,
     level="TRACE",
     format=_log_formatter,
     colorize=None,
 )
+
+# Decorator to log error messages
+logger_catch = logger.catch(
+    message=(
+        "[bold red]Program interrupted due to {record[exception].type.__name__}: '{record[exception].value}'[/bold red]"
+    ),
+    reraise=DEBUG,
+)
+
+# Install rich traceback formatting
+if DEBUG:
+    install()
 
 
 def _positive_even_int_validator(type_: type, value: int | None) -> None:
@@ -86,6 +101,7 @@ def _existing_model_validator(type_: type, value: str) -> None:
 
 
 @app.command
+@logger_catch
 def models() -> None:
     """List all available models with their latest revisions."""
     table = Table(title="[bold green]Available Models[/bold green]")
@@ -134,6 +150,7 @@ def models() -> None:
 
 
 @app.command
+@logger_catch
 def revisions(
     model_name: Annotated[
         str,
@@ -189,6 +206,7 @@ def revisions(
 
 
 @app.command
+@logger_catch
 def clean() -> None:
     """Clear the Kelp-O-Matic model cache to free up space. Models will be re-downloaded as needed."""
     model_dir = get_local_model_dir()
@@ -225,6 +243,7 @@ def clean() -> None:
 
 
 @app.command
+@logger_catch
 def segment(
     model_name: Annotated[
         str,
@@ -349,6 +368,7 @@ def segment(
     current_version=version("kelp_o_matic"),
     details="Please use the `kom segment` command instead.",
 )
+@logger_catch
 def find_kelp(
     source: Annotated[
         ExistingFile,
@@ -450,6 +470,7 @@ def find_kelp(
     current_version=version("kelp_o_matic"),
     details="Please use the `kom segment` command instead.",
 )
+@logger_catch
 def find_mussels(
     source: Annotated[
         ExistingFile,
@@ -524,7 +545,5 @@ def find_mussels(
 
 
 if __name__ == "__main__":
-    # Install rich traceback formatting
-    install()
-
+    # Run the cli app
     app()
