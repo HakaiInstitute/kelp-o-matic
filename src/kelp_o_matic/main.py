@@ -26,10 +26,6 @@ from kelp_o_matic.utils import (
 if TYPE_CHECKING:
     from cyclopts.types import ExistingFile, File, PositiveInt
 
-
-# Install rich traceback formatting
-install()
-
 app = App()
 
 
@@ -551,4 +547,7 @@ def find_mussels(
 
 
 if __name__ == "__main__":
+    # Install rich traceback formatting
+    install()
+
     app()
