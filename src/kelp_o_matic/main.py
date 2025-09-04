@@ -145,17 +145,6 @@ def revisions(
     ],
 ) -> None:
     """List all available revisions for a specific model."""
-    # Check if model exists
-    if model_name not in model_registry:
-        available_models = ", ".join(sorted(model_registry.list_model_names()))
-        error_panel = Panel(
-            f"[red]Model '{model_name}' not found.\n\nAvailable models: {available_models}[/red]",
-            title="[bold red]Model Error[/bold red]",
-            border_style="red",
-        )
-        console.print(error_panel)
-        return
-
     table = Table(title=f"[bold green]Revisions for {model_name}[/bold green]")
     table.add_column("Revision", style="magenta")
     table.add_column("Latest", style="bright_yellow", justify="center")
@@ -311,86 +300,46 @@ def segment(
     ] = None,
 ) -> None:
     """Apply a segmentation model to an input raster and save the output."""
+    # Handle revision retrieval
     try:
-        # Validate input file exists
-        input_file = Path(img_path).expanduser()
-        if not input_file.exists():
-            error_panel = Panel(
-                f"[red]Input file not found: {input_file}[/red]",
-                title="[bold red]File Error[/bold red]",
-                border_style="red",
-            )
-            console.print(error_panel)
-            return
+        if revision == "latest":
+            model = model_registry[model_name]  # Gets latest revision
+            actual_revision = model_registry.get_latest_revision(model_name)
+        else:
+            model = model_registry[model_name, revision]  # Gets specific revision
+            actual_revision = revision
+    except KeyError:
+        logger.error(f"Revision {revision} was not found for model {model_name}")
+        return
 
-        # Validate model exists
-        if model_name not in model_registry:
-            available_models = ", ".join(model_registry.list_model_names())
-            error_panel = Panel(
-                f"[red]Model '{model_name}' not found.\n\nAvailable models: {available_models}[/red]",
-                title="[bold red]Model Error[/bold red]",
-                border_style="red",
-            )
-            console.print(error_panel)
-            return
+    # Show processing info in a panel
+    info_panel = Panel(
+        f"[blue]Model:[/blue] {model_name}\n"
+        f"[blue]Revision:[/blue] {actual_revision}\n"
+        f"[blue]Input:[/blue] {img_path}\n"
+        f"[blue]Output:[/blue] {Path(output_path).expanduser()}",
+        title="[bold blue]Processing Configuration[/bold blue]",
+        border_style="blue",
+    )
+    console.print(info_panel)
 
-        # Handle revision retrieval
-        try:
-            if revision == "latest":
-                model = model_registry[model_name]  # Gets latest revision
-                actual_revision = model_registry.get_latest_revision(model_name)
-            else:
-                model = model_registry[model_name, revision]  # Gets specific revision
-                actual_revision = revision
-        except KeyError as e:
-            error_panel = Panel(
-                f"[red]{e}[/red]",
-                title="[bold red]Revision Error[/bold red]",
-                border_style="red",
-            )
-            console.print(error_panel)
-            return
+    model.process(
+        img_path=img_path,
+        output_path=Path(output_path).expanduser(),
+        batch_size=batch_size,
+        crop_size=crop_size,
+        blur_kernel_size=blur_kernel_size,
+        morph_kernel_size=morph_kernel_size,
+        band_order=band_order,
+    )
 
-        # Show processing info in a panel
-        info_panel = Panel(
-            f"[blue]Model:[/blue] {model_name}\n"
-            f"[blue]Revision:[/blue] {actual_revision}\n"
-            f"[blue]Input:[/blue] {input_file}\n"
-            f"[blue]Output:[/blue] {Path(output_path).expanduser()}",
-            title="[bold blue]Processing Configuration[/bold blue]",
-            border_style="blue",
-        )
-        console.print(info_panel)
-
-        model.process(
-            img_path=input_file,
-            output_path=Path(output_path).expanduser(),
-            batch_size=batch_size,
-            crop_size=crop_size,
-            blur_kernel_size=blur_kernel_size,
-            morph_kernel_size=morph_kernel_size,
-            band_order=band_order,
-        )
-
-        # Show a success message
-        success_panel = Panel(
-            f"[green]✓ Successfully processed {input_file.name}\n"
-            f"Output saved to: {Path(output_path).expanduser()}[/green]",
-            title="[bold green]Processing Complete[/bold green]",
-            border_style="green",
-        )
-        console.print(success_panel)
-
-    except KeyboardInterrupt:
-        logger.warning("Processing interrupted by user")
-    except Exception as e:
-        error_panel = Panel(
-            f"[red]Processing failed: {e}[/red]\n\n[dim]Use --help for usage information[/dim]",
-            title="[bold red]Processing Error[/bold red]",
-            border_style="red",
-        )
-        console.print(error_panel)
-        raise  # Re-raise to show full traceback with Rich formatting
+    # Show a success message
+    success_panel = Panel(
+        f"[green]✓ Successfully processed {img_path.name}\nOutput saved to: {Path(output_path).expanduser()}[/green]",
+        title="[bold green]Processing Complete[/bold green]",
+        border_style="green",
+    )
+    console.print(success_panel)
 
 
 @app.command
