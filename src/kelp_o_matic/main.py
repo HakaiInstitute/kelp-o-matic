@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-import os
 import warnings
 from importlib.metadata import version
 from pathlib import Path
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 import deprecation
 import humanize
@@ -24,11 +23,42 @@ from kelp_o_matic.utils import (
     is_url,
 )
 
-if os.environ.get("DEBUG", False):
-    # Install rich traceback formatting
-    install(show_locals=True, max_frames=5)
+if TYPE_CHECKING:
+    from cyclopts.types import ExistingFile, File, PositiveInt
+
+
+# Install rich traceback formatting
+install()
 
 app = App()
+
+
+def _positive_even_int_validator(type_: type, value: int | None) -> None:
+    if value is None:
+        pass
+    elif value % 2 == 1 or value <= 0:
+        raise TypeError("Value must be a positive, even number.")
+
+
+def _positive_odd_int_or_zero_validator(type_: type, value: int | None) -> None:
+    if value is None:
+        pass
+    elif value == 0:
+        pass
+    elif value % 2 == 0 or value < 0:
+        raise TypeError("Value must be a positive, odd number.")
+
+
+def _band_validator(type_: type, value: list[int] | None) -> None:
+    if value is None:
+        pass
+    elif not all([v >= 1 for v in value]):
+        raise TypeError("All values must be >= 1.")
+
+
+def _existing_model_validator(type_: type, value: str) -> None:
+    if value not in model_registry.list_model_names():
+        raise TypeError("Specified model is not a valid option.")
 
 
 @app.command
@@ -81,7 +111,14 @@ def models() -> None:
 
 @app.command
 def revisions(
-    model_name: str,
+    model_name: Annotated[
+        str,
+        Parameter(
+            help="The name of the model to run. Run `kom models` to see options",
+            validator=_existing_model_validator,
+            name=["--model", "-m"],
+        ),
+    ],
 ) -> None:
     """List all available revisions for a specific model."""
     # Check if model exists
@@ -180,18 +217,19 @@ def segment(
         str,
         Parameter(
             help="The name of the model to run. Run `kom models` to see options",
+            validator=_existing_model_validator,
             name=["--model", "-m"],
         ),
     ],
     img_path: Annotated[
-        Path,
+        ExistingFile,
         Parameter(
             help="Path to input 8 band PlanetScope raster file",
             name=["--input", "-i"],
         ),
     ],
     output_path: Annotated[
-        Path,
+        File,
         Parameter(
             help="Path to the output raster that will be created",
             name=["--output", "-o"],
@@ -205,10 +243,9 @@ def segment(
         ),
     ] = "latest",
     batch_size: Annotated[
-        int,
+        PositiveInt,
         Parameter(
             help="Batch size for processing",
-            validator=lambda _, x: x > 0,
             name=["--batch-size"],
             alias="--batch",
         ),
@@ -217,7 +254,7 @@ def segment(
         int | None,
         Parameter(
             help="Tile size for processing (must be even). Defaults to the 1024 or to the size required by the model",
-            validator=lambda _, x: (x is None) or (x % 2 == 0 and x > 0),
+            validator=_positive_even_int_validator,
             name=["--crop-size", "-z"],
             alias="--size",
         ),
@@ -226,7 +263,7 @@ def segment(
         int,
         Parameter(
             help="Size of median blur kernel (must be odd)",
-            validator=lambda _, x: x % 2 == 1 and x > 0,
+            validator=_positive_odd_int_or_zero_validator,
             name=["--blur-kernel"],
             alias="--blur",
         ),
@@ -235,7 +272,7 @@ def segment(
         int,
         Parameter(
             help="Size of morphological kernel (must be odd, 0 to disable)",
-            validator=lambda _, x: x % 2 == 1 or x == 0,
+            validator=_positive_odd_int_or_zero_validator,
             name=["--morph-kernel"],
             alias="--morph",
         ),
@@ -244,7 +281,7 @@ def segment(
         list[int] | None,
         Parameter(
             help="Band reordering flag for rearranging bands into RGB(+NIR) order when necessary.",
-            validator=lambda _, x: x is None or all([a > 1 for a in x]),
+            validator=_band_validator,
             name=["--band-order", "-b"],
         ),
     ] = None,
@@ -341,14 +378,14 @@ def segment(
 )
 def find_kelp(
     source: Annotated[
-        Path,
+        ExistingFile,
         Parameter(
             help="Input image with Byte data type.",
             name=[],
         ),
     ],
     dest: Annotated[
-        Path,
+        File,
         Parameter(
             help="File path location to save output to.",
             name=[],
@@ -365,7 +402,7 @@ def find_kelp(
     crop_size: Annotated[
         int,
         Parameter(
-            validator=lambda _, x: (x is None) or (x % 2 == 0 and x > 0),
+            validator=_positive_even_int_validator(),
             help="The data window size to run through the segmentation model.",
         ),
     ] = 1024,
@@ -382,7 +419,7 @@ def find_kelp(
         Parameter(
             help="GDAL-style band re-ordering flag. Defaults to RGB or RGBI order. "
             "To e.g., reorder a BGRI image at runtime, pass flags `-b 3 -b 2 -b 1 -b 4`.",
-            validator=lambda _, x: x is None or all([a > 1 for a in x]),
+            validator=_band_validator,
             name=["--band-order", "-b"],
         ),
     ] = None,
@@ -442,14 +479,14 @@ def find_kelp(
 )
 def find_mussels(
     source: Annotated[
-        Path,
+        ExistingFile,
         Parameter(
             help="Input image with Byte data type.",
             name=[],
         ),
     ],
     dest: Annotated[
-        Path,
+        File,
         Parameter(
             help="File path location to save output to.",
             name=[],
@@ -458,7 +495,7 @@ def find_mussels(
     crop_size: Annotated[
         int,
         Parameter(
-            validator=lambda _, x: (x is None) or (x % 2 == 0 and x > 0),
+            validator=_positive_even_int_validator,
             help="The data window size to run through the segmentation model.",
         ),
     ] = 1024,
@@ -467,7 +504,7 @@ def find_mussels(
         Parameter(
             help="GDAL-style band re-ordering flag. Defaults to RGB or RGBI order. "
             "To e.g., reorder a BGRI image at runtime, pass flags `-b 3 -b 2 -b 1 -b 4`.",
-            validator=lambda _, x: x is None or all([a > 1 for a in x]),
+            validator=_band_validator,
             name=["--band-order", "-b"],
         ),
     ] = None,
