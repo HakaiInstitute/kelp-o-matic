@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import warnings
 from importlib.metadata import version
 from pathlib import Path
@@ -23,8 +24,9 @@ from kelp_o_matic.utils import (
     is_url,
 )
 
-# Install rich traceback formatting
-install(show_locals=True, max_frames=5)
+if os.environ.get("DEBUG", False):
+    # Install rich traceback formatting
+    install(show_locals=True, max_frames=5)
 
 app = App()
 
