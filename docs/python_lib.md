@@ -29,7 +29,7 @@ model = model_registry['kelp-rgb']  # Gets latest version
 model = model_registry['kelp-rgb', '20240722']
 
 # Get model metadata
-latest_version = model_registry.get_latest_version('kelp-rgb')
+latest_version = model_registry.get_latest_revision('kelp-rgb')
 all_models = model_registry.list_models()  # Returns [(name, version), ...]
 ```
 
@@ -46,7 +46,7 @@ model = model_registry['kelp-rgb']
 
 # Process an image
 model.process(
-    input_path=Path("./path/to/input_image.tif"),
+    img_path=Path("./path/to/input_image.tif"),
     output_path=Path("./path/to/output_segmentation.tif"),
     crop_size=1024,
     batch_size=1,
@@ -79,7 +79,7 @@ custom_config = ModelConfig(
 
 custom_model = ONNXModel(custom_config)
 custom_model.process(
-    input_path=Path("./path/to/custom_input.tif"),
+    img_path=Path("./path/to/custom_input.tif"),
     output_path=Path("./path/to/custom_output.tif"),
     crop_size=2048,
     batch_size=2,
@@ -98,7 +98,7 @@ from kelp_o_matic import model_registry
 # Segment kelp in RGB drone imagery
 model = model_registry['kelp-rgb']
 model.process(
-    input_path="./kelp_drone_image.tif",
+    img_path="./kelp_drone_image.tif",
     output_path="./kelp_segmentation.tif",
     crop_size=3200  # Use larger crop size for better results
 )
@@ -106,7 +106,7 @@ model.process(
 # Segment kelp in 4-band RGB+NIR imagery
 model = model_registry['kelp-rgbi']
 model.process(
-    input_path="./kelp_rgbi_image.tif",
+    img_path="./kelp_rgbi_image.tif",
     output_path="./kelp_segmentation.tif",
     crop_size=2048,
     band_order=[3, 2, 1, 0]  # Reorder bands from BGR+NIR to RGB+NIR
@@ -121,7 +121,7 @@ from kelp_o_matic import model_registry
 # Segment mussels in RGB drone imagery
 model = model_registry['mussel-rgb']
 model.process(
-    input_path="./mussel_drone_image.tif",
+    img_path="./mussel_drone_image.tif",
     output_path="./mussel_segmentation.tif",
     crop_size=1024
 )
@@ -129,7 +129,7 @@ model.process(
 # Segment both mussels and gooseneck barnacles
 model = model_registry['mussel-gooseneck-rgb']
 model.process(
-    input_path="./intertidal_image.tif",
+    img_path="./intertidal_image.tif",
     output_path="./mussel_gooseneck_segmentation.tif"
 )
 ```
@@ -141,7 +141,7 @@ from kelp_o_matic import model_registry
 
 model = model_registry['kelp-rgb']
 model.process(
-    input_path="./input.tif",
+    img_path="./input.tif",
     output_path="./output.tif",
     batch_size=4,          # Process 4 tiles at once
     crop_size=2048,        # Use 2048x2048 tiles
