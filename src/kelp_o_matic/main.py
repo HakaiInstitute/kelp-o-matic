@@ -395,7 +395,7 @@ def find_kelp(
     crop_size: Annotated[
         int,
         Parameter(
-            validator=_positive_even_int_validator(),
+            validator=_positive_even_int_validator,
             help="The data window size to run through the segmentation model.",
         ),
     ] = 1024,
