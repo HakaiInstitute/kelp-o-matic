@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import warnings
+from importlib.metadata import version
 from pathlib import Path
 from typing import Annotated
 
+import deprecation
 import humanize
 from cyclopts import App, Parameter
 from rich.panel import Panel
@@ -135,7 +138,7 @@ def revisions(
 
 @app.command
 def clean() -> None:
-    """Empty the Kelp-O-Matic model cache to free up space. Models will be re-downloaded as needed."""
+    """Clear the Kelp-O-Matic model cache to free up space. Models will be re-downloaded as needed."""
     model_dir = get_local_model_dir()
     files = list(model_dir.glob("*.onnx"))
     if not files:
@@ -325,6 +328,187 @@ def segment(
         )
         console.print(error_panel)
         raise  # Re-raise to show full traceback with Rich formatting
+
+
+@app.command
+@deprecation.deprecated(
+    deprecated_in="0.14.0",
+    removed_in="0.15.0",
+    current_version=version("kelp_o_matic"),
+    details="Please use the `kom segment` command instead.",
+)
+def find_kelp(
+    source: Annotated[
+        Path,
+        Parameter(
+            help="Input image with Byte data type.",
+            name=[],
+        ),
+    ],
+    dest: Annotated[
+        Path,
+        Parameter(
+            help="File path location to save output to.",
+            name=[],
+        ),
+    ],
+    species: Annotated[
+        bool,
+        Parameter(
+            "--species",
+            negative="--presence",
+            help="Segment to species or presence/absence level.",
+        ),
+    ] = False,
+    crop_size: Annotated[
+        int,
+        Parameter(
+            validator=lambda _, x: (x is None) or (x % 2 == 0 and x > 0),
+            help="The data window size to run through the segmentation model.",
+        ),
+    ] = 1024,
+    use_nir: Annotated[
+        bool,
+        Parameter(
+            "--rgbi",
+            negative="--rgb",
+            help="Use RGB and NIR bands for classification. Assumes RGBI ordering.",
+        ),
+    ] = False,
+    band_order: Annotated[
+        list[int] | None,
+        Parameter(
+            help="GDAL-style band re-ordering flag. Defaults to RGB or RGBI order. "
+            "To e.g., reorder a BGRI image at runtime, pass flags `-b 3 -b 2 -b 1 -b 4`.",
+            validator=lambda _, x: x is None or all([a > 1 for a in x]),
+            name=["--band-order", "-b"],
+        ),
+    ] = None,
+    use_gpu: Annotated[
+        bool,
+        Parameter("--gpu", negative="--no-gpu", help="Enable or disable GPU, if available."),
+    ] = True,
+    use_tta: Annotated[
+        bool,
+        Parameter(
+            "--tta",
+            negative="--no-tta",
+            help="Use test time augmentation to improve accuracy at the cost of processing time.",
+        ),
+    ] = False,
+) -> None:
+    """DEPRECATED: Use `segment` instead.
+
+    Detect kelp in image at path SOURCE and output the resulting classification raster to file at path DEST.
+    """
+    warnings.warn("`kom find-kelp` is deprecated and will be removed in v0.15.0. Please use `kom segment` instead")
+
+    if not species:
+        warnings.warn(
+            "Only species kelp detection is supported since version 0.14.0. Proceeding with kelp species detection."
+        )
+
+    if not use_gpu:
+        warnings.warn("Since version 0.14.0, GPU and CPU usage is determined automatically and cannot be overridden.")
+
+    if use_tta:
+        warnings.warn(
+            "Since version 0.14.0, test-time augmentation is no longer supported. Please open a GitHub issue at "
+            "https://github.com/HakaiInstitute/kelp-o-matic if you would like to see test-time augmentation added "
+            "back into Kelp-o-Matic"
+        )
+
+    segment(
+        model_name=("kelp-rgbi" if use_nir else "kelp-rgb"),
+        img_path=source,
+        output_path=dest,
+        revision="latest",
+        batch_size=1,
+        crop_size=crop_size,
+        blur_kernel_size=0,
+        morph_kernel_size=0,
+        band_order=band_order,
+    )
+
+
+@app.command
+@deprecation.deprecated(
+    deprecated_in="0.14.0",
+    removed_in="0.15.0",
+    current_version=version("kelp_o_matic"),
+    details="Please use the `kom segment` command instead.",
+)
+def find_mussels(
+    source: Annotated[
+        Path,
+        Parameter(
+            help="Input image with Byte data type.",
+            name=[],
+        ),
+    ],
+    dest: Annotated[
+        Path,
+        Parameter(
+            help="File path location to save output to.",
+            name=[],
+        ),
+    ],
+    crop_size: Annotated[
+        int,
+        Parameter(
+            validator=lambda _, x: (x is None) or (x % 2 == 0 and x > 0),
+            help="The data window size to run through the segmentation model.",
+        ),
+    ] = 1024,
+    band_order: Annotated[
+        list[int] | None,
+        Parameter(
+            help="GDAL-style band re-ordering flag. Defaults to RGB or RGBI order. "
+            "To e.g., reorder a BGRI image at runtime, pass flags `-b 3 -b 2 -b 1 -b 4`.",
+            validator=lambda _, x: x is None or all([a > 1 for a in x]),
+            name=["--band-order", "-b"],
+        ),
+    ] = None,
+    use_gpu: Annotated[
+        bool,
+        Parameter("--gpu", negative="--no-gpu", help="Enable or disable GPU, if available."),
+    ] = True,
+    use_tta: Annotated[
+        bool,
+        Parameter(
+            "--tta",
+            negative="--no-tta",
+            help="Use test time augmentation to improve accuracy at the cost of processing time.",
+        ),
+    ] = False,
+) -> None:
+    """DEPRECATED: Use `segment` instead.
+
+    Detect kelp in image at path SOURCE and output the resulting classification raster to file at path DEST.
+    """
+    warnings.warn("`kom find-mussels` is deprecated and will be removed in v0.15.0. Please use `kom segment` instead")
+
+    if not use_gpu:
+        warnings.warn("Since version 0.14.0, GPU and CPU usage is determined automatically and cannot be overridden.")
+
+    if use_tta:
+        warnings.warn(
+            "Since version 0.14.0, test-time augmentation is no longer supported. Please open a GitHub issue at "
+            "https://github.com/HakaiInstitute/kelp-o-matic if you would like to see test-time augmentation added "
+            "back into Kelp-o-Matic"
+        )
+
+    segment(
+        model_name="mussel-rgb",
+        img_path=source,
+        output_path=dest,
+        revision="latest",
+        batch_size=1,
+        crop_size=crop_size,
+        blur_kernel_size=0,
+        morph_kernel_size=0,
+        band_order=band_order,
+    )
 
 
 if __name__ == "__main__":
