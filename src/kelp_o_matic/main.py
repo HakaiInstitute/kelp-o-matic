@@ -278,8 +278,6 @@ def segment(
         PositiveInt,
         Parameter(
             help="Batch size for processing",
-            name=["--batch-size"],
-            alias="--batch",
         ),
     ] = 1,
     crop_size: Annotated[
@@ -288,7 +286,6 @@ def segment(
             help="Tile size for processing (must be even). Defaults to the 1024 or to the size required by the model",
             validator=_positive_even_int_validator,
             name=["--crop-size", "-z"],
-            alias="--size",
         ),
     ] = None,
     blur_kernel_size: Annotated[
@@ -296,8 +293,7 @@ def segment(
         Parameter(
             help="Size of median blur kernel (must be odd)",
             validator=_positive_odd_int_or_zero_validator,
-            name=["--blur-kernel"],
-            alias="--blur",
+            name=["--blur"],
         ),
     ] = 5,
     morph_kernel_size: Annotated[
@@ -305,8 +301,7 @@ def segment(
         Parameter(
             help="Size of morphological kernel (must be odd, 0 to disable)",
             validator=_positive_odd_int_or_zero_validator,
-            name=["--morph-kernel"],
-            alias="--morph",
+            name=["--morph"],
         ),
     ] = 0,
     band_order: Annotated[
@@ -314,7 +309,8 @@ def segment(
         Parameter(
             help="Band reordering flag for rearranging bands into RGB(+NIR) order when necessary.",
             validator=_band_validator,
-            name=["--band-order", "-b"],
+            name=["--band", "-b"],
+            negative="",
         ),
     ] = None,
 ) -> None:
@@ -413,7 +409,8 @@ def find_kelp(
             help="GDAL-style band re-ordering flag. Defaults to RGB or RGBI order. "
             "To e.g., reorder a BGRI image at runtime, pass flags `-b 3 -b 2 -b 1 -b 4`.",
             validator=_band_validator,
-            name=["--band-order", "-b"],
+            name=["--band", "-b"],
+            negative="",
         ),
     ] = None,
     use_gpu: Annotated[
@@ -499,7 +496,8 @@ def find_mussels(
             help="GDAL-style band re-ordering flag. Defaults to RGB or RGBI order. "
             "To e.g., reorder a BGRI image at runtime, pass flags `-b 3 -b 2 -b 1 -b 4`.",
             validator=_band_validator,
-            name=["--band-order", "-b"],
+            name=["--band", "-b"],
+            negative="",
         ),
     ] = None,
     use_gpu: Annotated[
