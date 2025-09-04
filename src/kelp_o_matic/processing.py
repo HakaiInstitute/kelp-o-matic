@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import math
 import sys
-import warnings
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 import cv2
 import numpy as np
 import rasterio
+from loguru import logger
 from rasterio.windows import Window
 from rich.progress import (
     BarColumn,
@@ -22,7 +22,7 @@ from rich.progress import (
 
 from kelp_o_matic.config import ProcessingConfig
 from kelp_o_matic.hann import BartlettHannKernel, NumpyMemoryRegister
-from kelp_o_matic.utils import batched, console
+from kelp_o_matic.utils import batched
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterable
@@ -77,7 +77,7 @@ class ImageProcessor:
         if crop_size is None:
             crop_size = model.input_size or 1024
         elif model.input_size is not None and crop_size != model.input_size:
-            warnings.warn(
+            logger.warning(
                 f"Specified tile size {crop_size} does not match model preferred size "
                 f"{model.input_size}. Using model preferred size of {model.input_size}.",
             )
@@ -119,15 +119,15 @@ class ImageProcessor:
                     self.model.cfg.max_pixel_value = 65535
                 elif dtype in ["float16", "float32", "float64"]:
                     # Warn that float types should be normalized
-                    console.print(
-                        "[yellow]Warning: Input image has float data type. "
-                        "Ensure pixel values are in range [0,1] to avoid unexpected results.[/yellow]",
+                    logger.warning(
+                        "Warning: Input image has float data type. "
+                        "Ensure pixel values are in range [0,1] to avoid unexpected results."
                     )
                     self.model.cfg.max_pixel_value = 1.0
                 else:
-                    console.print(
-                        f"[red]Unsupported image data type {dtype} for model. "
-                        f"Convert your image to uint8 or uint16 before processing.[/red]",
+                    logger.error(
+                        f"Unsupported image data type {dtype} for model. "
+                        f"Convert your image to uint8 or uint16 before processing.",
                     )
                     sys.exit(0)
 
@@ -157,7 +157,7 @@ class ImageProcessor:
                     TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
                     TimeElapsedColumn(),
                     TimeRemainingColumn(),
-                    console=console,
+                    console=None,
                 ) as progress:
                     task = progress.add_task("Processing", total=len(window_batches))
                     for window_batch in window_batches:
@@ -271,8 +271,8 @@ class ImageProcessor:
             # Rearrange/select bands
             band_order = [b - 1 for b in self.config.band_order]
             if any(b < 0 or b >= src.count for b in band_order):
-                console.print(
-                    f"[bold red]Band order {self.config.band_order} is invalid for image with {src.count} bands.\n "
+                logger.error(
+                    f"Band order {self.config.band_order} is invalid for image with {src.count} bands.\n "
                     "Please specify band indices between 1 and the number of bands in the image (like GDAL indexing)."
                 )
                 sys.exit(1)
@@ -327,7 +327,7 @@ class ImageProcessor:
                     BarColumn(),
                     TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
                     TimeElapsedColumn(),
-                    console=console,
+                    console=None,
                 ) as progress:
                     task = progress.add_task("Post-processing", total=len(windows_list))
                     for window in windows_list:

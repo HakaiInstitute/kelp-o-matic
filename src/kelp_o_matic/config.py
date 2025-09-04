@@ -2,16 +2,15 @@
 
 from __future__ import annotations
 
-import warnings
 from pathlib import Path
 from typing import Annotated, Literal
 
+from loguru import logger
 from pydantic import AfterValidator, BaseModel, Field, PositiveInt
 
 from kelp_o_matic.utils import (
     _all_positive,
     _is_odd_or_zero,
-    console,
     download_file_with_progress,
     get_local_model_path,
     is_url,
@@ -82,14 +81,14 @@ class ModelConfig(BaseModel):
         # If it's a URL, handle download
         if is_url(self.model_path):
             if local_path.exists():
-                console.print(
-                    f"[green]✓ Loaded model from: {local_path}[/green]",
+                logger.success(
+                    f"✓ Loaded model from: {local_path}",
                 )
             else:
-                console.print(f"[blue]Downloading model to: {local_path}[/blue]")
+                logger.info(f"Downloading model to: {local_path}")
                 try:
                     download_file_with_progress(self.model_path, local_path)
-                    console.print("[green]✓ Model downloaded successfully[/green]")
+                    logger.success("✓ Model downloaded successfully")
                 except Exception as e:
                     raise RuntimeError(
                         f"Failed to download model from {self.model_path}: {e}",
@@ -101,7 +100,7 @@ class ModelConfig(BaseModel):
             if not local_path.is_file():
                 raise ValueError(f"Path is not a file: {local_path}")
             if not local_path.suffix.lower() == ".onnx":
-                warnings.warn(f"File does not have .onnx extension: {local_path}")
+                logger.warning(f"File does not have .onnx extension: {local_path}")
 
         return local_path
 

@@ -15,7 +15,7 @@ import numpy as np
 import onnxruntime as ort
 import platformdirs
 import requests
-from rich.console import Console
+from loguru import logger
 from rich.progress import (
     BarColumn,
     DownloadColumn,
@@ -30,9 +30,6 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from kelp_o_matic.config import ModelConfig
-
-
-console = Console()
 
 
 def download_file_with_progress(url: str, out_path: Path, timeout: tuple[int, int] = (15, 120)) -> None:
@@ -65,14 +62,14 @@ def download_file_with_progress(url: str, out_path: Path, timeout: tuple[int, in
             # Move the completed file to the proper location
             shutil.move(tmp_out, out_path)
     except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
-        console.print(f"[red]Download timed out: {e}[/red]")
+        logger.error(f"Download timed out: {e}")
 
         if Confirm.ask("Do you want to retry the download?"):
-            console.print("Retrying download...")
+            logger.trace("Retrying download...")
             # Retry with longer timeout
             download_file_with_progress(url, out_path, timeout=(timeout[0] * 2, timeout[1] * 2))
     except requests.exceptions.RequestException as e:
-        console.print(f"[red]Download failed: {e}[/red]")
+        logger.error(f"Download failed: {e}")
 
 
 def get_ort_providers() -> list[str]:

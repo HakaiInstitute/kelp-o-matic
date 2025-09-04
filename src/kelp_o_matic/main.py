@@ -2,14 +2,16 @@
 
 from __future__ import annotations
 
-import warnings
 from importlib.metadata import version
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated
+from typing import Annotated
 
 import deprecation
 import humanize
 from cyclopts import App, Parameter
+from cyclopts.types import ExistingFile, File, PositiveInt  # noqa: TC002
+from loguru import logger
+from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm
 from rich.table import Table
@@ -17,16 +19,42 @@ from rich.traceback import install
 
 from kelp_o_matic.registry import model_registry
 from kelp_o_matic.utils import (
-    console,
     get_local_model_dir,
     get_local_model_path,
     is_url,
 )
 
-if TYPE_CHECKING:
-    from cyclopts.types import ExistingFile, File, PositiveInt
-
 app = App()
+console = Console()
+
+logger.remove()
+
+
+def _log_formatter(record: dict) -> str:
+    """Log message formatter.
+
+    Returns:
+        Formatting string for log messages logged with Rich console
+    """
+    color_map = {
+        "TRACE": "dim blue",
+        "DEBUG": "cyan",
+        "INFO": "bold",
+        "SUCCESS": "green",
+        "WARNING": "yellow",
+        "ERROR": "bold red",
+        "CRITICAL": "bold white on red",
+    }
+    lvl_color = color_map.get(record["level"].name, "cyan")
+    return f"[not bold cyan]{{time:YYYY-MM-DD HH:mm:ss}}[/not bold cyan] | [{lvl_color}]{{message}}[/{lvl_color}]"
+
+
+logger.add(
+    console.print,
+    level="TRACE",
+    format=_log_formatter,
+    colorize=None,
+)
 
 
 def _positive_even_int_validator(type_: type, value: int | None) -> None:
@@ -192,10 +220,10 @@ def clean() -> None:
         f"This will free up {humanize.naturalsize(total_size)}.[/yellow]",
         default=False,
     ):
-        console.print("[yellow]Model cache clearing aborted.[/yellow]")
+        logger.warning("Model cache clearing aborted.")
         return
 
-    console.print("[blue]Clearing model cache...[/blue]")
+    logger.info("Clearing model cache...")
     for file in model_dir.glob("*.onnx"):
         file.unlink()
 
@@ -354,7 +382,7 @@ def segment(
         console.print(success_panel)
 
     except KeyboardInterrupt:
-        console.print("\n[yellow]Processing interrupted by user[/yellow]")
+        logger.warning("Processing interrupted by user")
     except Exception as e:
         error_panel = Panel(
             f"[red]Processing failed: {e}[/red]\n\n[dim]Use --help for usage information[/dim]",
@@ -436,18 +464,18 @@ def find_kelp(
 
     Detect kelp in image at path SOURCE and output the resulting classification raster to file at path DEST.
     """
-    warnings.warn("`kom find-kelp` is deprecated and will be removed in v0.15.0. Please use `kom segment` instead")
+    logger.warning("`kom find-kelp` is deprecated and will be removed in v0.15.0. Please use `kom segment` instead")
 
     if not species:
-        warnings.warn(
+        logger.warning(
             "Only species kelp detection is supported since version 0.14.0. Proceeding with kelp species detection."
         )
 
     if not use_gpu:
-        warnings.warn("Since version 0.14.0, GPU and CPU usage is determined automatically and cannot be overridden.")
+        logger.warning("Since version 0.14.0, GPU and CPU usage is determined automatically and cannot be overridden.")
 
     if use_tta:
-        warnings.warn(
+        logger.warning(
             "Since version 0.14.0, test-time augmentation is no longer supported. Please open a GitHub issue at "
             "https://github.com/HakaiInstitute/kelp-o-matic if you would like to see test-time augmentation added "
             "back into Kelp-o-Matic"
@@ -521,13 +549,13 @@ def find_mussels(
 
     Detect kelp in image at path SOURCE and output the resulting classification raster to file at path DEST.
     """
-    warnings.warn("`kom find-mussels` is deprecated and will be removed in v0.15.0. Please use `kom segment` instead")
+    logger.warning("`kom find-mussels` is deprecated and will be removed in v0.15.0. Please use `kom segment` instead")
 
     if not use_gpu:
-        warnings.warn("Since version 0.14.0, GPU and CPU usage is determined automatically and cannot be overridden.")
+        logger.warning("Since version 0.14.0, GPU and CPU usage is determined automatically and cannot be overridden.")
 
     if use_tta:
-        warnings.warn(
+        logger.warning(
             "Since version 0.14.0, test-time augmentation is no longer supported. Please open a GitHub issue at "
             "https://github.com/HakaiInstitute/kelp-o-matic if you would like to see test-time augmentation added "
             "back into Kelp-o-Matic"

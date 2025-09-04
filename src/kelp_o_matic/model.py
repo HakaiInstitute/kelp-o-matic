@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 import onnxruntime as ort
+from loguru import logger
 from onnxruntime.capi.onnxruntime_pybind11_state import InvalidProtobuf
-from rich.console import Console
 
 from kelp_o_matic.config import ModelConfig
 from kelp_o_matic.processing import ImageProcessor
@@ -23,8 +23,6 @@ setup_cuda_paths()  # Workaround for Windows to ensure CUDA paths are set correc
 ort.preload_dlls(directory="")
 
 ort.set_default_logger_severity(3)  # Set to 3=ERROR
-
-console = Console()
 
 
 class ONNXModel:
@@ -84,7 +82,7 @@ class ONNXModel:
             )
             self.__ort_sess.enable_fallback()
         except InvalidProtobuf:
-            console.print("Failed to load ONNX model. Removing corrupted model file. Please try again.")
+            logger.error("Failed to load ONNX model. Removing corrupted model file. Please try again.")
             local_model_path.unlink()
             sys.exit(1)
 

@@ -167,17 +167,3 @@ class ModelRegistry:
 
 # Initialize the model registry from the default configuration directory
 model_registry = ModelRegistry.from_config_dir(Path(__file__).parent / "configs")
-
-
-if __name__ == "__main__":
-    # Example usage
-    from kelp_o_matic.utils import console
-
-    registry = ModelRegistry.from_config_dir("configs")
-    console.print(f"[bold green]Registry:[/bold green] {registry}")
-
-    # Access a specific model
-    kelp_model = registry["kelp_ps8b"]
-    console.print(
-        f"[cyan]Model:[/cyan] {kelp_model.cfg.name}, [cyan]Description:[/cyan] {kelp_model.cfg.description}",
-    )
