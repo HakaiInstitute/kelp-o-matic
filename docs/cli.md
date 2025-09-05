@@ -61,6 +61,11 @@ Apply a segmentation model to an input raster and save the output.
     kom segment -m kelp-rgbi -i ./input_image.tif -o ./output_kelp_segmentation.tif
     ```
 
+    Same as above, but select bands RGB+NIR bands from a source image that has bands in Blue, Green, Red, RedEdge, NIR order.
+    ```bash
+    kom segment -m kelp-rgbi -i ./input_ms_image.tif -o ./output_kelp_segmentation.tif -b 3 -b 2 -b 1 -b 5
+    ```
+
     Segment mussels in an RGB drone image:
 
     ```bash
