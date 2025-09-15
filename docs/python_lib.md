@@ -85,7 +85,7 @@ custom_model.process(
     batch_size=2,
     blur_kernel_size=3,
     morph_kernel_size=1,
-    band_order=[2, 1, 0]  # Example for reordering bands)
+    band_order=[3, 2, 1]  # Example for reordering bands)
 ```
 
 ## Examples
@@ -109,7 +109,7 @@ model.process(
     img_path="./kelp_rgbi_image.tif",
     output_path="./kelp_segmentation.tif",
     crop_size=2048,
-    band_order=[3, 2, 1, 0]  # Reorder bands from BGR+NIR to RGB+NIR
+    band_order=[4, 3, 2, 1]  # Reorder bands from BGR+NIR to RGB+NIR
 )
 ```
 
