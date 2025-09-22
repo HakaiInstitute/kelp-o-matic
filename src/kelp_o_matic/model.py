@@ -191,7 +191,7 @@ class ONNXModel:
         if self.cfg.activation == "softmax":
             batch = softmax(batch, axis=1, keepdims=True)
         elif self.cfg.activation == "sigmoid":
-            batch = sigmoid(-batch)
+            batch = sigmoid(batch)
 
         if batch.shape[1] == 1:
             # If single dim class, make into binary tensor
