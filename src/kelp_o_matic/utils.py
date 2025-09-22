@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 import onnxruntime as ort
 import platformdirs
+import rasterio
 import requests
 from loguru import logger
 from rich.progress import (
@@ -246,3 +247,74 @@ def sigmoid(x: np.ndarray) -> np.ndarray:
         A numpy array of the sigmoid output
     """
     return 1 / (1 + np.exp(-x))
+
+
+def safe2tif(safe_dir_path: str | Path, out_path: str | Path | None = None) -> Path:
+    """Convert SAFE directories of Sentinel 2 data into the TIFs required by the s2l2a model.
+
+    Args:
+        safe_dir_path: The path to the .SAFE directory containing S2 L2A data
+        out_path: Optional custom tif path to save the file. By default, saves a tif file in the same
+            parent directory as the safe_dir_path, using the name of the .SAFE directory as the tif file stem.
+
+    Returns:
+        The path to the saved tif file
+
+    Raises:
+        ImportError: If the required packages are not installed.
+    """
+    try:
+        import rioxarray as rxr
+        import xarray as xr
+    except ImportError:
+        logger.info("Please install the extra group 's2' to use this function")
+        raise
+
+    if out_path is None:
+        out_path = safe_dir_path.with_name(safe_dir_path.name.replace(".SAFE", ".tif"))
+    else:
+        out_path = Path(out_path)
+
+    band_02 = sorted(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B02_10m.jp2"))[0]
+    band_03 = sorted(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B03_10m.jp2"))[0]
+    band_04 = sorted(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B04_10m.jp2"))[0]
+    band_08 = sorted(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B08_10m.jp2"))[0]
+    band_05 = sorted(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B05_20m.jp2"))[0]
+
+    # Gather band files we're going to use
+    band_files = [band_02, band_03, band_04, band_08, band_05]
+
+    # Stack bands and convert to raster
+    band_data = [rxr.open_rasterio(b) for b in band_files]
+
+    # Oversample the last band (20m) to match the first band (10m) resolution
+    band_data[-1] = band_data[-1].rio.reproject_match(band_data[0], resampling=1)
+
+    # Stack all bands along the band dimension
+    stacked = xr.concat(band_data, dim="band")
+
+    # Save as multi-band GeoTIFF
+    stacked.rio.to_raster(
+        out_path,
+        driver="GTiff",
+        compress="lzw",
+        tiled=True,
+        blockxsize=256,
+        blockysize=256,
+        interleave="pixel",
+        photometric="RGB",
+    )
+
+    # Update colour interp info
+    with rasterio.open(out_path, "r+") as src:
+        src.set_band_description(1, "B02 (Blue)")
+        src.set_band_description(2, "B03 (Green)")
+        src.set_band_description(3, "B04 (Red)")
+        src.set_band_description(4, "B08 (NIR)")
+        src.set_band_description(5, "B05 (Red Edge)")
+
+        # Properly set ExtraSamples TIFF tag
+        # 0 = unspecified data (for extra bands beyond RGB)
+        src.update_tags(ns="IMAGE_STRUCTURE", EXTRASAMPLES="0,0")
+
+    return out_path

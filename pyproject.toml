@@ -51,6 +51,12 @@ Documentation = "https://kelp-o-matic.readthedocs.io"
 [project.scripts]
 kom = "kelp_o_matic.main:app"
 
+[project.optional-dependencies]
+s2 = [
+    "rioxarray>=0.19.0",
+    "xarray>=2025.6.1",
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
