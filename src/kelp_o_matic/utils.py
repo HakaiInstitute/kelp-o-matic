@@ -42,25 +42,26 @@ def download_file_with_progress(url: str, out_path: Path, timeout: tuple[int, in
         total_size = int(response.headers.get("content-length", 0))
 
         # Download with progress to temp location
-        with (
-            tempfile.TemporaryDirectory() as tmp_dir,
-            open(tmp_out := Path(tmp_dir) / out_path.name, "wb") as f,
-            Progress(
-                SpinnerColumn(),
-                TextColumn("[bold blue]{task.description}"),
-                BarColumn(),
-                DownloadColumn(),
-                TransferSpeedColumn(),
-                console=None,  # Use default console
-            ) as progress,
-        ):
-            task = progress.add_task(f"Downloading {out_path.name}", total=total_size)
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
-                progress.update(task, advance=len(chunk))
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            with (
+                open(tmp_out := Path(tmp_dir) / out_path.name, "wb") as f,
+                Progress(
+                    SpinnerColumn(),
+                    TextColumn("[bold blue]{task.description}"),
+                    BarColumn(),
+                    DownloadColumn(),
+                    TransferSpeedColumn(),
+                    console=None,  # Use default console
+                ) as progress,
+            ):
+                task = progress.add_task(f"Downloading {out_path.name}", total=total_size)
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+                    progress.update(task, advance=len(chunk))
 
             # Move the completed file to the proper location
             shutil.move(tmp_out, out_path)
+        # /tempdir
     except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
         logger.error(f"Download timed out: {e}")
 
