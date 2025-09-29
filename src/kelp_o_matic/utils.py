@@ -16,6 +16,8 @@ import onnxruntime as ort
 import platformdirs
 import rasterio
 import requests
+import rioxarray as rxr
+import xarray as xr
 from loguru import logger
 from rich.progress import (
     BarColumn,
@@ -260,17 +262,7 @@ def safe2tif(safe_dir_path: str | Path, out_path: str | Path | None = None) -> P
 
     Returns:
         The path to the saved tif file
-
-    Raises:
-        ImportError: If the required packages are not installed.
     """
-    try:
-        import rioxarray as rxr
-        import xarray as xr
-    except ImportError:
-        logger.info("Please install the extra group 's2' to use this function")
-        raise
-
     if out_path is None:
         out_path = safe_dir_path.with_name(safe_dir_path.name.replace(".SAFE", ".tif"))
     else:

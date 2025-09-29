@@ -1169,10 +1169,6 @@ dependencies = [
     { name = "rasterio" },
     { name = "requests" },
     { name = "rich" },
-]
-
-[package.optional-dependencies]
-s2 = [
     { name = "rioxarray" },
     { name = "xarray", version = "2025.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "xarray", version = "2025.9.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
@@ -1216,10 +1212,9 @@ requires-dist = [
     { name = "rasterio", specifier = ">=1.4.3" },
     { name = "requests", specifier = ">=2.32.4" },
     { name = "rich", specifier = ">=13.0.0" },
-    { name = "rioxarray", marker = "extra == 's2'", specifier = ">=0.19.0" },
-    { name = "xarray", marker = "extra == 's2'", specifier = ">=2025.6.1" },
+    { name = "rioxarray", specifier = ">=0.19.0" },
+    { name = "xarray", specifier = ">=2025.6.1" },
 ]
-provides-extras = ["s2"]
 
 [package.metadata.requires-dev]
 dev = [
