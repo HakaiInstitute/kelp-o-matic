@@ -82,7 +82,7 @@ select = [
     "N999",  # Invalid module name
     "D",     # Docstrings
 ]
-"examples/**/*.ipynb" = [
+"**/*.ipynb" = [
     "T201",  # print statements
     "ANN",   # annotations
     "D",     # docstrings
