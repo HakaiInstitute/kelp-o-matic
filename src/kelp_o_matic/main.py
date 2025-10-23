@@ -23,6 +23,7 @@ from kelp_o_matic.utils import (
     get_local_model_dir,
     get_local_model_path,
     is_url,
+    safe2tif as _safe2tif,
 )
 
 app = App()
@@ -355,6 +356,22 @@ def segment(
         border_style="green",
     )
     console.print(success_panel)
+
+
+@app.command
+@logger_catch
+def safe2tif(safe_dir_path: Path, output_path: Path | None = None) -> str:
+    """Convert a SAFE directory downloaded from Copernicus into a TIF file, as required by KoM.
+
+    Args:
+        safe_dir_path (Path): The .SAFE directory to convert.
+        output_path (Path): The output path of the TIF file. By default, creates a tif file in the same location with
+            the same name as the input SAFE directory.
+
+    Returns:
+        str: The path to the TIF file.
+    """
+    return str(_safe2tif(safe_dir_path, output_path))
 
 
 @app.command
