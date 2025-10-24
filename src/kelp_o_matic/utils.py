@@ -263,6 +263,8 @@ def safe2tif(safe_dir_path: str | Path, out_path: str | Path | None = None) -> P
     Returns:
         The path to the saved tif file
     """
+    safe_dir_path = Path(safe_dir_path)
+
     if out_path is None:
         out_path = safe_dir_path.with_name(safe_dir_path.name.replace(".SAFE", ".tif"))
     else:
