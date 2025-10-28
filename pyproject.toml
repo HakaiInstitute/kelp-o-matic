@@ -8,6 +8,7 @@ requires-python = ">=3.10"
 license = "MIT"
 dependencies = [
     "cyclopts>=3.22.2",
+    "defusedxml>=0.7.1",
     "deprecation>=2.1.0",
     "humanize>=4.12.3",
     "loguru>=0.7.3",
@@ -25,6 +26,11 @@ dependencies = [
 ]
 
 [dependency-groups]
+conversion = [
+    "notebook>=7.4.5",
+    "onnxscript>=0.5.4",
+    "segmentation-models-pytorch>=0.5.0",
+]
 dev = [
     "mypy>=1.17.1",
     "pre-commit>=4.2.0",

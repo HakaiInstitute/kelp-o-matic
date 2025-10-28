@@ -18,6 +18,7 @@ import rasterio
 import requests
 import rioxarray as rxr
 import xarray as xr
+from defusedxml.ElementTree import parse as parse_xml
 from loguru import logger
 from rich.progress import (
     BarColumn,
@@ -262,8 +263,26 @@ def safe2tif(safe_dir_path: str | Path, out_path: str | Path | None = None) -> P
 
     Returns:
         The path to the saved tif file
+
+    Raises:
+        ValueError: If safe_dir_path does not contain the expected subdirectories
     """
     safe_dir_path = Path(safe_dir_path)
+
+    if not (safe_dir_path / "GRANULE").exists():
+        raise ValueError(f"GRANULE directory does not exist in {safe_dir_path}. Please check your path.")
+
+    # Get processing baseline and data offset
+    metadata_path = safe_dir_path / "MTD_MSIL2A.xml"
+    offset = 1000
+    if not metadata_path.exists():
+        logger.warning("No MTD_MSIL2A.xml file found in the GRANULE directory. Assuming data offset of 1000.")
+    else:
+        tree = parse_xml(metadata_path)
+        root = tree.getroot()
+        pb = root.findtext(".//PROCESSING_BASELINE")
+        if pb and float(pb) < 4:
+            offset = 0
 
     if out_path is None:
         out_path = safe_dir_path.with_name(safe_dir_path.name.replace(".SAFE", ".tif"))
@@ -287,6 +306,11 @@ def safe2tif(safe_dir_path: str | Path, out_path: str | Path | None = None) -> P
 
     # Stack all bands along the band dimension
     stacked = xr.concat(band_data, dim="band")
+
+    # Accommodate data offset
+    if offset > 0:
+        stacked = stacked.astype(np.int32) - offset
+        stacked = stacked.clip(0).astype(np.uint16)
 
     # Save as multi-band GeoTIFF
     stacked.rio.to_raster(

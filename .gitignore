@@ -308,3 +308,7 @@ conda/index.html
 output
 
 modelfiles/
+
+*.onnx
+
+*.ckpt
