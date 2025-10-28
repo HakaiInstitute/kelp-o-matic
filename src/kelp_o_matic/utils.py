@@ -321,7 +321,7 @@ def safe2tif(safe_dir_path: str | Path, out_path: str | Path | None = None) -> P
         blockxsize=256,
         blockysize=256,
         interleave="pixel",
-        photometric="RGB",
+        photometric="MINISBLACK",
     )
 
     # Update colour interp info
