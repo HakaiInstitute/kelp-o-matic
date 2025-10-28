@@ -289,11 +289,11 @@ def safe2tif(safe_dir_path: str | Path, out_path: str | Path | None = None) -> P
     else:
         out_path = Path(out_path)
 
-    band_02 = sorted(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B02_10m.jp2"))[0]
-    band_03 = sorted(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B03_10m.jp2"))[0]
-    band_04 = sorted(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B04_10m.jp2"))[0]
-    band_08 = sorted(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B08_10m.jp2"))[0]
-    band_05 = sorted(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B05_20m.jp2"))[0]
+    band_02 = next(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B02_10m.jp2"))
+    band_03 = next(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B03_10m.jp2"))
+    band_04 = next(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B04_10m.jp2"))
+    band_08 = next(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B08_10m.jp2"))
+    band_05 = next(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B05_20m.jp2"))
 
     # Gather band files we're going to use
     band_files = [band_02, band_03, band_04, band_08, band_05]
