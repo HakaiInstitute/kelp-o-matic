@@ -324,6 +324,7 @@ def safe2tif(
     if append_bathymetry_substrate:
         bathymetry = rxr.open_rasterio(Path("~/onnx_models/Coastwide_corrected.tif").expanduser())
         bathymetry = bathymetry.rio.reproject_match(stacked, resampling=Resampling.bilinear)
+        bathymetry = bathymetry.fillna(-2000)
 
         substrate_dir_path = Path("~/onnx_models/substrate_20m_datapackage").expanduser()
 
