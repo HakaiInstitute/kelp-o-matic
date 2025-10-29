@@ -239,7 +239,8 @@ def softmax(x: np.ndarray, axis: int = 0, keepdims: bool = False) -> np.ndarray:
     Returns:
         A numpy array representing the softmax output
     """
-    return np.exp(x) / np.sum(np.exp(x), axis=axis, keepdims=keepdims)
+    ex = np.exp(x)
+    return ex / np.sum(ex, axis=axis, keepdims=keepdims)
 
 
 def sigmoid(x: np.ndarray) -> np.ndarray:
@@ -251,7 +252,8 @@ def sigmoid(x: np.ndarray) -> np.ndarray:
     Returns:
         A numpy array of the sigmoid output
     """
-    return 1 / (1 + np.exp(-x))
+    ex = np.exp(x)
+    return ex / (1 + ex)
 
 
 def safe2tif(
