@@ -326,34 +326,11 @@ def safe2tif(
         bathymetry = bathymetry.rio.reproject_match(stacked, resampling=Resampling.bilinear)
         bathymetry = bathymetry.fillna(-2000)
 
-        substrate_dir_path = Path("~/onnx_models/substrate_20m_datapackage").expanduser()
-
-        substrate_files = [
-            next(substrate_dir_path.glob("NCC_substrate_20m.tif")),
-            next(substrate_dir_path.glob("SOG_substrate_20m.tif")),
-            next(substrate_dir_path.glob("WCVI_substrate_20m.tif")),
-            next(substrate_dir_path.glob("QCS_substrate_20m.tif")),
-            next(substrate_dir_path.glob("HG_substrate_20m.tif")),
-        ]
-
-        # Reproject each to match stacked (only processes the Sentinel extent)
-        substrate_data = [
-            rxr.open_rasterio(f).rio.reproject_match(stacked, resampling=Resampling.bilinear) for f in substrate_files
-        ]
-
-        # Merge: later files overwrite earlier ones where both have valid values
-        valid_values = [1, 2, 3, 4]
-        merged_substrate = xr.zeros_like(substrate_data[0])
-
-        for substrate in substrate_data:
-            valid_mask = substrate.isin(valid_values)
-            merged_substrate = xr.where(valid_mask, substrate, merged_substrate)
-
-        # Fill remaining with 0
-        merged_substrate = merged_substrate.fillna(0)
+        substrate = rxr.open_rasterio(Path("~/onnx_models/substrate_20m.tif").expanduser())
+        substrate = substrate.rio.reproject_match(stacked, resampling=Resampling.bilinear)
 
         # Update stacked layers with new substrate and bathymetry info
-        stacked = xr.concat([stacked, merged_substrate, bathymetry], dim="band")
+        stacked = xr.concat([stacked, substrate, bathymetry], dim="band")
 
     # Save as multi-band GeoTIFF
     stacked.rio.to_raster(
