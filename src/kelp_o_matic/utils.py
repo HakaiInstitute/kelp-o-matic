@@ -20,6 +20,7 @@ import rioxarray as rxr
 import xarray as xr
 from defusedxml.ElementTree import parse as parse_xml
 from loguru import logger
+from rasterio.enums import Resampling
 from rich.progress import (
     BarColumn,
     DownloadColumn,
@@ -253,13 +254,18 @@ def sigmoid(x: np.ndarray) -> np.ndarray:
     return 1 / (1 + np.exp(-x))
 
 
-def safe2tif(safe_dir_path: str | Path, out_path: str | Path | None = None) -> Path:
+def safe2tif(
+    safe_dir_path: str | Path,
+    out_path: str | Path | None = None,
+    append_bathymetry_substrate: bool = False,
+) -> Path:
     """Convert SAFE directories of Sentinel 2 data into the TIFs required by the s2l2a model.
 
     Args:
         safe_dir_path: The path to the .SAFE directory containing S2 L2A data
-        out_path: Optional custom tif path to save the file. By default, saves a tif file in the same
+        out_path: Optional custom tif path to save the file. By default, save a tif file in the same
             parent directory as the safe_dir_path, using the name of the .SAFE directory as the tif file stem.
+        append_bathymetry_substrate: Whether to append the bathymetry and substrate bands to the tif file.
 
     Returns:
         The path to the saved tif file
@@ -302,7 +308,7 @@ def safe2tif(safe_dir_path: str | Path, out_path: str | Path | None = None) -> P
     band_data = [rxr.open_rasterio(b) for b in band_files]
 
     # Oversample the last band (20m) to match the first band (10m) resolution
-    band_data[-1] = band_data[-1].rio.reproject_match(band_data[0], resampling=1)
+    band_data[-1] = band_data[-1].rio.reproject_match(band_data[0], resampling=Resampling.bilinear)
 
     # Stack all bands along the band dimension
     stacked = xr.concat(band_data, dim="band")
@@ -311,6 +317,40 @@ def safe2tif(safe_dir_path: str | Path, out_path: str | Path | None = None) -> P
     if offset > 0:
         stacked = stacked.astype(np.int32) - offset
         stacked = stacked.clip(0).astype(np.uint16)
+
+    # Append bathymetry and substrate data
+    if append_bathymetry_substrate:
+        bathymetry = rxr.open_rasterio(Path("~/onnx_models/Coastwide_corrected.tif").expanduser())
+        bathymetry = bathymetry.rio.reproject_match(stacked, resampling=Resampling.bilinear)
+
+        substrate_dir_path = Path("~/onnx_models/substrate_20m_datapackage").expanduser()
+
+        substrate_files = [
+            next(substrate_dir_path.glob("NCC_substrate_20m.tif")),
+            next(substrate_dir_path.glob("SOG_substrate_20m.tif")),
+            next(substrate_dir_path.glob("WCVI_substrate_20m.tif")),
+            next(substrate_dir_path.glob("QCS_substrate_20m.tif")),
+            next(substrate_dir_path.glob("HG_substrate_20m.tif")),
+        ]
+
+        # Reproject each to match stacked (only processes the Sentinel extent)
+        substrate_data = [
+            rxr.open_rasterio(f).rio.reproject_match(stacked, resampling=Resampling.bilinear) for f in substrate_files
+        ]
+
+        # Merge: later files overwrite earlier ones where both have valid values
+        valid_values = [1, 2, 3, 4]
+        merged_substrate = xr.zeros_like(substrate_data[0])
+
+        for substrate in substrate_data:
+            valid_mask = substrate.isin(valid_values)
+            merged_substrate = xr.where(valid_mask, substrate, merged_substrate)
+
+        # Fill remaining with 0
+        merged_substrate = merged_substrate.fillna(0)
+
+        # Update stacked layers with new substrate and bathymetry info
+        stacked = xr.concat([stacked, merged_substrate, bathymetry], dim="band")
 
     # Save as multi-band GeoTIFF
     stacked.rio.to_raster(
@@ -332,8 +372,8 @@ def safe2tif(safe_dir_path: str | Path, out_path: str | Path | None = None) -> P
         src.set_band_description(4, "B08 (NIR)")
         src.set_band_description(5, "B05 (Red Edge)")
 
-        # Properly set ExtraSamples TIFF tag
-        # 0 = unspecified data (for extra bands beyond RGB)
-        src.update_tags(ns="IMAGE_STRUCTURE", EXTRASAMPLES="0,0")
+        if append_bathymetry_substrate:
+            src.set_band_description(6, "Substrate")
+            src.set_band_description(7, "Bathymetry")
 
     return out_path

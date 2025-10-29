@@ -360,18 +360,29 @@ def segment(
 
 @app.command
 @logger_catch
-def safe2tif(safe_dir_path: Path, output_path: Path | None = None) -> str:
+def safe2tif(
+    safe_dir_path: Annotated[
+        Path,
+        Parameter(help="Path to a .SAFE directory to convert."),
+    ],
+    output_path: Annotated[
+        Path | None,
+        Parameter(
+            help="Optional custom output path for the TIF file. By default, creates a tif file in the same location "
+            "with the same name as the input SAFE directory."
+        ),
+    ] = None,
+    append_bathy_substrate: Annotated[
+        bool,
+        Parameter(help="Whether to append the bathymetry substrate to the TIF file."),
+    ] = False,
+) -> str:
     """Convert a SAFE directory downloaded from Copernicus into a TIF file, as required by KoM.
-
-    Args:
-        safe_dir_path (Path): The .SAFE directory to convert.
-        output_path (Path): The output path of the TIF file. By default, creates a tif file in the same location with
-            the same name as the input SAFE directory.
 
     Returns:
         str: The path to the TIF file.
     """
-    return str(_safe2tif(safe_dir_path, output_path))
+    return str(_safe2tif(safe_dir_path, output_path, append_bathy_substrate))
 
 
 @app.command
