@@ -2,7 +2,7 @@
   "cls_name": "kelp_o_matic.model.LegacyKelpRGBModel",
   "name": "kelp-rgb",
   "revision": "20240722",
-  "description": "Kelp segmentaation model for RGB drone imagery.",
+  "description": "Kelp segmentation model for RGB drone imagery.",
   "dependencies": [
     "https://huggingface.co/HakaiInstitute/kelp-rgb/resolve/20240722/model.onnx"
   ],
