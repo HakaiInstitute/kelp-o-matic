@@ -9,16 +9,16 @@ from typing import TYPE_CHECKING, Annotated, Any, Literal
 from loguru import logger
 from pydantic import AfterValidator, BaseModel, Field, PositiveInt
 
-from kelp_o_matic.utils import _all_positive, _is_odd_or_zero, download_dependencies
+from habitat_mapper.utils import _all_positive, _is_odd_or_zero, download_dependencies
 
 if TYPE_CHECKING:
-    from kelp_o_matic.reader import ImageReader
+    from habitat_mapper.reader import ImageReader
 
 
 class ModelConfig(BaseModel):
     """ONNXModel configuration for ONNX semantic segmentation models."""
 
-    cls_name: Annotated[str, "For dynamic loading of model class in registry"] = "kelp_o_matic.model.ONNXModel"
+    cls_name: Annotated[str, "For dynamic loading of model class in registry"] = "habitat_mapper.model.ONNXModel"
     name: Annotated[str, "The name of the model for the model registry"]
     description: Annotated[str | None, "Brief description of the model for the model registry"] = None
     revision: Annotated[str, "Model revision number. Date based versioning is preferred"]
@@ -68,8 +68,8 @@ class ModelConfig(BaseModel):
 
     reader_class_name: Annotated[
         str,
-        "Fully qualified class name of the ImageReader to use (e.g., 'kelp_o_matic.reader.TIFFReader')",
-    ] = "kelp_o_matic.reader.TIFFReader"
+        "Fully qualified class name of the ImageReader to use (e.g., 'habitat_mapper.reader.TIFFReader')",
+    ] = "habitat_mapper.reader.TIFFReader"
     reader_kwargs: Annotated[
         dict[str, Any],
         "Additional keyword arguments to pass to the reader constructor",

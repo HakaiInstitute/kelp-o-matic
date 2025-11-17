@@ -6,10 +6,10 @@ import importlib
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from kelp_o_matic.config import ModelConfig
+from habitat_mapper.config import ModelConfig
 
 if TYPE_CHECKING:
-    from kelp_o_matic.model import ONNXModel
+    from habitat_mapper.model import ONNXModel
 
 
 class ModelRegistry:

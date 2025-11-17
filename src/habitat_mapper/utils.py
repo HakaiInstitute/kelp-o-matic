@@ -23,7 +23,7 @@ from rich.prompt import Confirm
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from kelp_o_matic.config import ModelConfig
+    from habitat_mapper.config import ModelConfig
 
 
 def download_file_with_progress(url: str, out_path: Path, timeout: tuple[int, int] = (15, 120)) -> None:

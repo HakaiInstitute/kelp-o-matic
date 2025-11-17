@@ -14,16 +14,16 @@ from loguru import logger
 from rasterio.windows import Window
 from rich.progress import BarColumn, Progress, TextColumn, TimeElapsedColumn, TimeRemainingColumn
 
-from kelp_o_matic.config import ProcessingConfig
-from kelp_o_matic.hann import BartlettHannKernel, NumpyMemoryRegister
-from kelp_o_matic.utils import batched
+from habitat_mapper.config import ProcessingConfig
+from habitat_mapper.hann import BartlettHannKernel, NumpyMemoryRegister
+from habitat_mapper.utils import batched
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterable
     from pathlib import Path
 
-    from kelp_o_matic.model import ONNXModel
-    from kelp_o_matic.reader import ImageReader
+    from habitat_mapper.model import ONNXModel
+    from habitat_mapper.reader import ImageReader
 
 
 @dataclass
@@ -108,7 +108,7 @@ class ImageProcessor:
 
             # For TIFF, we can get the profile; for other formats, create a minimal one
             try:
-                from kelp_o_matic.reader import TIFFReader
+                from habitat_mapper.reader import TIFFReader
 
                 if isinstance(reader, TIFFReader):
                     profile = reader.profile.copy()

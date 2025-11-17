@@ -2,10 +2,10 @@
 
 from importlib.metadata import version
 
-from kelp_o_matic.config import ModelConfig
-from kelp_o_matic.main import clean, models, revisions, segment
-from kelp_o_matic.model import ONNXModel
-from kelp_o_matic.registry import model_registry
+from habitat_mapper.config import ModelConfig
+from habitat_mapper.main import clean, models, revisions, segment
+from habitat_mapper.model import ONNXModel
+from habitat_mapper.registry import model_registry
 
 __all__ = [
     "ModelConfig",

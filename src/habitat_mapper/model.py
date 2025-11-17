@@ -11,9 +11,9 @@ import onnxruntime as ort
 from loguru import logger
 from onnxruntime.capi.onnxruntime_pybind11_state import InvalidProtobuf
 
-from kelp_o_matic.config import ModelConfig
-from kelp_o_matic.processing import ImageProcessor
-from kelp_o_matic.utils import get_ort_providers, setup_cuda_paths, sigmoid, softmax
+from habitat_mapper.config import ModelConfig
+from habitat_mapper.processing import ImageProcessor
+from habitat_mapper.utils import get_ort_providers, setup_cuda_paths, sigmoid, softmax
 
 if TYPE_CHECKING:
     from pathlib import Path

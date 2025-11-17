@@ -632,6 +632,100 @@ wheels = [
 ]
 
 [[package]]
+name = "habitat-mapper"
+version = "0.14.0"
+source = { editable = "." }
+dependencies = [
+    { name = "cyclopts" },
+    { name = "deprecation" },
+    { name = "humanize" },
+    { name = "loguru" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "numpy", version = "2.3.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "onnxruntime", marker = "sys_platform == 'darwin'" },
+    { name = "onnxruntime-gpu", extra = ["cuda", "cudnn"], marker = "sys_platform != 'darwin'" },
+    { name = "opencv-python-headless" },
+    { name = "platformdirs" },
+    { name = "pydantic" },
+    { name = "rasterio" },
+    { name = "requests" },
+    { name = "rich" },
+]
+
+[package.dev-dependencies]
+conversion = [
+    { name = "notebook" },
+    { name = "onnxscript" },
+    { name = "segmentation-models-pytorch" },
+]
+dev = [
+    { name = "mypy" },
+    { name = "pre-commit" },
+    { name = "pytest" },
+    { name = "pyupgrade" },
+    { name = "ruff" },
+    { name = "types-requests" },
+]
+docs = [
+    { name = "mkdocs" },
+    { name = "mkdocs-material" },
+    { name = "mkdocstrings-python" },
+]
+examples = [
+    { name = "fiona" },
+    { name = "jupyter" },
+    { name = "polars" },
+    { name = "rasterio" },
+    { name = "shapely" },
+    { name = "tqdm" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "cyclopts", specifier = ">=3.22.2" },
+    { name = "deprecation", specifier = ">=2.1.0" },
+    { name = "humanize", specifier = ">=4.12.3" },
+    { name = "loguru", specifier = ">=0.7.3" },
+    { name = "numpy", specifier = ">=2.2.6" },
+    { name = "onnxruntime", marker = "sys_platform == 'darwin'", specifier = ">=1.22.1" },
+    { name = "onnxruntime-gpu", extras = ["cuda", "cudnn"], marker = "sys_platform != 'darwin'", specifier = ">=1.22.0" },
+    { name = "opencv-python-headless", specifier = ">=4.11.0.86" },
+    { name = "platformdirs", specifier = ">=4.3.8" },
+    { name = "pydantic", specifier = ">=2.11.7" },
+    { name = "rasterio", specifier = ">=1.4.3" },
+    { name = "requests", specifier = ">=2.32.4" },
+    { name = "rich", specifier = ">=13.0.0" },
+]
+
+[package.metadata.requires-dev]
+conversion = [
+    { name = "notebook", specifier = ">=7.4.5" },
+    { name = "onnxscript", specifier = ">=0.5.4" },
+    { name = "segmentation-models-pytorch", specifier = ">=0.5.0" },
+]
+dev = [
+    { name = "mypy", specifier = ">=1.17.1" },
+    { name = "pre-commit", specifier = ">=4.2.0" },
+    { name = "pytest", specifier = ">=8.4.1" },
+    { name = "pyupgrade", specifier = ">=3.20.0" },
+    { name = "ruff", specifier = ">=0.12.5" },
+    { name = "types-requests", specifier = ">=2.32.4.20250809" },
+]
+docs = [
+    { name = "mkdocs", specifier = ">=1.6.1,<2" },
+    { name = "mkdocs-material", specifier = ">=9.6.3,<10" },
+    { name = "mkdocstrings-python", specifier = ">=1.14.6,<2" },
+]
+examples = [
+    { name = "fiona", specifier = ">=1.10.1" },
+    { name = "jupyter", specifier = ">=1.1.1" },
+    { name = "polars", specifier = ">=1.33.0" },
+    { name = "rasterio", specifier = ">=1.4.3" },
+    { name = "shapely", specifier = ">=2.1.1" },
+    { name = "tqdm", specifier = ">=4.67.1" },
+]
+
+[[package]]
 name = "hf-xet"
 version = "1.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1158,100 +1252,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/b9/7d/160595ca88ee87ac6ba95d82177d29ec60aaa63821d3077babb22ce031a5/jupyterlab_widgets-3.0.15.tar.gz", hash = "sha256:2920888a0c2922351a9202817957a68c07d99673504d6cd37345299e971bb08b", size = 213149, upload-time = "2025-05-05T12:32:31.004Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/43/6a/ca128561b22b60bd5a0c4ea26649e68c8556b82bc70a0c396eebc977fe86/jupyterlab_widgets-3.0.15-py3-none-any.whl", hash = "sha256:d59023d7d7ef71400d51e6fee9a88867f6e65e10a4201605d2d7f3e8f012a31c", size = 216571, upload-time = "2025-05-05T12:32:29.534Z" },
-]
-
-[[package]]
-name = "kelp-o-matic"
-version = "0.14.0"
-source = { editable = "." }
-dependencies = [
-    { name = "cyclopts" },
-    { name = "deprecation" },
-    { name = "humanize" },
-    { name = "loguru" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "numpy", version = "2.3.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-    { name = "onnxruntime", marker = "sys_platform == 'darwin'" },
-    { name = "onnxruntime-gpu", extra = ["cuda", "cudnn"], marker = "sys_platform != 'darwin'" },
-    { name = "opencv-python-headless" },
-    { name = "platformdirs" },
-    { name = "pydantic" },
-    { name = "rasterio" },
-    { name = "requests" },
-    { name = "rich" },
-]
-
-[package.dev-dependencies]
-conversion = [
-    { name = "notebook" },
-    { name = "onnxscript" },
-    { name = "segmentation-models-pytorch" },
-]
-dev = [
-    { name = "mypy" },
-    { name = "pre-commit" },
-    { name = "pytest" },
-    { name = "pyupgrade" },
-    { name = "ruff" },
-    { name = "types-requests" },
-]
-docs = [
-    { name = "mkdocs" },
-    { name = "mkdocs-material" },
-    { name = "mkdocstrings-python" },
-]
-examples = [
-    { name = "fiona" },
-    { name = "jupyter" },
-    { name = "polars" },
-    { name = "rasterio" },
-    { name = "shapely" },
-    { name = "tqdm" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "cyclopts", specifier = ">=3.22.2" },
-    { name = "deprecation", specifier = ">=2.1.0" },
-    { name = "humanize", specifier = ">=4.12.3" },
-    { name = "loguru", specifier = ">=0.7.3" },
-    { name = "numpy", specifier = ">=2.2.6" },
-    { name = "onnxruntime", marker = "sys_platform == 'darwin'", specifier = ">=1.22.1" },
-    { name = "onnxruntime-gpu", extras = ["cuda", "cudnn"], marker = "sys_platform != 'darwin'", specifier = ">=1.22.0" },
-    { name = "opencv-python-headless", specifier = ">=4.11.0.86" },
-    { name = "platformdirs", specifier = ">=4.3.8" },
-    { name = "pydantic", specifier = ">=2.11.7" },
-    { name = "rasterio", specifier = ">=1.4.3" },
-    { name = "requests", specifier = ">=2.32.4" },
-    { name = "rich", specifier = ">=13.0.0" },
-]
-
-[package.metadata.requires-dev]
-conversion = [
-    { name = "notebook", specifier = ">=7.4.5" },
-    { name = "onnxscript", specifier = ">=0.5.4" },
-    { name = "segmentation-models-pytorch", specifier = ">=0.5.0" },
-]
-dev = [
-    { name = "mypy", specifier = ">=1.17.1" },
-    { name = "pre-commit", specifier = ">=4.2.0" },
-    { name = "pytest", specifier = ">=8.4.1" },
-    { name = "pyupgrade", specifier = ">=3.20.0" },
-    { name = "ruff", specifier = ">=0.12.5" },
-    { name = "types-requests", specifier = ">=2.32.4.20250809" },
-]
-docs = [
-    { name = "mkdocs", specifier = ">=1.6.1,<2" },
-    { name = "mkdocs-material", specifier = ">=9.6.3,<10" },
-    { name = "mkdocstrings-python", specifier = ">=1.14.6,<2" },
-]
-examples = [
-    { name = "fiona", specifier = ">=1.10.1" },
-    { name = "jupyter", specifier = ">=1.1.1" },
-    { name = "polars", specifier = ">=1.33.0" },
-    { name = "rasterio", specifier = ">=1.4.3" },
-    { name = "shapely", specifier = ">=2.1.1" },
-    { name = "tqdm", specifier = ">=4.67.1" },
 ]
 
 [[package]]

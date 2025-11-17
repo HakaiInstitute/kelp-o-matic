@@ -18,8 +18,8 @@ from rich.prompt import Confirm
 from rich.table import Table
 from rich.traceback import install
 
-from kelp_o_matic.registry import model_registry
-from kelp_o_matic.utils import get_local_model_dir, is_url
+from habitat_mapper.registry import model_registry
+from habitat_mapper.utils import get_local_model_dir, is_url
 
 app = App()
 console = Console()
@@ -390,7 +390,7 @@ def segment(
 @deprecation.deprecated(
     deprecated_in="0.14.0",
     removed_in="0.15.0",
-    current_version=version("kelp_o_matic"),
+    current_version=version("habitat_mapper"),
     details="Please use the `kom segment` command instead.",
 )
 @logger_catch
@@ -493,7 +493,7 @@ def find_kelp(
 @deprecation.deprecated(
     deprecated_in="0.14.0",
     removed_in="0.15.0",
-    current_version=version("kelp_o_matic"),
+    current_version=version("habitat_mapper"),
     details="Please use the `kom segment` command instead.",
 )
 @logger_catch
