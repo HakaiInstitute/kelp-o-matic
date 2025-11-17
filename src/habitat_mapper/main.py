@@ -178,7 +178,7 @@ def revisions(
     model_name: Annotated[
         str,
         Parameter(
-            help="The name of the model to run. Run `kom models` to see options",
+            help="The name of the model to run. Run `hab models` to see options",
             validator=_existing_model_validator,
             name=["--model", "-m"],
         ),
@@ -276,7 +276,7 @@ def segment(
     model_name: Annotated[
         str,
         Parameter(
-            help="The name of the model to run. Run `kom models` to see options",
+            help="The name of the model to run. Run `hab models` to see options",
             validator=_existing_model_validator,
             name=["--model", "-m"],
         ),
@@ -299,7 +299,7 @@ def segment(
     revision: Annotated[
         str,
         Parameter(
-            help="The revision of the model to use. Run `kom revisions <model_name>` to see options",
+            help="The revision of the model to use. Run `hab revisions <model_name>` to see options",
             name=["--revision", "--rev"],
         ),
     ] = "latest",
@@ -391,7 +391,7 @@ def segment(
     deprecated_in="0.14.0",
     removed_in="0.15.0",
     current_version=version("habitat_mapper"),
-    details="Please use the `kom segment` command instead.",
+    details="Please use the `hab segment` command instead.",
 )
 @logger_catch
 def find_kelp(
@@ -459,7 +459,7 @@ def find_kelp(
 
     Detect kelp in image at path SOURCE and output the resulting classification raster to file at path DEST.
     """
-    logger.warning("`kom find-kelp` is deprecated and will be removed in v0.15.0. Please use `kom segment` instead")
+    logger.warning("`hab find-kelp` is deprecated and will be removed in v0.15.0. Please use `hab segment` instead")
 
     if not species:
         logger.warning(
@@ -494,7 +494,7 @@ def find_kelp(
     deprecated_in="0.14.0",
     removed_in="0.15.0",
     current_version=version("habitat_mapper"),
-    details="Please use the `kom segment` command instead.",
+    details="Please use the `hab segment` command instead.",
 )
 @logger_catch
 def find_mussels(
@@ -546,7 +546,7 @@ def find_mussels(
 
     Detect kelp in image at path SOURCE and output the resulting classification raster to file at path DEST.
     """
-    logger.warning("`kom find-mussels` is deprecated and will be removed in v0.15.0. Please use `kom segment` instead")
+    logger.warning("`hab find-mussels` is deprecated and will be removed in v0.15.0. Please use `hab segment` instead")
 
     if not use_gpu:
         logger.warning("Since version 0.14.0, GPU and CPU usage is determined automatically and cannot be overridden.")
