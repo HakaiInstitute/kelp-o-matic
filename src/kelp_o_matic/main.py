@@ -19,11 +19,7 @@ from rich.table import Table
 from rich.traceback import install
 
 from kelp_o_matic.registry import model_registry
-from kelp_o_matic.utils import (
-    get_local_model_dir,
-    get_local_model_path,
-    is_url,
-)
+from kelp_o_matic.utils import get_local_model_dir, is_url
 
 app = App()
 console = Console()
@@ -100,6 +96,28 @@ def _existing_model_validator(type_: type, value: str) -> None:
         raise TypeError("Specified model is not a valid option.")
 
 
+def _existing_image_validator(type_: type, value: Path | str) -> None:
+    """Validate that input path exists and is either a file or SAFE directory.
+
+    Args:
+        type_: The type being validated (unused, required by cyclopts)
+        value: The path to validate
+
+    Raises:
+        TypeError: If path doesn't exist or is not a valid image input
+    """
+    path = Path(value) if isinstance(value, str) else value
+    if not path.exists():
+        raise TypeError(f"Input path does not exist: {path}")
+
+    # Accept SAFE directories or any file
+    if path.is_dir():
+        if not path.name.endswith(".SAFE"):
+            raise TypeError(f"Directory must be a Sentinel-2 SAFE format (name ends with .SAFE), got: {path.name}")
+    elif not path.is_file():
+        raise TypeError(f"Input must be a file or SAFE directory, got: {path}")
+
+
 @app.command
 @logger_catch
 def models() -> None:
@@ -120,11 +138,16 @@ def models() -> None:
             cfg = model.cfg
 
             # Check if model is cached locally
-            local_path = get_local_model_path(cfg)
-            if is_url(cfg.model_path):
-                status = "[green]Cached[/green]" if local_path.exists() else "[yellow]Available[/yellow]"
+            # Check if any dependency is a URL
+            has_remote_deps = any(is_url(dep) for dep in cfg.dependencies)
+            if has_remote_deps:
+                # Check if the model file exists in the cache
+                model_dir = get_local_model_dir(cfg.name, cfg.revision)
+                model_file_path = model_dir / cfg.model_filename
+                status = "[green]Cached[/green]" if model_file_path.exists() else "[yellow]Available[/yellow]"
             else:
-                status = "[green]Local[/green]" if local_path.exists() else "[red]Missing[/red]"
+                # All dependencies are local paths
+                status = "[green]Local[/green]"
 
             table.add_row(
                 model_name,
@@ -178,11 +201,16 @@ def revisions(
             cfg = model.cfg
 
             # Check if model is cached locally
-            local_path = get_local_model_path(cfg)
-            if is_url(cfg.model_path):
-                status = "[green]Cached[/green]" if local_path.exists() else "[yellow]Available[/yellow]"
+            # Check if any dependency is a URL
+            has_remote_deps = any(is_url(dep) for dep in cfg.dependencies)
+            if has_remote_deps:
+                # Check if the model file exists in the cache
+                model_dir = get_local_model_dir(cfg.name, cfg.revision)
+                model_file_path = model_dir / cfg.model_filename
+                status = "[green]Cached[/green]" if model_file_path.exists() else "[yellow]Available[/yellow]"
             else:
-                status = "[green]Local[/green]" if local_path.exists() else "[red]Missing[/red]"
+                # All dependencies are local paths
+                status = "[green]Local[/green]"
 
             # Mark latest revision
             is_latest = "✓" if revision == latest_revision else ""
@@ -210,7 +238,7 @@ def revisions(
 def clean() -> None:
     """Clear the Kelp-O-Matic model cache to free up space. Models will be re-downloaded as needed."""
     model_dir = get_local_model_dir()
-    files = list(model_dir.glob("*.onnx"))
+    files = list(filter(lambda f: f.is_file(), model_dir.glob("**/*")))
     if not files:
         panel = Panel(
             "[yellow]Model cache is already empty.[/yellow]",
@@ -231,7 +259,7 @@ def clean() -> None:
         return
 
     logger.info("Clearing model cache...")
-    for file in model_dir.glob("*.onnx"):
+    for file in files:
         file.unlink()
 
     panel = Panel(
@@ -254,9 +282,10 @@ def segment(
         ),
     ],
     img_path: Annotated[
-        ExistingFile,
+        Path,
         Parameter(
-            help="Path to input 8 band PlanetScope raster file",
+            help="Path to input raster file (GeoTIFF, etc.) or Sentinel-2 SAFE directory",
+            validator=_existing_image_validator,
             name=["--input", "-i"],
         ),
     ],

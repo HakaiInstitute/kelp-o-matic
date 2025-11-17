@@ -23,6 +23,11 @@ dependencies = [
 ]
 
 [dependency-groups]
+conversion = [
+    "notebook>=7.4.5",
+    "onnxscript>=0.5.4",
+    "segmentation-models-pytorch>=0.5.0",
+]
 dev = [
     "mypy>=1.17.1",
     "pre-commit>=4.2.0",
@@ -82,7 +87,7 @@ select = [
     "N999",  # Invalid module name
     "D",     # Docstrings
 ]
-"examples/**/*.ipynb" = [
+"**/*.ipynb" = [
     "T201",  # print statements
     "ANN",   # annotations
     "D",     # docstrings

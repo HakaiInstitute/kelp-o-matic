@@ -2,19 +2,17 @@
 
 from __future__ import annotations
 
+import importlib
 from pathlib import Path
-from typing import Annotated, Literal
+from typing import TYPE_CHECKING, Annotated, Any, Literal
 
 from loguru import logger
 from pydantic import AfterValidator, BaseModel, Field, PositiveInt
 
-from kelp_o_matic.utils import (
-    _all_positive,
-    _is_odd_or_zero,
-    download_file_with_progress,
-    get_local_model_path,
-    is_url,
-)
+from kelp_o_matic.utils import _all_positive, _is_odd_or_zero, download_dependencies
+
+if TYPE_CHECKING:
+    from kelp_o_matic.reader import ImageReader
 
 
 class ModelConfig(BaseModel):
@@ -24,7 +22,14 @@ class ModelConfig(BaseModel):
     name: Annotated[str, "The name of the model for the model registry"]
     description: Annotated[str | None, "Brief description of the model for the model registry"] = None
     revision: Annotated[str, "Model revision number. Date based versioning is preferred"]
-    model_path: Annotated[str, "URL to download model from, or local file path"]
+    dependencies: Annotated[
+        list[str],
+        "List of files to download (URLs or local paths). Downloaded to model-specific cache subdirectory.",
+    ]
+    model_filename: Annotated[
+        str,
+        "Name of the file in dependencies list that is the ONNX model (e.g., 'model.onnx')",
+    ]
     input_channels: PositiveInt = 3
     activation: (
         Annotated[
@@ -61,48 +66,105 @@ class ModelConfig(BaseModel):
     ] = 0
     nodata_value: Annotated[int, "The nodata value for the output raster"] = 0
 
+    reader_class_name: Annotated[
+        str,
+        "Fully qualified class name of the ImageReader to use (e.g., 'kelp_o_matic.reader.TIFFReader')",
+    ] = "kelp_o_matic.reader.TIFFReader"
+    reader_kwargs: Annotated[
+        dict[str, Any],
+        "Additional keyword arguments to pass to the reader constructor",
+    ] = {}
+
+    @property
+    def local_dependency_paths(self) -> dict[str, Path]:
+        """Get local paths to all dependency files.
+
+        Downloads dependencies in parallel if they are URLs and not yet cached.
+
+        Returns:
+            Dict mapping filenames to local paths for all dependencies
+        """
+        dep_paths = download_dependencies(self)
+        # Create a dict mapping filename to path for easy lookup
+        return {path.name: path for path in dep_paths}
+
     @property
     def local_model_path(self) -> Path:
         """Get the local path to the ONNX model file.
 
-        For URLs: Downloads the model to cache if not already present.
-        For local paths: Returns the path directly after validation.
+        Downloads all dependencies (including the model) if needed.
 
         Returns:
             Path to the local ONNX model file
 
         Raises:
-            FileNotFoundError: If local file doesn't exist
-            RuntimeError: If download fails
-            ValueError: If the local path is not a file or does not have .onnx extension
+            ValueError: If model_filename not found in dependencies
         """
-        local_path = get_local_model_path(self)
+        # Download all dependencies (this will be cached on subsequent calls)
+        dep_paths = self.local_dependency_paths
 
-        # If it's a URL, handle download
-        if is_url(self.model_path):
-            if local_path.exists():
-                logger.success(
-                    f"✓ Loaded model from: {local_path}",
-                )
-            else:
-                logger.info(f"Downloading model to: {local_path}")
-                try:
-                    download_file_with_progress(self.model_path, local_path)
-                    logger.success("✓ Model downloaded successfully")
-                except Exception as e:
-                    raise RuntimeError(
-                        f"Failed to download model from {self.model_path}: {e}",
-                    )
-        else:
-            # It's a local path - validate it exists
-            if not local_path.exists():
-                raise FileNotFoundError(f"Local model file not found: {local_path}")
-            if not local_path.is_file():
-                raise ValueError(f"Path is not a file: {local_path}")
-            if not local_path.suffix.lower() == ".onnx":
-                logger.warning(f"File does not have .onnx extension: {local_path}")
+        # Find the model file by name
+        if self.model_filename not in dep_paths:
+            raise ValueError(
+                f"Model file '{self.model_filename}' not found in dependencies. "
+                f"Available files: {list(dep_paths.keys())}"
+            )
 
-        return local_path
+        model_path = dep_paths[self.model_filename]
+
+        # Validate it's an ONNX file
+        if not model_path.suffix.lower() == ".onnx":
+            logger.warning(f"Model file does not have .onnx extension: {model_path}")
+
+        return model_path
+
+    def get_reader(self, input_path: str | Path) -> ImageReader:
+        """Instantiate the configured ImageReader for the given input.
+
+        Args:
+            input_path: Path to the input file or directory
+
+        Returns:
+            An instantiated ImageReader configured for this model
+
+        Raises:
+            ValueError: If the reader class cannot be imported
+            TypeError: If input_path is not compatible with the reader
+        """
+        # Dynamically import and instantiate the reader class
+        try:
+            module_name, class_name = self.reader_class_name.rsplit(".", 1)
+            module = importlib.import_module(module_name)
+            reader_class = getattr(module, class_name)
+        except (ValueError, ImportError, AttributeError) as e:
+            raise ValueError(f"Cannot load reader class '{self.reader_class_name}': {e}") from e
+
+        # Prepare kwargs for reader initialization
+        reader_init_kwargs = {
+            **self.reader_kwargs,
+        }
+
+        # Auto-inject auxiliary file paths from dependencies if available
+        # This allows readers like SAFEReader to access downloaded dependency files
+        if self.dependencies:
+            dep_paths = self.local_dependency_paths
+
+            # Look for known auxiliary file patterns and inject them into reader_kwargs
+            for filename, path in dep_paths.items():
+                # Match bathymetry files (e.g., bathymetry_10m_cog.tif)
+                if "bathymetry" in filename.lower() and "bathymetry_path" not in reader_init_kwargs:
+                    reader_init_kwargs["bathymetry_path"] = path
+
+                # Match substrate files (e.g., substrate_20m_cog.tif)
+                if "substrate" in filename.lower() and "substrate_path" not in reader_init_kwargs:
+                    reader_init_kwargs["substrate_path"] = path
+
+        # Instantiate the reader
+        try:
+            return reader_class(input_path, **reader_init_kwargs)
+        except TypeError as e:
+            # Filter out unknown kwargs for readers that don't accept them
+            raise TypeError(f"Cannot instantiate {self.reader_class_name} with the provided arguments: {e}") from e
 
 
 class ProcessingConfig(BaseModel):
@@ -135,7 +197,10 @@ if __name__ == "__main__":
         name="kelp_ps8b",
         revision="20250626",
         description="Kelp segmentation model for 8-band PlanetScope imagery.",
-        model_path="https://hakai-triton-models-bf426c24.s3.us-east-1.amazonaws.com/kelp_segmentation_ps8b_model/1/model.onnx",
+        dependencies=[
+            "https://hakai-triton-models-bf426c24.s3.us-east-1.amazonaws.com/kelp_segmentation_ps8b_model/1/model.onnx"
+        ],
+        model_filename="model.onnx",
         normalization="standard",
         activation=None,
         mean=(1720.0, 1715.0, 1913.0, 2088.0, 2274.0, 2290.0, 2613.0, 3970.0),
