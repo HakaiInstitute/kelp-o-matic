@@ -21,7 +21,6 @@ from rich.traceback import install
 from kelp_o_matic.registry import model_registry
 from kelp_o_matic.utils import (
     get_local_model_dir,
-    get_local_model_path,
     is_url,
     safe2tif as _safe2tif,
 )
@@ -121,11 +120,16 @@ def models() -> None:
             cfg = model.cfg
 
             # Check if model is cached locally
-            local_path = get_local_model_path(cfg)
-            if is_url(cfg.model_path):
-                status = "[green]Cached[/green]" if local_path.exists() else "[yellow]Available[/yellow]"
+            # Check if any dependency is a URL
+            has_remote_deps = any(is_url(dep) for dep in cfg.dependencies)
+            if has_remote_deps:
+                # Check if the model file exists in the cache
+                model_dir = get_local_model_dir(cfg.name, cfg.revision)
+                model_file_path = model_dir / cfg.model_filename
+                status = "[green]Cached[/green]" if model_file_path.exists() else "[yellow]Available[/yellow]"
             else:
-                status = "[green]Local[/green]" if local_path.exists() else "[red]Missing[/red]"
+                # All dependencies are local paths
+                status = "[green]Local[/green]"
 
             table.add_row(
                 model_name,
@@ -179,11 +183,16 @@ def revisions(
             cfg = model.cfg
 
             # Check if model is cached locally
-            local_path = get_local_model_path(cfg)
-            if is_url(cfg.model_path):
-                status = "[green]Cached[/green]" if local_path.exists() else "[yellow]Available[/yellow]"
+            # Check if any dependency is a URL
+            has_remote_deps = any(is_url(dep) for dep in cfg.dependencies)
+            if has_remote_deps:
+                # Check if the model file exists in the cache
+                model_dir = get_local_model_dir(cfg.name, cfg.revision)
+                model_file_path = model_dir / cfg.model_filename
+                status = "[green]Cached[/green]" if model_file_path.exists() else "[yellow]Available[/yellow]"
             else:
-                status = "[green]Local[/green]" if local_path.exists() else "[red]Missing[/red]"
+                # All dependencies are local paths
+                status = "[green]Local[/green]"
 
             # Mark latest revision
             is_latest = "✓" if revision == latest_revision else ""
