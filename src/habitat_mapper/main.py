@@ -238,7 +238,7 @@ def revisions(
 def clean() -> None:
     """Clear the Habitat-Mapper model cache to free up space. Models will be re-downloaded as needed."""
     model_dir = get_local_model_dir()
-    files = list(model_dir.glob("*.onnx"))
+    files = list(filter(lambda f: f.is_file(), model_dir.glob("**/*")))
     if not files:
         panel = Panel(
             "[yellow]Model cache is already empty.[/yellow]",
@@ -259,7 +259,7 @@ def clean() -> None:
         return
 
     logger.info("Clearing model cache...")
-    for file in model_dir.glob("*.onnx"):
+    for file in files:
         file.unlink()
 
     panel = Panel(
