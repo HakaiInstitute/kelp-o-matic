@@ -309,6 +309,6 @@ output
 
 modelfiles/
 
-*.onnx
-
 *.ckpt
+
+*.onnx

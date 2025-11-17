@@ -11,9 +11,7 @@ from pydantic import AfterValidator, BaseModel, Field, PositiveInt
 from kelp_o_matic.utils import (
     _all_positive,
     _is_odd_or_zero,
-    download_file_with_progress,
-    get_local_model_path,
-    is_url,
+    download_dependencies,
 )
 
 
@@ -24,7 +22,14 @@ class ModelConfig(BaseModel):
     name: Annotated[str, "The name of the model for the model registry"]
     description: Annotated[str | None, "Brief description of the model for the model registry"] = None
     revision: Annotated[str, "Model revision number. Date based versioning is preferred"]
-    model_path: Annotated[str, "URL to download model from, or local file path"]
+    dependencies: Annotated[
+        list[str],
+        "List of files to download (URLs or local paths). Downloaded to model-specific cache subdirectory.",
+    ]
+    model_filename: Annotated[
+        str,
+        "Name of the file in dependencies list that is the ONNX model (e.g., 'model.onnx')",
+    ]
     input_channels: PositiveInt = 3
     activation: (
         Annotated[
@@ -62,47 +67,47 @@ class ModelConfig(BaseModel):
     nodata_value: Annotated[int, "The nodata value for the output raster"] = 0
 
     @property
+    def local_dependency_paths(self) -> dict[str, Path]:
+        """Get local paths to all dependency files.
+
+        Downloads dependencies in parallel if they are URLs and not yet cached.
+
+        Returns:
+            Dict mapping filenames to local paths for all dependencies
+        """
+        dep_paths = download_dependencies(self)
+        # Create a dict mapping filename to path for easy lookup
+        return {path.name: path for path in dep_paths}
+
+    @property
     def local_model_path(self) -> Path:
         """Get the local path to the ONNX model file.
 
-        For URLs: Downloads the model to cache if not already present.
-        For local paths: Returns the path directly after validation.
+        Downloads all dependencies (including the model) if needed.
 
         Returns:
             Path to the local ONNX model file
 
         Raises:
-            FileNotFoundError: If local file doesn't exist
-            RuntimeError: If download fails
-            ValueError: If the local path is not a file or does not have .onnx extension
+            ValueError: If model_filename not found in dependencies
         """
-        local_path = get_local_model_path(self)
+        # Download all dependencies (this will be cached on subsequent calls)
+        dep_paths = self.local_dependency_paths
 
-        # If it's a URL, handle download
-        if is_url(self.model_path):
-            if local_path.exists():
-                logger.success(
-                    f"✓ Loaded model from: {local_path}",
-                )
-            else:
-                logger.info(f"Downloading model to: {local_path}")
-                try:
-                    download_file_with_progress(self.model_path, local_path)
-                    logger.success("✓ Model downloaded successfully")
-                except Exception as e:
-                    raise RuntimeError(
-                        f"Failed to download model from {self.model_path}: {e}",
-                    )
-        else:
-            # It's a local path - validate it exists
-            if not local_path.exists():
-                raise FileNotFoundError(f"Local model file not found: {local_path}")
-            if not local_path.is_file():
-                raise ValueError(f"Path is not a file: {local_path}")
-            if not local_path.suffix.lower() == ".onnx":
-                logger.warning(f"File does not have .onnx extension: {local_path}")
+        # Find the model file by name
+        if self.model_filename not in dep_paths:
+            raise ValueError(
+                f"Model file '{self.model_filename}' not found in dependencies. "
+                f"Available files: {list(dep_paths.keys())}"
+            )
 
-        return local_path
+        model_path = dep_paths[self.model_filename]
+
+        # Validate it's an ONNX file
+        if not model_path.suffix.lower() == ".onnx":
+            logger.warning(f"Model file does not have .onnx extension: {model_path}")
+
+        return model_path
 
 
 class ProcessingConfig(BaseModel):
@@ -135,7 +140,10 @@ if __name__ == "__main__":
         name="kelp_ps8b",
         revision="20250626",
         description="Kelp segmentation model for 8-band PlanetScope imagery.",
-        model_path="https://hakai-triton-models-bf426c24.s3.us-east-1.amazonaws.com/kelp_segmentation_ps8b_model/1/model.onnx",
+        dependencies=[
+            "https://hakai-triton-models-bf426c24.s3.us-east-1.amazonaws.com/kelp_segmentation_ps8b_model/1/model.onnx"
+        ],
+        model_filename="model.onnx",
         normalization="standard",
         activation=None,
         mean=(1720.0, 1715.0, 1913.0, 2088.0, 2274.0, 2290.0, 2613.0, 3970.0),
