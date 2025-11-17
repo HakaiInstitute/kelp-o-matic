@@ -5,20 +5,14 @@ from __future__ import annotations
 import math
 import sys
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import cv2
 import numpy as np
 import rasterio
 from loguru import logger
 from rasterio.windows import Window
-from rich.progress import (
-    BarColumn,
-    Progress,
-    TextColumn,
-    TimeElapsedColumn,
-    TimeRemainingColumn,
-)
+from rich.progress import BarColumn, Progress, TextColumn, TimeElapsedColumn, TimeRemainingColumn
 
 from kelp_o_matic.config import ProcessingConfig
 from kelp_o_matic.hann import BartlettHannKernel, NumpyMemoryRegister
@@ -29,6 +23,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from kelp_o_matic.model import ONNXModel
+    from kelp_o_matic.reader import ImageReader
 
 
 @dataclass
@@ -100,16 +95,27 @@ class ImageProcessor:
         """Process a raster file with tiled segmentation.
 
         Args:
-            img_path: Path to input raster
+            img_path: Path to input raster or SAFE directory
             output_path: Path to output segmentation raster
         """
         register = None
 
-        with rasterio.open(img_path) as src:
+        # Instantiate the image reader using model configuration
+        with self.model.cfg.get_reader(img_path) as reader:
             # Get raster properties
-            height, width = src.height, src.width
-            dtype = src.dtypes[0]
-            profile = src.profile.copy()
+            height, width = reader.height, reader.width
+            dtype = reader.dtype
+
+            # For TIFF, we can get the profile; for other formats, create a minimal one
+            try:
+                from kelp_o_matic.reader import TIFFReader
+
+                if isinstance(reader, TIFFReader):
+                    profile = reader.profile.copy()
+                else:
+                    profile = self._create_profile_from_reader(reader)
+            except ImportError:
+                profile = self._create_profile_from_reader(reader)
 
             if self.model.cfg.max_pixel_value == "auto":
                 # Automatically determine max pixel value based on dtype
@@ -162,7 +168,7 @@ class ImageProcessor:
                     task = progress.add_task("Processing", total=len(window_batches))
                     for window_batch in window_batches:
                         # Read tile data from source raster
-                        input_batch = self._load_batch(src, window_batch)
+                        input_batch = self._load_batch(reader, window_batch)
 
                         # Shortcut to write zeros if all pixels have the same value in each img
                         for i, (window, img) in enumerate(zip(window_batch, input_batch)):
@@ -234,17 +240,41 @@ class ImageProcessor:
             # Apply final post-processing
             self._apply_final_postprocessing(output_path)
 
-    def _load_batch(
-        self,
-        src: rasterio.io.DatasetReader,
-        windows: Iterable[Window],
-    ) -> np.ndarray:
-        """Load a batch of tiles from the source raster using boundless reading.
+    def _create_profile_from_reader(self, reader: ImageReader) -> dict[str, Any]:
+        """Create a rasterio profile from an ImageReader.
 
         Args:
-            src: Rasterio dataset reader for the source raster.
+            reader: ImageReader instance to extract properties from
+
+        Returns:
+            Dictionary suitable for rasterio profile
+        """
+        profile = {
+            "driver": "GTiff",
+            "height": reader.height,
+            "width": reader.width,
+            "count": 1,
+            "dtype": "uint8",
+        }
+
+        # Add CRS and transform if available
+        if reader.crs is not None:
+            profile["crs"] = reader.crs
+        if reader.transform is not None:
+            profile["transform"] = reader.transform
+
+        return profile
+
+    def _load_batch(
+        self,
+        reader: ImageReader,
+        windows: Iterable[Window],
+    ) -> np.ndarray:
+        """Load a batch of tiles from the source image using boundless reading.
+
+        Args:
+            reader: ImageReader instance for reading tiles.
             windows: Iterable of windows to load.
-            config: Processing configuration.
 
         Returns:
             Numpy array of shape [batch_size, channels, height, width] containing the tile data.
@@ -252,7 +282,12 @@ class ImageProcessor:
         tile_data = []
         for window in windows:
             # Use boundless reading to handle out-of-bounds areas with fill_value=0
-            tile_img = src.read(window=window, boundless=True, fill_value=0)
+            tile_img = reader.read_window(
+                window=window,
+                band_order=self.config.band_order,
+                boundless=True,
+                fill_value=0,
+            )
             _, th, tw = tile_img.shape
 
             # Pad out to tile size if needed (shouldn't be necessary with boundless reading)
@@ -268,15 +303,6 @@ class ImageProcessor:
                     constant_values=0,
                 )
 
-            # Rearrange/select bands
-            band_order = [b - 1 for b in self.config.band_order]
-            if any(b < 0 or b >= src.count for b in band_order):
-                logger.error(
-                    f"Band order {self.config.band_order} is invalid for image with {src.count} bands.\n "
-                    "Please specify band indices between 1 and the number of bands in the image (like GDAL indexing)."
-                )
-                sys.exit(1)
-            tile_img = tile_img[band_order, ...]
             tile_data.append(tile_img)
 
         # Stack into batch array [b, c, h, w]

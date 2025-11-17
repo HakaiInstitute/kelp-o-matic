@@ -14,21 +14,9 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 import onnxruntime as ort
 import platformdirs
-import rasterio
 import requests
-import rioxarray as rxr
-import xarray as xr
-from defusedxml.ElementTree import parse as parse_xml
 from loguru import logger
-from rasterio.enums import Resampling
-from rich.progress import (
-    BarColumn,
-    DownloadColumn,
-    Progress,
-    SpinnerColumn,
-    TextColumn,
-    TransferSpeedColumn,
-)
+from rich.progress import BarColumn, DownloadColumn, Progress, SpinnerColumn, TextColumn, TransferSpeedColumn
 from rich.prompt import Confirm
 
 if TYPE_CHECKING:
@@ -254,106 +242,3 @@ def sigmoid(x: np.ndarray) -> np.ndarray:
     """
     ex = np.exp(x)
     return ex / (1 + ex)
-
-
-def safe2tif(
-    safe_dir_path: str | Path,
-    out_path: str | Path | None = None,
-    append_bathymetry_substrate: bool = False,
-) -> Path:
-    """Convert SAFE directories of Sentinel 2 data into the TIFs required by the s2l2a model.
-
-    Args:
-        safe_dir_path: The path to the .SAFE directory containing S2 L2A data
-        out_path: Optional custom tif path to save the file. By default, save a tif file in the same
-            parent directory as the safe_dir_path, using the name of the .SAFE directory as the tif file stem.
-        append_bathymetry_substrate: Whether to append the bathymetry and substrate bands to the tif file.
-
-    Returns:
-        The path to the saved tif file
-
-    Raises:
-        ValueError: If safe_dir_path does not contain the expected subdirectories
-    """
-    safe_dir_path = Path(safe_dir_path)
-
-    if not (safe_dir_path / "GRANULE").exists():
-        raise ValueError(f"GRANULE directory does not exist in {safe_dir_path}. Please check your path.")
-
-    # Get processing baseline and data offset
-    metadata_path = safe_dir_path / "MTD_MSIL2A.xml"
-    offset = 1000
-    if not metadata_path.exists():
-        logger.warning("No MTD_MSIL2A.xml file found in the GRANULE directory. Assuming data offset of 1000.")
-    else:
-        tree = parse_xml(metadata_path)
-        root = tree.getroot()
-        pb = root.findtext(".//PROCESSING_BASELINE")
-        if pb and float(pb) < 4:
-            offset = 0
-
-    if out_path is None:
-        out_path = safe_dir_path.with_name(safe_dir_path.name.replace(".SAFE", ".tif"))
-    else:
-        out_path = Path(out_path)
-
-    band_02 = next(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B02_10m.jp2"))
-    band_03 = next(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B03_10m.jp2"))
-    band_04 = next(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B04_10m.jp2"))
-    band_08 = next(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B08_10m.jp2"))
-    band_05 = next(safe_dir_path.glob("GRANULE/**/IMG_DATA/**/*_B05_20m.jp2"))
-
-    # Gather band files we're going to use
-    band_files = [band_02, band_03, band_04, band_08, band_05]
-
-    # Stack bands and convert to raster
-    band_data = [rxr.open_rasterio(b) for b in band_files]
-
-    # Oversample the last band (20m) to match the first band (10m) resolution
-    band_data[-1] = band_data[-1].rio.reproject_match(band_data[0], resampling=Resampling.bilinear)
-
-    # Stack all bands along the band dimension
-    stacked = xr.concat(band_data, dim="band")
-
-    # Accommodate data offset
-    if offset > 0:
-        stacked = stacked.astype(np.int32) - offset
-        stacked = stacked.clip(0).astype(np.uint16)
-
-    # Append bathymetry and substrate data
-    if append_bathymetry_substrate:
-        bathymetry = rxr.open_rasterio(Path("~/onnx_models/Coastwide_corrected.tif").expanduser())
-        bathymetry = bathymetry.rio.reproject_match(stacked, resampling=Resampling.bilinear)
-        bathymetry = bathymetry.fillna(-2000)
-
-        substrate = rxr.open_rasterio(Path("~/onnx_models/substrate_20m.tif").expanduser())
-        substrate = substrate.rio.reproject_match(stacked, resampling=Resampling.bilinear)
-
-        # Update stacked layers with new substrate and bathymetry info
-        stacked = xr.concat([stacked, substrate, bathymetry], dim="band")
-
-    # Save as multi-band GeoTIFF
-    stacked.rio.to_raster(
-        out_path,
-        driver="GTiff",
-        compress="lzw",
-        tiled=True,
-        blockxsize=256,
-        blockysize=256,
-        interleave="pixel",
-        photometric="MINISBLACK",
-    )
-
-    # Update colour interp info
-    with rasterio.open(out_path, "r+") as src:
-        src.set_band_description(1, "B02 (Blue)")
-        src.set_band_description(2, "B03 (Green)")
-        src.set_band_description(3, "B04 (Red)")
-        src.set_band_description(4, "B08 (NIR)")
-        src.set_band_description(5, "B05 (Red Edge)")
-
-        if append_bathymetry_substrate:
-            src.set_band_description(6, "Substrate")
-            src.set_band_description(7, "Bathymetry")
-
-    return out_path
