@@ -252,7 +252,7 @@ def get_local_model_dir(model_name: str | None = None, revision: str | None = No
     Returns:
         Path: The path to the local model directory, creating it if it doesn't exist.
     """
-    cache_dir = platformdirs.user_cache_dir(appname="kelp_o_matic", appauthor="hakai")
+    cache_dir = platformdirs.user_cache_dir(appname="habitat_mapper", appauthor="hakai")
     model_dir = Path(cache_dir) / "models"
 
     # Create model-specific subdirectory if model_name is provided

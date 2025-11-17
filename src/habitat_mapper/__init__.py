@@ -17,4 +17,4 @@ __all__ = [
     "segment",
 ]
 
-__version__ = version("kelp_o_matic")
+__version__ = version("habitat_mapper")
