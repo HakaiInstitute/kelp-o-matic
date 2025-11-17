@@ -120,14 +120,12 @@ class TIFFReader(ImageReader):
     def __init__(
         self,
         file_path: str | Path,
-        append_bathymetry_substrate: bool = False,
         **kwargs: object,
     ) -> None:
         """Initialize TIFFReader.
 
         Args:
             file_path: Path to the TIFF file.
-            append_bathymetry_substrate: Ignored for TIFF reader (only used by SAFEReader).
             **kwargs: Additional keyword arguments (ignored for compatibility).
 
         Raises:
@@ -234,6 +232,8 @@ class SAFEReader(ImageReader):
         self,
         safe_dir_path: str | Path,
         append_bathymetry_substrate: bool = False,
+        bathymetry_path: str | Path | None = None,
+        substrate_path: str | Path | None = None,
         **kwargs: object,
     ) -> None:
         """Initialize SAFEReader.
@@ -241,16 +241,32 @@ class SAFEReader(ImageReader):
         Args:
             safe_dir_path: Path to the .SAFE directory containing Sentinel-2 L2A data.
             append_bathymetry_substrate: Whether to include bathymetry and substrate bands.
+            bathymetry_path: Path to bathymetry GeoTIFF file. Required if append_bathymetry_substrate=True.
+            substrate_path: Path to substrate GeoTIFF file. Required if append_bathymetry_substrate=True.
             **kwargs: Additional keyword arguments (ignored for compatibility).
 
         Raises:
-            ValueError: If SAFE directory structure is invalid.
+            ValueError: If SAFE directory structure is invalid or required aux files not provided.
+            FileNotFoundError: If bathymetry or substrate files don't exist.
         """
         self.safe_dir_path = Path(safe_dir_path)
         self.append_bathymetry_substrate = append_bathymetry_substrate
+        self.bathymetry_path = Path(bathymetry_path) if bathymetry_path else None
+        self.substrate_path = Path(substrate_path) if substrate_path else None
 
         if not (self.safe_dir_path / "GRANULE").exists():
             raise ValueError(f"GRANULE directory does not exist in {self.safe_dir_path}. Please check your path.")
+
+        # Validate aux file paths if needed
+        if self.append_bathymetry_substrate:
+            if self.bathymetry_path is None or self.substrate_path is None:
+                raise ValueError(
+                    "bathymetry_path and substrate_path are required when append_bathymetry_substrate=True"
+                )
+            if not self.bathymetry_path.exists():
+                raise FileNotFoundError(f"Bathymetry file not found: {self.bathymetry_path}")
+            if not self.substrate_path.exists():
+                raise FileNotFoundError(f"Substrate file not found: {self.substrate_path}")
 
         # Determine data offset from metadata
         self._offset = self._get_data_offset()
@@ -287,7 +303,7 @@ class SAFEReader(ImageReader):
         """Load Sentinel-2 bands and reproject to common resolution.
 
         Raises:
-            ValueError: If required Sentinel-2 bands cannot be found.
+            ValueError: If required, Sentinel-2 bands cannot be found.
         """
         try:
             # Find band files (B02, B03, B04, B08 @ 10m, B05 @ 20m)
@@ -313,12 +329,12 @@ class SAFEReader(ImageReader):
                 stacked = stacked.clip(0).astype(np.uint16)
 
             # Optionally append bathymetry and substrate
-            if self.append_bathymetry_substrate:
-                bathymetry = rxr.open_rasterio(Path("~/onnx_models/bathymetry_10m_cog.tif").expanduser())  # type: ignore[misc]
-                bathymetry = bathymetry.rio.reproject_match(stacked, resampling=Resampling.bilinear)
-
-                substrate = rxr.open_rasterio(Path("~/onnx_models/substrate_20m_cog.tif").expanduser())  # type: ignore[misc]
+            if self.substrate_path is not None and self.bathymetry_path is not None:
+                substrate = rxr.open_rasterio(self.substrate_path)  # type: ignore[misc]
                 substrate = substrate.rio.reproject_match(stacked, resampling=Resampling.bilinear)
+
+                bathymetry = rxr.open_rasterio(self.bathymetry_path)  # type: ignore[misc]
+                bathymetry = bathymetry.rio.reproject_match(stacked, resampling=Resampling.bilinear)
 
                 stacked = xr.concat([stacked, substrate, bathymetry], dim="band")  # type: ignore[misc]
 
