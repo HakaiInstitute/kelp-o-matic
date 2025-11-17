@@ -25,8 +25,13 @@
 </p>
 
 <p align="center">
-    <i>Kelp Segmentation Tools for Aerial Imagery</i>
+    <i>Habitat Segmentation with AI</i>
 </p>
+
+<p align="center">
+    Previously known as <i><strong>"Kelp-O-Matic"</strong></i>
+</p>
+
 
 <h1 align="center">
     <a href="https://habitat-mapper.readthedocs.io">&#9758; Read the Docs &#9756;</a>

@@ -1,6 +1,8 @@
 # Habitat-Mapper
 
-*Segmentation Tools for Remotely Sensed RPAS Imagery*
+*Habitat Segmentation with AI*
+
+Previously known as ***"Kelp-O-Matic"***
 
 <div style="overflow: hidden; display: flex; justify-content:flex-start; gap:10px;">
     <a href="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/unit-test.yml">
