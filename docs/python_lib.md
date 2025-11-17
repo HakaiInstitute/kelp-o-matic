@@ -4,7 +4,7 @@ The Python library provides access to the segmentation models and processing fun
 
 ## Core Components
 
-The main components of the kelp-o-matic Python library are:
+The main components of the Habitat-Mapper Python library are:
 
 - **`ONNXModel`**: The core model class for running inference
 - **`ModelConfig`**: Configuration class for model settings

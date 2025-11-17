@@ -1,18 +1,18 @@
-# Kelp-O-Matic
+# Habitat-Mapper
 
 *Segmentation Tools for Remotely Sensed RPAS Imagery*
 
 <div style="overflow: hidden; display: flex; justify-content:flex-start; gap:10px;">
-    <a href="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/unit-test.yml">
-        <img alt="🧪 Test" src="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/test.yml/badge.svg" height="20px" />
+    <a href="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/unit-test.yml">
+        <img alt="🧪 Test" src="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml/badge.svg" height="20px" />
     </a>
 
-    <a href="https://github.com/HakaiInstitute/kelp-o-matic/blob/main/LICENSE">
-        <img alt="License" src="https://anaconda.org/conda-forge/kelp-o-matic/badges/license.svg" height="20px" />
+    <a href="https://github.com/HakaiInstitute/habitat-mapper/blob/main/LICENSE">
+        <img alt="License" src="https://anaconda.org/conda-forge/habitat-mapper/badges/license.svg" height="20px" />
     </a>
 
-    <a href="https://anaconda.org/conda-forge/kelp-o-matic">
-        <img alt="Version" src="https://anaconda.org/conda-forge/kelp-o-matic/badges/version.svg" height="20px" />
+    <a href="https://anaconda.org/conda-forge/habitat-mapper">
+        <img alt="Version" src="https://anaconda.org/conda-forge/habitat-mapper/badges/version.svg" height="20px" />
     </a>
 
     <a href="https://zenodo.org/badge/latestdoi/462897183">
@@ -39,15 +39,15 @@ Please see the [beginner guide](beginner_guide/index.md) if you are new to using
 ## Contribute
 
 Please file a bug report using our
-[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/kelp-o-matic/issues) if you encounter any
+[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/habitat-mapper/issues) if you encounter any
 problems.
 
 Comments and questions are also appreciated!
 
 ## License
 
-Kelp-O-Matic is released under the
-[MIT license](https://raw.githubusercontent.com/tayden/kelp-o-matic/main/LICENSE).
+Habitat-Mapper is released under the
+[MIT license](https://raw.githubusercontent.com/tayden/habitat-mapper/main/LICENSE).
 
 ## Contact
 

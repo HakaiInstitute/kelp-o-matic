@@ -7,30 +7,22 @@
 
 ## Requirements
 
-Kelp-O-Matic is currently available for Python versions 3.10 through 3.13.
+Habitat-Mapper is currently available for Python versions 3.10 through 3.13.
 
 ## Quick Install
 
 We recommend using a virtual environment to manage your Python packages. This will help avoid conflicts with other packages and system installations.
 
-=== "CPU"
-
-    ```bash
-    pip install kelp-o-matic
-    ```
-
-=== "GPU"
-
-    ```bash
-    pip install kelp-o-matic[cuda]
-    ```
+```bash
+pip install habitat-mapper
+```
 
 ## Verify Installation
 
-To verify that Kelp-O-Matic was installed correctly and to check the installed version, run:
+To verify that Habitat-Mapper was installed correctly and to check the installed version, run:
 
 ```bash
-kom --version
+hab --version
 ```
 
 ## Updating
@@ -41,10 +33,10 @@ We follow [semantic versioning](https://semver.org/). Regular updates are recomm
 - New features
 - Security patches
 
-To update Kelp-O-Matic, you can use the following commands:
+To update Habitat-Mapper, you can use the following commands:
 
 ```bash
-pip install --upgrade kelp-o-matic
+pip install --upgrade habitat-mapper
 ```
 
 ## Next Steps

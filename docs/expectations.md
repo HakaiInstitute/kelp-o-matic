@@ -2,7 +2,7 @@
 
 ## Imagery Assumptions
 
-All interfaces to Kelp-O-Matic make the following assumptions about input images:
+All interfaces to Habitat-Mapper make the following assumptions about input images:
 
 ### 1. Data type is unsigned 8- or 16-bit integer.
 
@@ -37,11 +37,11 @@ image areas to speed up processing.
     For white backgrounds, it should be set to 255.
 
 If there is no *nodata* value set, any part of the image that is completely black or
-completely white is classified as "background" by Kelp-O-Matic.
+completely white is classified as "background" by Habitat-Mapper.
 
 ### 2. Use tiled GeoTIFFs.
 
-Kelp-O-Matic uses a moving window to classify images. This means that the image is
+Habitat-Mapper uses a moving window to classify images. This means that the image is
 broken up into smaller chunks, and each chunk is classified separately. This is done
 to reduce the amount of memory required to classify an image, and to allow for
 classification of images that are larger than the amount of memory available on your
