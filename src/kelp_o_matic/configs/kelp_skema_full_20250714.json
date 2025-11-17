@@ -11,5 +11,9 @@
   "normalization": null,
   "input_channels": 7,
   "max_pixel_value": 1.0,
-  "activation": "sigmoid"
+  "activation": "sigmoid",
+  "reader_class_name": "kelp_o_matic.reader.SAFEReader",
+  "reader_kwargs": {
+    "append_bathymetry_substrate": true
+  }
 }

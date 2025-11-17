@@ -19,11 +19,7 @@ from rich.table import Table
 from rich.traceback import install
 
 from kelp_o_matic.registry import model_registry
-from kelp_o_matic.utils import (
-    get_local_model_dir,
-    is_url,
-    safe2tif as _safe2tif,
-)
+from kelp_o_matic.utils import get_local_model_dir, is_url
 
 app = App()
 console = Console()
@@ -98,6 +94,28 @@ def _band_validator(type_: type, value: list[int] | None) -> None:
 def _existing_model_validator(type_: type, value: str) -> None:
     if value not in model_registry.list_model_names():
         raise TypeError("Specified model is not a valid option.")
+
+
+def _existing_image_validator(type_: type, value: Path | str) -> None:
+    """Validate that input path exists and is either a file or SAFE directory.
+
+    Args:
+        type_: The type being validated (unused, required by cyclopts)
+        value: The path to validate
+
+    Raises:
+        TypeError: If path doesn't exist or is not a valid image input
+    """
+    path = Path(value) if isinstance(value, str) else value
+    if not path.exists():
+        raise TypeError(f"Input path does not exist: {path}")
+
+    # Accept SAFE directories or any file
+    if path.is_dir():
+        if not path.name.endswith(".SAFE"):
+            raise TypeError(f"Directory must be a Sentinel-2 SAFE format (name ends with .SAFE), got: {path.name}")
+    elif not path.is_file():
+        raise TypeError(f"Input must be a file or SAFE directory, got: {path}")
 
 
 @app.command
@@ -264,9 +282,10 @@ def segment(
         ),
     ],
     img_path: Annotated[
-        ExistingFile,
+        Path,
         Parameter(
-            help="Path to input 8 band PlanetScope raster file",
+            help="Path to input raster file (GeoTIFF, etc.) or Sentinel-2 SAFE directory",
+            validator=_existing_image_validator,
             name=["--input", "-i"],
         ),
     ],
@@ -365,33 +384,6 @@ def segment(
         border_style="green",
     )
     console.print(success_panel)
-
-
-@app.command
-@logger_catch
-def safe2tif(
-    safe_dir_path: Annotated[
-        Path,
-        Parameter(help="Path to a .SAFE directory to convert."),
-    ],
-    output_path: Annotated[
-        Path | None,
-        Parameter(
-            help="Optional custom output path for the TIF file. By default, creates a tif file in the same location "
-            "with the same name as the input SAFE directory."
-        ),
-    ] = None,
-    append_bathy_substrate: Annotated[
-        bool,
-        Parameter(help="Whether to append the bathymetry substrate to the TIF file."),
-    ] = False,
-) -> str:
-    """Convert a SAFE directory downloaded from Copernicus into a TIF file, as required by KoM.
-
-    Returns:
-        str: The path to the TIF file.
-    """
-    return str(_safe2tif(safe_dir_path, output_path, append_bathy_substrate))
 
 
 @app.command
