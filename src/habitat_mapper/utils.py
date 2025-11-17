@@ -1,4 +1,4 @@
-"""Utilities and helper functions for the Kelp-O-Matic package."""
+"""Utilities and helper functions for the Habitat-Mapper package."""
 
 from __future__ import annotations
 

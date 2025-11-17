@@ -1,4 +1,4 @@
-"""Kelp-O-Matic: A tool for segmenting audio files using machine learning models."""
+"""Habitat-Mapper: A tool for segmenting audio files using machine learning models."""
 
 from importlib.metadata import version
 

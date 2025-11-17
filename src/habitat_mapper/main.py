@@ -1,4 +1,4 @@
-"""Kelp-O-Matic CLI for managing and using segmentation models."""
+"""Habitat-Mapper CLI for managing and using segmentation models."""
 
 from __future__ import annotations
 
@@ -236,7 +236,7 @@ def revisions(
 @app.command
 @logger_catch
 def clean() -> None:
-    """Clear the Kelp-O-Matic model cache to free up space. Models will be re-downloaded as needed."""
+    """Clear the Habitat-Mapper model cache to free up space. Models will be re-downloaded as needed."""
     model_dir = get_local_model_dir()
     files = list(model_dir.glob("*.onnx"))
     if not files:
@@ -472,8 +472,8 @@ def find_kelp(
     if use_tta:
         logger.warning(
             "Since version 0.14.0, test-time augmentation is no longer supported. Please open a GitHub issue at "
-            "https://github.com/HakaiInstitute/kelp-o-matic if you would like to see test-time augmentation added "
-            "back into Kelp-o-Matic"
+            "https://github.com/HakaiInstitute/habitat-mapper if you would like to see test-time augmentation added "
+            "back into Habitat-Mapper"
         )
 
     segment(
@@ -554,8 +554,8 @@ def find_mussels(
     if use_tta:
         logger.warning(
             "Since version 0.14.0, test-time augmentation is no longer supported. Please open a GitHub issue at "
-            "https://github.com/HakaiInstitute/kelp-o-matic if you would like to see test-time augmentation added "
-            "back into Kelp-o-Matic"
+            "https://github.com/HakaiInstitute/habitat-mapper if you would like to see test-time augmentation added "
+            "back into Habitat-Mapper"
         )
 
     segment(
