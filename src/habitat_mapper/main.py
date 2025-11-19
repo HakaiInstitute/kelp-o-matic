@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import itertools
 import os
 from importlib.metadata import version
 from pathlib import Path
@@ -9,6 +10,7 @@ from typing import Annotated
 
 import deprecation
 import humanize
+import platformdirs
 from cyclopts import App, Parameter
 from cyclopts.types import ExistingFile, File, PositiveInt  # noqa: TC002
 from loguru import logger
@@ -238,7 +240,13 @@ def revisions(
 def clean() -> None:
     """Clear the Habitat-Mapper model cache to free up space. Models will be re-downloaded as needed."""
     model_dir = get_local_model_dir()
-    files = list(filter(lambda f: f.is_file(), model_dir.glob("**/*")))
+
+    # Also find old kelp-o-matic files
+    kom_model_dir = Path(platformdirs.user_cache_dir(appname="kelp_o_matic", appauthor="hakai")) / "models"
+
+    # 1. Gather files using the idiomatic list comprehension
+    files = [f for f in itertools.chain(model_dir.rglob("*"), kom_model_dir.glob("*")) if f.is_file()]
+
     if not files:
         panel = Panel(
             "[yellow]Model cache is already empty.[/yellow]",
