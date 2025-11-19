@@ -14,6 +14,7 @@ import platformdirs
 from cyclopts import App, Parameter
 from cyclopts.types import ExistingFile, File, PositiveInt  # noqa: TC002
 from loguru import logger
+from rich import box
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm
@@ -256,22 +257,60 @@ def clean() -> None:
         console.print(panel)
         return
 
-    total_size = sum(file.stat().st_size for file in files)
+    # 2. Sort by size (descending) so user sees largest files first
+    files.sort(key=lambda f: f.stat().st_size, reverse=True)
+    total_size = sum(f.stat().st_size for f in files)
 
+    # 3. Build a nice table to show the user
+    table = Table(
+        title=f"[bold red]Cache Contents ({humanize.naturalsize(total_size)})[/bold red]",
+        box=box.SIMPLE,
+        show_header=True,
+    )
+    table.add_column("File", style="cyan", no_wrap=True)
+    table.add_column("Location", style="dim")
+    table.add_column("Size", justify="right", style="green")
+
+    # Limit displayed rows to avoid flooding terminal if there are 100s of files
+    max_display = 15
+    for i, file in enumerate(files):
+        if i >= max_display:
+            remaining = len(files) - max_display
+            table.add_row(
+                f"[italic]... and {remaining} more files[/italic]",
+                "",
+                humanize.naturalsize(sum(f.stat().st_size for f in files[i:])),
+            )
+            break
+
+        # clean up path for display (replace /home/user with ~)
+        try:
+            display_path = str(file.parent).replace(str(Path.home()), "~")
+        except ValueError:
+            display_path = str(file.parent)
+
+        table.add_row(file.name, display_path, humanize.naturalsize(file.stat().st_size))
+
+    console.print(table)
+    console.print()  # Add a little breathing room
+
+    # 4. Confirm and Execute
     if not Confirm.ask(
-        f"[yellow]Are you sure you want to clear the model cache? "
-        f"This will free up {humanize.naturalsize(total_size)}.[/yellow]",
+        "[yellow]Are you sure you want to clear the model cache?[/yellow]",
         default=False,
     ):
         logger.warning("Model cache clearing aborted.")
         return
 
-    logger.info("Clearing model cache...")
-    for file in files:
-        file.unlink()
+    with console.status("[bold red]Deleting files...[/bold red]"):
+        for file in files:
+            try:
+                file.unlink()
+            except OSError as e:
+                logger.warning(f"Could not delete {file}: {e}")
 
     panel = Panel(
-        f"[green]✓ Cleared model cache at {model_dir}.\nFreed {humanize.naturalsize(total_size)}[/green]",
+        f"[green]✓ Cleared model cache.\nFreed {humanize.naturalsize(total_size)}[/green]",
         title="[bold green]Cache Cleared[/bold green]",
         border_style="green",
     )
