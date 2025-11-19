@@ -6,7 +6,7 @@
 British Columbia, Canada. The Hakai Institute led the development of this software package and contributed the majority
 of machine learning training data used to build the kelp detection and mussel and gooseneck barnacle detection models.
 
-
+![Hakai Institute Logo](images/hakai_logo_red.png){ loading=lazy, width=160 }
 
 ## Training Data Contributors
 
@@ -26,16 +26,20 @@ experience as well as expert annotations of Planet Labs satellite imagery that w
 
 If you use Habitat-Mapper in your research, please cite the software:
 
-APA: `Denouden, T., & Reshitnyk, L. Habitat-Mapper [Computer software]. https://doi.org/10.5281/zenodo.17203205`
+=== "APA"
+    ```
+    Denouden, T., & Reshitnyk, L. Habitat-Mapper [Computer software]. https://doi.org/10.5281/zenodo.17203205
+    ```
 
-```bibtex
-@software{Denouden_Habitat-Mapper,
-author = {Denouden, Taylor and Reshitnyk, Luba},
-doi = {10.5281/zenodo.17203205},
-title = {{Habitat-Mapper}},
-url = {https://github.com/HakaiInstitute/habitat-mapper}
-}
-```
+=== "Bibtex"
+    ```bibtex
+    @software{Denouden_Habitat-Mapper,
+    author = {Denouden, Taylor and Reshitnyk, Luba},
+    doi = {10.5281/zenodo.17203205},
+    title = {{Habitat-Mapper}},
+    url = {https://github.com/HakaiInstitute/habitat-mapper}
+    }
+    ```
 
 ## Acknowledgments
 
