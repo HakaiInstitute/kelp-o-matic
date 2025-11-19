@@ -1,18 +1,14 @@
 <div align="center" style="overflow: hidden; display: flex; justify-content:center; gap:10px;">
-<a href="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/test.yml">
-    <img alt="🧪 Test" src="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/test.yml/badge.svg" height="20px" />
+<a href="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml">
+    <img alt="🧪 Tests" src="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml/badge.svg" height="20px" />
 </a>
 
-<a href="https://github.com/HakaiInstitute/kelp-o-matic/blob/main/LICENSE">
-    <img alt="License" src="https://anaconda.org/conda-forge/kelp-o-matic/badges/license.svg" height="20px" />
+<a href="https://github.com/HakaiInstitute/habitat-mapper/blob/main/LICENSE">
+    <img alt="License" src="https://img.shields.io/pypi/l/habitat-mapper" height="20px" />
 </a>
 
-<a href="https://anaconda.org/conda-forge/kelp-o-matic">
-    <img alt="Version" src="https://anaconda.org/conda-forge/kelp-o-matic/badges/version.svg" height="20px" />
-</a>
-
-<a href="https://pypi.org/project/kelp-o-matic">
-    <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/kelp-o-matic" height="20px">
+<a href="https://pypi.org/project/habitat-mapper">
+    <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/habitat-mapper" height="20px">
 </a>
 
 <a href="https://zenodo.org/badge/latestdoi/462897183">
@@ -21,13 +17,17 @@
 </div>
 
 <p align="center">
-    <img src="./docs/images/kelp_o_matic_smaller.gif" alt="Kelp-O-Matic" />
+    <img src="docs/images/habitat_mapper_optimized.gif" alt="Habitat-Mapper" />
 </p>
 
 <p align="center">
-    <i>Kelp Segmentation Tools for Aerial Imagery</i>
+    <strong>Habitat Segmentation with AI</strong>
+</p>
+
+<p align="center">
+    (The artist formerly known as <i>"Kelp-O-Matic"</i>)
 </p>
 
 <h1 align="center">
-    <a href="https://kelp-o-matic.readthedocs.io">&#9758; Read the Docs &#9756;</a>
+    <a href="https://habitat-mapper.readthedocs.io">&#9758; Read the Docs &#9756;</a>
 </h1>

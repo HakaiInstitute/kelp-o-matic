@@ -1,17 +1,17 @@
 # About
 
-This document gives information about interpreting the Kelp-O-Matic model outputs, and
+This document gives information about interpreting the Habitat-Mapper model outputs, and
 gives details on the dataset pre-processing workflow, model training, and final
 performance achieved for both the kelp and mussel detection models.
 
 ## Model Outputs
 
-Each of the Kelp-O-Matic models outputs a mask raster with integer pixel values that
+Each of the Habitat-Mapper models outputs a mask raster with integer pixel values that
 represent the following classes:
 
 ### Kelp (RGB and RGBI models)
 
-These are the outputs from the `kom segment kelp-rgb` and `kom segment kelp-rgbi` routines:
+These are the outputs from the `hab segment kelp-rgb` and `hab segment kelp-rgbi` routines:
 
 | Output value | Class                               |
 |-------------:|-------------------------------------|
@@ -21,7 +21,7 @@ These are the outputs from the `kom segment kelp-rgb` and `kom segment kelp-rgbi
 
 ### Kelp (PS8B model)
 
-These are the outputs from the `kom segment kelp-ps8b` routine:
+These are the outputs from the `hab segment kelp-ps8b` routine:
 
 | Output value | Class                               |
 |-------------:|-------------------------------------|
@@ -30,7 +30,7 @@ These are the outputs from the `kom segment kelp-ps8b` routine:
 
 ### Mussels
 
-These are the outputs from the `kom segment mussel-rgb` and `kom segment mussel-gooseneck-rgb` routines:
+These are the outputs from the `hab segment mussel-rgb` and `hab segment mussel-gooseneck-rgb` routines:
 
 | Output value | Class                                            |
 |-------------:|--------------------------------------------------|

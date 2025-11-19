@@ -1,6 +1,6 @@
 # Environment Setup and Installation
 
-It is recommended to install Kelp-O-Matic in a virtual environment to avoid conflicts
+It is recommended to install Habitat-Mapper in a virtual environment to avoid conflicts
 with other Python packages present on your system. `uv` is our recommended environment manager, so we'll use it in this
 guide.
 
@@ -80,33 +80,22 @@ active.
     deactivate
     ```
 
-## Install Kelp-O-Matic
+## Install Habitat-Mapper
 
-Now that you have your virtual environment set up, you can install Kelp-O-Matic and its dependencies very easily with
+Now that you have your virtual environment set up, you can install Habitat-Mapper and its dependencies very easily with
 `uv`.
 
-1. Install Kelp-O-Matic using the following command:
+1. Install Habitat-Mapper using the following command:
 
-    === "Windows"
-        If you have a NVIDIA GPU:
-        ```powershell
-        uv pip install kelp-o-matic[cuda]
-        ```
-        Otherwise:
-        ```powershell
-        uv pip install kelp-o-matic
-        ```
-
-    === "MacOS/Linux"
-        ```bash
-        uv pip install kelp-o-matic
-        ```
+```bash
+uv pip install habitat-mapper
+```
 
 !!! important
 
-      The `kom` command will be available only when the virtual environment is activated. If you close your terminal,
+      The `hab` command will be available only when the virtual environment is activated. If you close your terminal,
       be sure to navigate to the location where you created the virtual environment and activate it again before running
-      `kom`.
+      `hab`.
 
 ??? question "What's `uv pip`?"
     `uv` has a built-in package manager called `pip` that you can use to install Python packages. When not using `uv`,

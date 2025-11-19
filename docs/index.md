@@ -1,24 +1,25 @@
-# Kelp-O-Matic
+# Habitat-Mapper
 
-*Segmentation Tools for Remotely Sensed RPAS Imagery*
+**Habitat Segmentation with AI**
 
-<div style="overflow: hidden; display: flex; justify-content:flex-start; gap:10px;">
-    <a href="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/unit-test.yml">
-        <img alt="🧪 Test" src="https://github.com/HakaiInstitute/kelp-o-matic/actions/workflows/test.yml/badge.svg" height="20px" />
-    </a>
+(The artist formerly known as *"Kelp-O-Matic"*)
 
-    <a href="https://github.com/HakaiInstitute/kelp-o-matic/blob/main/LICENSE">
-        <img alt="License" src="https://anaconda.org/conda-forge/kelp-o-matic/badges/license.svg" height="20px" />
-    </a>
+<div align="center" style="overflow: hidden; display: flex; justify-content:center; gap:10px;">
+<a href="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml">
+    <img alt="🧪 Tests" src="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml/badge.svg" height="20px" />
+</a>
 
-    <a href="https://anaconda.org/conda-forge/kelp-o-matic">
-        <img alt="Version" src="https://anaconda.org/conda-forge/kelp-o-matic/badges/version.svg" height="20px" />
-    </a>
+<a href="https://github.com/HakaiInstitute/habitat-mapper/blob/main/LICENSE">
+    <img alt="License" src="https://img.shields.io/pypi/l/habitat-mapper" height="20px" />
+</a>
 
-    <a href="https://zenodo.org/badge/latestdoi/462897183">
-        <img alt="DOI" src="https://zenodo.org/badge/462897183.svg" height="20px" />
-    </a>
+<a href="https://pypi.org/project/habitat-mapper">
+    <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/habitat-mapper" height="20px">
+</a>
 
+<a href="https://zenodo.org/badge/latestdoi/462897183">
+    <img alt="DOI" src="https://zenodo.org/badge/462897183.svg" height="20px" />
+</a>
 </div>
 
 ***
@@ -34,20 +35,20 @@ Please see the [beginner guide](beginner_guide/index.md) if you are new to using
 * Kelp macrocystis/nereocystis detection in RGB RPAS imagery.
 * Mussel presence/absence detection in RGB RPAS imagery.
 
-![Kelp Gif](images/manley.gif){ loading=lazy }
+![Kelp Gif](images/habitat_mapper_notext_optimized.gif){ loading=lazy }
 
 ## Contribute
 
 Please file a bug report using our
-[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/kelp-o-matic/issues) if you encounter any
+[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/habitat-mapper/issues) if you encounter any
 problems.
 
 Comments and questions are also appreciated!
 
 ## License
 
-Kelp-O-Matic is released under the
-[MIT license](https://raw.githubusercontent.com/tayden/kelp-o-matic/main/LICENSE).
+Habitat-Mapper is released under the
+[MIT license](https://raw.githubusercontent.com/tayden/habitat-mapper/main/LICENSE).
 
 ## Contact
 

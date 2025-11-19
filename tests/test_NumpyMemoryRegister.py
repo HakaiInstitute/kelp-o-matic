@@ -5,7 +5,7 @@ from numpy.typing import DTypeLike
 from rasterio import windows
 from rasterio.transform import from_origin
 
-from kelp_o_matic.hann import BartlettHannKernel, Kernel, NumpyMemoryRegister
+from habitat_mapper.hann import BartlettHannKernel, Kernel, NumpyMemoryRegister
 
 
 def create_dummy_tiff(

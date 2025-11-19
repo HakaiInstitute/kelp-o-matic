@@ -1,7 +1,7 @@
-site_name: Kelp-O-Matic
-site_url: https://kelp-o-matic.readthedocs.io
-repo_url: https://github.com/HakaiInstitute/kelp-o-matic
-repo_name: HakaiInstitue/kelp-o-matic
+site_name: Habitat-Mapper
+site_url: https://habitat-mapper.readthedocs.io
+repo_url: https://github.com/HakaiInstitute/habitat-mapper
+repo_name: HakaiInstitue/habitat-mapper
 edit_uri: /edit/main/docs
 
 nav:
@@ -18,7 +18,7 @@ nav:
   - Python API: python_lib.md
   - About: about.md
   - FAQs: faqs.md
-  - Issue Tracker: 'https://github.com/HakaiInstitute/kelp-o-matic/issues'
+  - Issue Tracker: 'https://github.com/HakaiInstitute/habitat-mapper/issues'
 
 theme:
   name: material
