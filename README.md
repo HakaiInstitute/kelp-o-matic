@@ -21,7 +21,7 @@
 </div>
 
 <p align="center">
-    <img src="https://kelp-o-matic.s3.us-east-1.amazonaws.com/media/habitat_mapper_opt.gif" alt="Habitat-Mapper" />
+    <img src="docs/images/habitat_mapper_optimized.gif" alt="Habitat-Mapper" />
 </p>
 
 <p align="center">

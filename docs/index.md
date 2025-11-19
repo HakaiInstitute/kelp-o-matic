@@ -36,7 +36,7 @@ Please see the [beginner guide](beginner_guide/index.md) if you are new to using
 * Kelp macrocystis/nereocystis detection in RGB RPAS imagery.
 * Mussel presence/absence detection in RGB RPAS imagery.
 
-![Kelp Gif](https://kelp-o-matic.s3.us-east-1.amazonaws.com/media/habitat_mapper_notext_opt.gif){ loading=lazy }
+![Kelp Gif](images/habitat_mapper_notext_optimized.gif){ loading=lazy }
 
 ## Contribute
 
