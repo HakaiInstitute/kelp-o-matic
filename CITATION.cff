@@ -7,6 +7,6 @@ authors:
 - family-names: Reshitnyk
   given-names: Luba
   orcid: https://orcid.org/0000-0003-0282-724X
-title: Kelp-O-Matic
-doi: 10.5281/zenodo.7672166
-url: https://github.com/HakaiInstitute/kelp-o-matic
+title: Habitat-Mapper
+doi: 10.5281/zenodo.17203205
+url: https://github.com/HakaiInstitute/habitat-mapper
