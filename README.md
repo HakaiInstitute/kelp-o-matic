@@ -28,7 +28,6 @@
     (The artist formerly known as <i>"Kelp-O-Matic"</i>)
 </p>
 
-
 <h1 align="center">
     <a href="https://habitat-mapper.readthedocs.io">&#9758; Read the Docs &#9756;</a>
 </h1>
