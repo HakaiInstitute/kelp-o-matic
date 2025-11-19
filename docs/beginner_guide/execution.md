@@ -26,7 +26,7 @@ To get help documentation for the `hab` tool, you can type `hab --help` into you
     Many CLI options have shorthand flags for convenience. For example, `--input` can be shortened to `-i` and `--output` can be shortened to `-o`.
     Options will be shown in the help documentation with both the long form (`--input`) and the shorthand form (`-i`).
 
-```console
+```bash
 hab --help
 ```
 
@@ -38,7 +38,7 @@ Before processing an image, you should see what models are available to you. Hab
 
 To see all available models, use the `hab models` command:
 
-```console
+```bash
 hab models
 ```
 
@@ -46,12 +46,12 @@ This will show you a table with all available models, their latest revisions, de
 
 If you want to see all available revisions for a specific model, you can use:
 
-```console
+```bash
 hab revisions <model-name>
 ```
 
 For example:
-```console
+```bash
 hab revisions kelp-rgb
 ```
 
@@ -60,13 +60,13 @@ hab revisions kelp-rgb
 #### Subcommands and Options
 To process an image, you will need to use the `hab segment` subcommand. This subcommand is used to apply a segmentation model to an image. Like we did for `hab`, we can also get help for subcommands:
 
-```console
+```bash
 hab segment --help
 ```
 
 And it will print out something like this:
 
-```console
+```bash
 Usage: hab segment [ARGS] [OPTIONS]
 
 Apply a segmentation model to an input raster and save the output.
@@ -110,7 +110,7 @@ The options are flags that can be used to enable or disable certain features of 
 
     === "Windows"
 
-        ```console
+        ```bash
         hab segment kelp-rgb --crop-size 2048 --input .\some\image_with_kelp.tif --output .\some\output.tif
         ```
 
@@ -120,7 +120,7 @@ The options are flags that can be used to enable or disable certain features of 
 
     === "MacOS/Linux"
 
-        ```console
+        ```bash
         hab segment kelp-rgb --crop-size 2048 --input ./some/image_with_kelp.tif --output ./some/output.tif
         ```
 
@@ -132,7 +132,7 @@ The options are flags that can be used to enable or disable certain features of 
 
     **Complete workflow - discovering and using models:**
 
-    ```console
+    ```bash
     # First, see what models are available
     hab models
 
@@ -146,7 +146,7 @@ The options are flags that can be used to enable or disable certain features of 
 
     **Using a specific model revision:**
 
-    ```console
+    ```bash
     # First, check what revisions are available for a model
     hab revisions kelp-rgb
 
@@ -160,13 +160,13 @@ The options are flags that can be used to enable or disable certain features of 
 
     === "Windows"
 
-        ```console
+        ```bash
         hab segment kelp-rgbi -b 3 -b 2 -b 1 -b 4 --input .\some\bgri_image.tif --output .\some\output.tif
         ```
 
     === "MacOS/Linux"
 
-        ```console
+        ```bash
         hab segment kelp-rgbi -b 3 -b 2 -b 1 -b 4 --input ./some/bgri_image.tif --output ./some/output.tif
         ```
 
