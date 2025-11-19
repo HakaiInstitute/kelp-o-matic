@@ -21,11 +21,11 @@
 </p>
 
 <p align="center">
-    <i>Habitat Segmentation with AI</i>
+    <strong>Habitat Segmentation with AI</strong>
 </p>
 
 <p align="center">
-    Previously known as <i><strong>"Kelp-O-Matic"</strong></i>
+    (The artist formerly known as <i>"Kelp-O-Matic"</i>)
 </p>
 
 

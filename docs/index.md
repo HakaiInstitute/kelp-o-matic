@@ -1,8 +1,8 @@
 # Habitat-Mapper
 
-*Habitat Segmentation with AI*
+**Habitat Segmentation with AI**
 
-Previously known as ***"Kelp-O-Matic"***
+(The artist formerly known as *"Kelp-O-Matic"*)
 
 <div align="center" style="overflow: hidden; display: flex; justify-content:center; gap:10px;">
 <a href="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml">
