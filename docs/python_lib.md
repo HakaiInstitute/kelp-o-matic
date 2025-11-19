@@ -4,7 +4,7 @@ The Python library provides access to the segmentation models and processing fun
 
 ## Core Components
 
-The main components of the kelp-o-matic Python library are:
+The main components of the Habitat-Mapper Python library are:
 
 - **`ONNXModel`**: The core model class for running inference
 - **`ModelConfig`**: Configuration class for model settings
@@ -17,7 +17,7 @@ The main components of the kelp-o-matic Python library are:
 The model registry provides easy access to all available models:
 
 ```python
-from kelp_o_matic import model_registry
+from habitat_mapper import model_registry
 
 # List all available model names
 model_names = model_registry.list_model_names()
@@ -38,7 +38,7 @@ all_models = model_registry.list_models()  # Returns [(name, version), ...]
 Once you have a model, you can process images using the model's `process` method:
 
 ```python
-from kelp_o_matic import model_registry
+from habitat_mapper import model_registry
 from pathlib import Path
 
 # Load a model for kelp segmentation
@@ -61,7 +61,7 @@ model.process(
 For more control over the processing, you can access the underlying configuration:
 
 ```python
-from kelp_o_matic import model_registry, ModelConfig, ONNXModel
+from habitat_mapper import model_registry, ModelConfig, ONNXModel
 from pathlib import Path
 
 # Access model configuration
@@ -93,7 +93,7 @@ custom_model.process(
 ### Kelp Segmentation
 
 ```python
-from kelp_o_matic import model_registry
+from habitat_mapper import model_registry
 
 # Segment kelp in RGB drone imagery
 model = model_registry['kelp-rgb']
@@ -116,7 +116,7 @@ model.process(
 ### Mussel Segmentation
 
 ```python
-from kelp_o_matic import model_registry
+from habitat_mapper import model_registry
 
 # Segment mussels in RGB drone imagery
 model = model_registry['mussel-rgb']
@@ -137,7 +137,7 @@ model.process(
 ### Custom Processing Parameters
 
 ```python
-from kelp_o_matic import model_registry
+from habitat_mapper import model_registry
 
 model = model_registry['kelp-rgb']
 model.process(

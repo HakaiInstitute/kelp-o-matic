@@ -1,6 +1,6 @@
 [project]
-name = "kelp-o-matic"
-version = "0.14.0"
+name = "habitat-mapper"
+version = "0.14.1"
 description = "Habitat segmentation with AI"
 readme = "README.md"
 authors = [{ name = "Taylor Denouden", email = "taylor.denouden@hakai.org" }]
@@ -51,10 +51,10 @@ examples = [
 ]
 
 [project.urls]
-Documentation = "https://kelp-o-matic.readthedocs.io"
+Documentation = "https://habitat-mapper.readthedocs.io"
 
 [project.scripts]
-kom = "kelp_o_matic.main:app"
+hab = "habitat_mapper.main:app"
 
 [build-system]
 requires = ["hatchling"]

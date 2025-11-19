@@ -2,7 +2,7 @@
 
 The terminal is a text-based interface to your computer. It allows you to run
 commands to interact with your computer. The terminal is where you will run the
-Kelp-O-Matic tool.
+Habitat-Mapper tool.
 
 There are slight differences in how you interact with the terminal
 depending on your operating system, so choose the tab below based on which is relevant to you.
@@ -11,7 +11,7 @@ depending on your operating system, so choose the tab below based on which is re
 
 === "Windows"
     On Windows, there are two default terminal options: Command Prompt and PowerShell.
-    You can use either of these to run the Kelp-O-Matic tool. We recommend using PowerShell.
+    You can use either of these to run the Habitat-Mapper tool. We recommend using PowerShell.
 
     To open PowerShell, search for "PowerShell" in the search bar and click on "Windows PowerShell".
 
@@ -108,8 +108,8 @@ depending on your operating system, so choose the tab below based on which is re
 
 You did it! You now know enough to navigate around the terminal. There are many commands you can use
 in the terminal, but these are the most important ones to get you started. You're now going to copy and paste some
-commands to set up the Kelp-O-Matic tool, detailed in the next section. This is going to add a new command to your
-terminal that you can use to run the Kelp-O-Matic tool.
+commands to set up the Habitat-Mapper tool, detailed in the next section. This is going to add a new command to your
+terminal that you can use to run the Habitat-Mapper tool.
 
 ### Next Steps
 

@@ -1,0 +1,21 @@
+{
+  "cls_name": "habitat_mapper.model.LegacyKelpRGBModel",
+  "name": "kelp-rgb",
+  "revision": "20240722",
+  "description": "Kelp segmentation model for RGB drone imagery.",
+  "dependencies": [
+    "https://huggingface.co/HakaiInstitute/kelp-rgb/resolve/20240722/model.onnx"
+  ],
+  "model_filename": "model.onnx",
+  "normalization": "standard",
+  "mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "std": [
+    0.229,
+    0.224,
+    0.225
+  ]
+}

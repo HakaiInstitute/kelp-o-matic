@@ -11,7 +11,7 @@ Nvidia CUDA-compatible GPU that will make things run faster, but it's not requir
 
 **What resolution should my data be?**
 
-Kelp-O-Matic was designed to work best on imagery with 1cm to 10cm pixel resolution. 5cm resolution is likely optimal.
+Habitat-Mapper was designed to work best on imagery with 1cm to 10cm pixel resolution. 5cm resolution is likely optimal.
 For the PlanetScope model, the input resolution should be 3m or better and use the surface reflectance bands.
 
 **When I run the tool, it starts giving me warnings. Should I worry?**
@@ -20,15 +20,15 @@ The warnings are there to give you optional suggestions or hints about things th
 to worry about them, but by reading them and making the suggested adjustments, you may find processing to proceed more
 quickly.
 
-**Will Kelp-O-Matic work for my data, which is not from western North America?**
+**Will Habitat-Mapper work for my data, which is not from western North America?**
 
-While Kelp-O-Matic was trained primarily on data from British Columbia and California, it has shown good performance in
+While Habitat-Mapper was trained primarily on data from British Columbia and California, it has shown good performance in
 other regions like Alaska and Patagonia. The model may work best with imagery similar to our training data, but we
 actively work to improve its performance across different geographical areas. If you find the model isn't performing
 well with your data, please contact us - we're interested in expanding the model's capabilities and may be able to
 optimize it for your specific region.
 
-**Will Kelp-O-Matic work better on my images if I pass in sensor band X for instead of e.g. the red band?**
+**Will Habitat-Mapper work better on my images if I pass in sensor band X for instead of e.g. the red band?**
 
 Most likely no, this won't work. The model is specifically trained to use the relationships between the RGB (and NIR,
 for certain models) bands to determine if kelp/mussels are present.
@@ -50,5 +50,5 @@ software.
 
 *Still have a question?*
 
-Get in touch by [sending us an email](mailto:kom.support@hakai.org)
-or [file a GitHub issue](https://github.com/HakaiInstitute/kelp-o-matic/issues)
+Get in touch by [sending us an email](mailto:habitat.mapper.support@hakai.org)
+or [file a GitHub issue](https://github.com/HakaiInstitute/habitat-mapper/issues)

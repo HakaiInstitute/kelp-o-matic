@@ -11,8 +11,8 @@ from typing import TYPE_CHECKING
 import numpy as np
 import pytest
 
-from kelp_o_matic.config import ProcessingConfig
-from kelp_o_matic.processing import ImageProcessor
+from habitat_mapper.config import ProcessingConfig
+from habitat_mapper.processing import ImageProcessor
 
 if TYPE_CHECKING:
     from rasterio.windows import Window

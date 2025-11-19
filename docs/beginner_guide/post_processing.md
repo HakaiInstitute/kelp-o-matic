@@ -1,7 +1,7 @@
-# Methods for Post-Processing Kelp-O-Matic Output[^1]
+# Methods for Post-Processing Habitat-Mapper Output[^1]
 
 This document describes the methods used for generating analysis ready data on
-species-level kelp extent from outputs from the Kelp-O-Matic tool. Final outputs
+species-level kelp extent from outputs from the Habitat-Mapper tool. Final outputs
 consist of polygon features (.shp) that contain species-level classification of
 emergent canopy kelp present in drone imagery.
 
@@ -20,7 +20,7 @@ the [Hakai Institute](https://hakai.org).
 
 ```mermaid
 graph TB
-    A[/"Raw KoM output (.tif)"/]-- Open in ArcGIS Pro -->B["Convert to polygon feature (raster to polygon)"];
+    A[/"Raw Habitat-Mapper output (.tif)"/]-- Open in ArcGIS Pro -->B["Convert to polygon feature (raster to polygon)"];
     B-->edit
     subgraph edit [Edit]
         direction TB
@@ -33,7 +33,7 @@ graph TB
 
 ## Detailed Workflow
 
-This section assumes that you have obtained output from the Kelp-O-Matic (.tif) and have
+This section assumes that you have obtained output from the Habitat-Mapper (.tif) and have
 a new
 instance of ArcGIS Pro (3.4). These same steps can be done using other GIS
 software (e.g. QGIS)
@@ -55,9 +55,9 @@ software (e.g. QGIS)
         1. Quickly draw a polygon then click ctrl+W to delete the polygon features
            within the newly drawn polygon. Then delete that polygon.
 
-### Load Kelp-O-Matic Raster
+### Load Habitat-Mapper Raster
 
-Load the output `.tif` file from Kelp-O-Matic into ArcGIS Pro. The raster will have the
+Load the output `.tif` file from Habitat-Mapper into ArcGIS Pro. The raster will have the
 following
 attributes:
 
@@ -107,33 +107,25 @@ Convert this raster into polygons using the `Raster to Polygon` tool in ArcGIS P
 
 #### Manually delete non-kelp polygons
 
-There may be areas where KoM classifier falsely detected kelp and these polygons need to
-be removed
-manually.
+There may be areas where the Habitat-Mapper classifier falsely detected kelp and these polygons need to
+be removed manually.
 
 1. Select using the edit tool or `Select by Lasso` tool
 2. Delete the selected polygon(s)
 3. Save edits.
 
-#### Add kelp not detected by KoM
+#### Add kelp not detected by Habitat-Mapper
 
-If there are locations where emergent canopy kelp was missed by the KoM classifier (
-example in
-figure below) manually digitize these features using the Freehand Tool. You will need to
-manually
-classify these new regions to species (change value in the attribute table). A 1:100
-scale is
-recommended.
+If there are locations where emergent canopy kelp was missed by the Habitat-Mapper classifier (
+example in figure below) manually digitize these features using the Freehand Tool. You will need to
+manually classify these new regions to species (change value in the attribute table). A 1:100
+scale is recommended.
 
 ![Missed Kelp](./images/post_processing2.png)
 
 ### Review Species Attributes
 
-There may be some areas where the KoM classifier misclassified the species in a given
-area. These
-polygons can be edited manually. If you're just interested in presence/absence don't
-worry about
-this step.
+There may be some areas where the Habitat-Mapper classifier misclassified the species in a given area. These polygons can be edited manually. If you're just interested in presence/absence don't worry about this step.
 
 1. Select all polygon features classified as giant kelp by opening the attribute table
    and `select by attribute`. Select features representing giant kelp by typing: `"gridcode" = 2`.
@@ -145,7 +137,7 @@ this step.
 
 Repeat steps 1 - 3 for bull kelp by using `"gridcode" = 3` and `Nereocystis luetkeana`.
 
-1. Review all the polygon species classification and manually change ones that the KoM
+1. Review all the polygon species classification and manually change ones that the Habitat-Mapper
    classifier
    misclassified by changing the text in the `species` field for that polygon feature.
 2. Save edits.
