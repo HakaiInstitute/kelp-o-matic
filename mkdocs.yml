@@ -1,25 +1,32 @@
 site_name: Habitat-Mapper
 site_url: https://habitat-mapper.readthedocs.io
 repo_url: https://github.com/HakaiInstitute/habitat-mapper
-repo_name: HakaiInstitue/habitat-mapper
+repo_name: HakaiInstitute/habitat-mapper
 edit_uri: /edit/main/docs
 
 nav:
   - Home: index.md
-  - Beginner Guide:
-      - beginner_guide/index.md
-      - Crash Course on the Terminal: beginner_guide/terminal_crash_course.md
-      - Environment Setup and Installation: beginner_guide/install_env_setup.md
-      - Processing Images: beginner_guide/execution.md
-      - Post-Processing: beginner_guide/post_processing.md
+  - Getting Started:
+      - Overview: beginner_guide/index.md
+      - Prerequisites:
+        - Terminal Crash Course: beginner_guide/terminal_crash_course.md
+      - Installation: beginner_guide/install_env_setup.md
+      - Your First Run:
+        - Processing Images: beginner_guide/execution.md
+        - Post-Processing: beginner_guide/post_processing.md
   - Installation: installation.md
-  - Data Requirements: expectations.md
-  - Command Line Interface: cli.md
-  - Python API: python_lib.md
-  - About: about.md
-  - Attribution: attribution.md
-  - FAQs: faqs.md
-  - Issue Tracker: 'https://github.com/HakaiInstitute/habitat-mapper/issues'
+  - Usage:
+    - Input Requirements: expectations.md
+    - CLI Reference: cli.md
+    - Python API: python_lib.md
+    - Understanding Outputs: model_outputs.md
+  - Model Details:
+    - Architecture & Training: training_details.md
+    - Performance Metrics: model_performance.md
+  - Help & About:
+    - FAQs: faqs.md
+    - Attribution: attribution.md
+    - Issue Tracker: 'https://github.com/HakaiInstitute/habitat-mapper/issues'
 
 theme:
   name: material
@@ -30,6 +37,10 @@ theme:
   features:
     - navigation.indexes
     - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.top
     - navigation.instant.prefetch
     - content.tabs.link
     - content.code.copy
@@ -65,6 +76,8 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.tilde
   - tables
+  - toc:
+      toc_depth: 3
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.emoji:
@@ -85,7 +98,6 @@ markdown_extensions:
 
 extra_javascript:
   - javascripts/mathjax.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 plugins:

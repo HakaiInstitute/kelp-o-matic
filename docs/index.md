@@ -1,10 +1,6 @@
 # Habitat-Mapper
 
-**Habitat Segmentation with AI**
-
-(The artist formerly known as *"Kelp-O-Matic"*)
-
-<div align="center" style="overflow: hidden; display: flex; justify-content:center; gap:10px;">
+<div style="overflow: hidden; display: flex; justify-content:flex-start; gap:10px;">
 <a href="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml">
     <img alt="🧪 Tests" src="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml/badge.svg" height="20px" />
 </a>
@@ -22,26 +18,48 @@
 </a>
 </div>
 
+![Kelp Gif](images/habitat_mapper_notext_optimized.gif){ loading=lazy }
+
+**Habitat Segmentation with AI**
+
+(The artist formerly known as *"Kelp-O-Matic"*)
+
 ***
-
-## Getting Started
-
-Please see the [beginner guide](beginner_guide/index.md) if you are new to using command line tools. Otherwise, see the
-[installation](installation.md) and the [CLI](cli.md) or [Python API](python_lib.md) documentation.
 
 ## Features
 
-* Kelp presence/absence detection in RGB RPAS imagery.
-* Kelp macrocystis/nereocystis detection in RGB RPAS imagery.
-* Mussel presence/absence detection in RGB RPAS imagery.
+* Kelp macrocystis/nereocystis detection in RGB and RGB+NIR RPAS and aerial imagery.
+* Mussel and gooseneck barnacle detection in RGB RPAS imagery.
+* Kelp presence/absence 8-band PlanetLabs satellite imagery.
 
-![Kelp Gif](images/habitat_mapper_notext_optimized.gif){ loading=lazy }
+
+## Quick Start (CLI)
+
+1. Install Habitat-Mapper with Python pip
+   ```bash
+   pip install habitat-mapper
+   ```
+2. List the available models
+   ```bash
+   hab models
+   ```
+3. Segment your imagery (*e.g.* using the kelp-rgb model)
+    ```bash
+    hab segment kelp-rgb your_input_image.tif output_kelp.tif
+    ```
+
+## Getting Started
+
+Check out our [beginner guide](beginner_guide/index.md) if you are new to using command line tools!
+
+Otherwise, please see the [installation](installation.md) and the [CLI](cli.md) or [Python Library](python_lib.md) documentation.
 
 ## Contribute
 
-Please file a bug report using our
-[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/habitat-mapper/issues) if you encounter any
-problems.
+If you encounter any trouble installing or using Habitat-Mapper, please
+file a bug report using our
+[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/habitat-mapper/issues) and we will do our
+best to help or fix the issue.
 
 Comments and questions are also appreciated!
 

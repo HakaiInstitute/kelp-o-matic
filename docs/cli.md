@@ -1,7 +1,7 @@
-# Command Line Reference
+# Command Line Interface
 
 The `habitat-mapper` package includes one command line tool, `hab`. It will be registered
-in the same Conda environment that the `habitat-mapper` package is installed to.
+in the same virtual environment that the `habitat-mapper` package is installed to.
 
 ```bash
 $ hab --help
@@ -17,7 +17,6 @@ Usage: hab COMMAND
 │ --version  Display application version.                                                                           │
 ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
-
 
 ## Segment
 

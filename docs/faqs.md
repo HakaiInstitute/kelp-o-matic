@@ -44,7 +44,7 @@ may improve performance.
 
 **The output image is all black. Did it find anything?**
 
-The model outputs pixel values from 0-3 depending on which model was used ([see here](about.md#model-outputs)). Make
+The model outputs pixel values from 0-3 depending on which model was used ([see here](model_outputs.md)). Make
 sure you visualize the outputs in your GIS using "unique values" classification, not a continuous color ramp.
 
 **My outputs don't align with the input orthomosaic in my GIS**

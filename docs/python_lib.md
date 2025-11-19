@@ -1,4 +1,4 @@
-# Python Library Reference
+# Python Library Interface
 
 The Python library provides access to the segmentation models and processing functionality through a high-level API.
 
