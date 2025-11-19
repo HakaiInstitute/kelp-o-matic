@@ -4,23 +4,22 @@
 
 Previously known as ***"Kelp-O-Matic"***
 
-<div style="overflow: hidden; display: flex; justify-content:flex-start; gap:10px;">
-    <a href="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/unit-test.yml">
-        <img alt="🧪 Test" src="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml/badge.svg" height="20px" />
-    </a>
+<div align="center" style="overflow: hidden; display: flex; justify-content:center; gap:10px;">
+<a href="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml">
+    <img alt="🧪 Tests" src="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml/badge.svg" height="20px" />
+</a>
 
-    <a href="https://github.com/HakaiInstitute/habitat-mapper/blob/main/LICENSE">
-        <img alt="License" src="https://anaconda.org/conda-forge/habitat-mapper/badges/license.svg" height="20px" />
-    </a>
+<a href="https://github.com/HakaiInstitute/habitat-mapper/blob/main/LICENSE">
+    <img alt="License" src="https://img.shields.io/pypi/l/habitat-mapper" height="20px" />
+</a>
 
-    <a href="https://anaconda.org/conda-forge/habitat-mapper">
-        <img alt="Version" src="https://anaconda.org/conda-forge/habitat-mapper/badges/version.svg" height="20px" />
-    </a>
+<a href="https://pypi.org/project/habitat-mapper">
+    <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/habitat-mapper" height="20px">
+</a>
 
-    <a href="https://zenodo.org/badge/latestdoi/462897183">
-        <img alt="DOI" src="https://zenodo.org/badge/462897183.svg" height="20px" />
-    </a>
-
+<a href="https://zenodo.org/badge/latestdoi/462897183">
+    <img alt="DOI" src="https://zenodo.org/badge/462897183.svg" height="20px" />
+</a>
 </div>
 
 ***

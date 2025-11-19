@@ -1,14 +1,10 @@
 <div align="center" style="overflow: hidden; display: flex; justify-content:center; gap:10px;">
 <a href="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml">
-    <img alt="🧪 Test" src="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml/badge.svg" height="20px" />
+    <img alt="🧪 Tests" src="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml/badge.svg" height="20px" />
 </a>
 
 <a href="https://github.com/HakaiInstitute/habitat-mapper/blob/main/LICENSE">
-    <img alt="License" src="https://anaconda.org/conda-forge/habitat-mapper/badges/license.svg" height="20px" />
-</a>
-
-<a href="https://anaconda.org/conda-forge/habitat-mapper">
-    <img alt="Version" src="https://anaconda.org/conda-forge/habitat-mapper/badges/version.svg" height="20px" />
+    <img alt="License" src="https://img.shields.io/pypi/l/habitat-mapper" height="20px" />
 </a>
 
 <a href="https://pypi.org/project/habitat-mapper">
