@@ -29,8 +29,15 @@ guide.
     3. Once installation is finished, you will have a new terminal command: `uv`.
 
 2. Use to create a new "virtual environment" in your preferred file system location with the following commands:
+
+   !!! warning "Create Environment on Local Drive"
+
+       Create your virtual environment on a local drive, not on a network drive or external storage.
+       This avoids GDAL installation errors caused by system library linking issues. Once created and activated,
+       you can navigate to any location (including network drives) to work with your data.
+
     ```bash
-    cd path/to/your/preferred/location
+    cd path/to/your/preferred/location  # Use a local drive path, e.g., C:\Users\YourName\environments (Windows) or ~/environments (MacOS/Linux)
     uv venv my_env_name  # my_env_name is the name of your virtual environment. You can choose any name you like.
     ```
 
