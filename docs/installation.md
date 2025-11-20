@@ -122,6 +122,32 @@ We follow [semantic versioning](https://semver.org/). To update to the latest ve
 === "Standard Pip"
     `pip install --upgrade habitat-mapper `
 
+!!! note "For existing Kelp-O-Matic users"
+
+    If you have previously installed `kelp-o-matic`, we strongly recommend a clean transition to avoid dependency
+    conflicts and duplicate files.
+
+    **1. Uninstall the legacy package**
+
+    Remove the old package before installing `habitat-mapper`:
+
+    ```bash
+    pip uninstall kelp-o-matic
+    pip install habitat-mapper
+    ```
+
+    **2. Clean the model cache**
+
+    By default, `habitat-mapper` uses a new cache location. To avoid storing two copies of large model files (one for
+    the old tool, one for the new), run the clean command:
+
+    ```bash
+    hab clean
+    ```
+
+    Select **"y"** when prompted. This will remove legacy Kelp-O-Matic models. `habitat-mapper` will automatically
+    re-download the latest optimized models when you run your first `segment` command.
+
 ## Next Steps
 
 * **Beginners:** Head to [Processing Images](beginner_guide/execution.md) to run your first segmentation.
