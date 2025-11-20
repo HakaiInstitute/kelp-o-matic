@@ -90,7 +90,7 @@ hab segment kelp-rgb input_image.tif output_mask.tif
 ```
 
 !!! tip "New to the Command Line?"
-    Don't worry! We have a dedicated **[Beginner's Guide](/beginner_guide)**
+    Don't worry! We have a dedicated **[Beginner's Guide](beginner_guide/index.md)**
     that walks you through setting up your terminal, installing the software, and processing your first image.
 
 ---

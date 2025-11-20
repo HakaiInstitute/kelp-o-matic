@@ -7,10 +7,11 @@ Please select the installation method that best matches your experience level.
 === "Beginner Guide (Recommended)"
 
     !!! tip "New to the Command Line?"
-        Don't worry! Check the **[Beginner's Guide](/beginner_guide)** that walks you through setting up your terminal
-        and then come back here.
+        Don't worry! Check the **[Beginner's Guide](beginner_guide/index.md)** that walks you through setting up your
+        terminal and then come back here.
 
-    We recommend using `uv` to manage your environment. It is faster than standard Python tools and simplifies the setup process across Windows, macOS, and Linux.
+    We recommend using `uv` to manage your environment. It is faster than standard Python tools and simplifies the
+    setup process across Windows, macOS, and Linux.
 
     ### 1. Install `uv`
 
@@ -32,9 +33,11 @@ Please select the installation method that best matches your experience level.
     Navigate to your project folder and create a clean environment.
 
     !!! warning "Storage Location (Windows Users)"
-        Create your environment on a local drive (e.g., `C:\Users\YourName\habitat-mapper`), **not** on a network drive (drives mapped to shared folders or servers).
+        Create your environment on a local drive (e.g., `C:\Users\YourName\habitat-mapper`), **not** on a network drive
+        (drives mapped to shared folders or servers).
 
-        **Why?** Network drives can cause GDAL library errors during installation. Don't worry if you're unsure what a network drive is—if you're working in your normal Documents or Desktop folder on `C:`, you're fine.
+        **Why?** Network drives can cause GDAL library errors during installation. Don't worry if you're unsure what a
+        network drive is—if you're working in your normal Documents or Desktop folder on `C:`, you're fine.
 
         Once installed, you can navigate to wherever your data is stored (including network drives) to process images.
 
