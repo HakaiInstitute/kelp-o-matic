@@ -9,7 +9,7 @@ geospatial imagery with Habitat-Mapper.
 
 We recommend following these modules in order.
 
-<div class="grid cards" markdown="1">
+<div class="grid cards" markdown="1" style="grid-template-columns: 1fr;">
 
 -   :material-console: **1. Terminal Crash Course**
 
