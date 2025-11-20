@@ -31,8 +31,12 @@ Please select the installation method that best matches your experience level.
 
     Navigate to your project folder and create a clean environment.
 
-    !!! warning "Storage Location"
-        **Windows Users:** Create your environment on a local drive (e.g., `C:`), not a network drive. This avoids common GDAL errors.
+    !!! warning "Storage Location (Windows Users)"
+        Create your environment on a local drive (e.g., `C:\Users\YourName\habitat-mapper`), **not** on a network drive (drives mapped to shared folders or servers).
+
+        **Why?** Network drives can cause GDAL library errors during installation. Don't worry if you're unsure what a network drive is—if you're working in your normal Documents or Desktop folder on `C:`, you're fine.
+
+        Once installed, you can navigate to wherever your data is stored (including network drives) to process images.
 
     ```bash
     # 1. Go to your preferred folder
@@ -95,16 +99,18 @@ To verify that Habitat-Mapper was installed correctly and to check the installed
 hab --version
 ```
 
-!!! important "Troubleshooting 'Command Not Found'"
-    The `hab` command is **only** available when your virtual environment is activated.
+!!! warning "Troubleshooting: 'Command Not Found'"
+    If you see an error like `command not found` or `'hab' is not recognized as an internal or external command`:
 
-    ```
-    If you see an error like `command not found` or `hab is not recognized`:
+    **The `hab` command is only available when your virtual environment is activated.**
 
-    1. Check your terminal prompt. Does it show `(habitat-env)` (or your environment name)?
-    2. If not, run the **Activation** command from Step 3 above.
+    **Steps to fix:**
+
+    1. Check your terminal prompt. Does it show `(habitat-env)` at the beginning?
+    2. If **not**, the environment isn't active. Run the **Activation command** from Step 3 above.
     3. Try `hab --version` again.
-    ```
+
+    You'll need to activate the environment every time you open a new terminal window.
 
 ## Updating
 
