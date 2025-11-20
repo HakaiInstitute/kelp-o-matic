@@ -1,0 +1,4 @@
+/* Show pointer cursor on site name text in header */
+.md-header__title .md-header__ellipsis .md-header__topic {
+  cursor: pointer;
+}
