@@ -28,7 +28,7 @@ hide:
 
 *(The artist formerly known as "Kelp-O-Matic")*
 
-[Get Started :material-arrow-right:](installation.md){ .md-button .md-button--primary }
+[Get Started :material-arrow-right:](beginner_guide/index.md){ .md-button .md-button--primary }
 [View on GitHub :material-github:](https://github.com/HakaiInstitute/habitat-mapper){ .md-button }
 
 </div>
@@ -92,6 +92,28 @@ hab segment kelp-rgb input_image.tif output_mask.tif
 !!! tip "New to the Command Line?"
     Don't worry! We have a dedicated **[Beginner's Guide](/beginner_guide)**
     that walks you through setting up your terminal, installing the software, and processing your first image.
+
+---
+
+## Choose Your Path
+
+=== "New to Command Line Tools"
+
+    Never used a terminal before? Start here:
+
+    1. [Terminal Crash Course](beginner_guide/terminal_crash_course.md) - Learn basic terminal navigation
+    2. [Installation Guide](installation.md) - Set up the software step-by-step
+    3. [Your First Segmentation](beginner_guide/execution.md) - Process your first image
+    4. [Post-Processing Results](beginner_guide/post_processing.md) - Clean and analyze your data
+
+=== "Experienced Python Users"
+
+    Jump straight to what you need:
+
+    - [Installation](installation.md) - Quick `pip install habitat-mapper`
+    - [CLI Reference](cli.md) - All command options
+    - [Python API](python_lib.md) - Use as a library in your scripts
+    - [Input Requirements](expectations.md) - Data format specifications
 
 ---
 
