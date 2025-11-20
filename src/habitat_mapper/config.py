@@ -145,6 +145,7 @@ class ModelConfig(BaseModel):
         }
 
         # Auto-inject auxiliary file paths from dependencies if available
+        # This allows readers like SAFEReader to access downloaded dependency files
         if self.dependencies:
             dep_paths = self.local_dependency_paths
 
