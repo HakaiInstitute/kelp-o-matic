@@ -238,6 +238,9 @@ def get_ort_providers() -> list[str]:
     if "CUDAExecutionProvider" in available_providers:
         providers.append("CUDAExecutionProvider")
 
+    if "CoreMLExecutionProvider" in available_providers:
+        providers.append("CoreMLExecutionProvider")
+
     providers.append("CPUExecutionProvider")
     return providers
 
