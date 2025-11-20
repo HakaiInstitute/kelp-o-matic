@@ -11,19 +11,21 @@ nav:
       - Prerequisites:
         - Terminal Crash Course: beginner_guide/terminal_crash_course.md
       - Installation: installation.md
-      - Your First Run:
+      - First Segmentation:
         - Processing Images: beginner_guide/execution.md
         - Post-Processing: beginner_guide/post_processing.md
   - Usage:
+    - Quick Reference: quick_reference.md
     - Input Requirements: expectations.md
     - CLI Reference: cli.md
     - Python API: python_lib.md
-    - Understanding Outputs: model_outputs.md
+    - Model Output Reference: model_outputs.md
   - Model Details:
-    - Architecture & Training: training_details.md
+    - Model Architecture: training_details.md
     - Performance Metrics: model_performance.md
   - Help & About:
     - FAQs: faqs.md
+    - Glossary: glossary.md
     - Attribution: attribution.md
     - Issue Tracker: 'https://github.com/HakaiInstitute/habitat-mapper/issues'
 
@@ -40,6 +42,7 @@ theme:
     - navigation.tabs.sticky
     - navigation.sections
     - navigation.top
+    - navigation.footer
     - navigation.instant.prefetch
     - content.tabs.link
     - content.code.copy
