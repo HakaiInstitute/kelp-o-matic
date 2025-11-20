@@ -6,8 +6,6 @@
 British Columbia, Canada. The Hakai Institute led the development of this software package and contributed the majority
 of machine learning training data used to build the kelp detection and mussel and gooseneck barnacle detection models.
 
-![Hakai Institute Logo](images/hakai_logo_red.png){ loading=lazy, width=160 }
-
 ## Training Data Contributors
 
 ### The Nature Conservancy of California
