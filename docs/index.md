@@ -45,7 +45,7 @@ using deep learning, streamlining analysis for drone (RPAS), aerial, and satelli
 -   :material-leaf: **Kelp Detection**
 
     ---
-    Detects *Macrocystis* and *Nereocystis* canopies in RGB and RGB+NIR aerial/drone imagery.
+    Detects *Macrocystis* and *Nereocystis* canopies in RGB and RGB+NIR fixed-wing and drone imagery.
 
 -   :material-waves: **Intertidal Life**
 
