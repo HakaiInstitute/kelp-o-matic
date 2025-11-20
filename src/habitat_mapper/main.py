@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import itertools
 import os
 from importlib.metadata import version
 from pathlib import Path
@@ -9,9 +10,11 @@ from typing import Annotated
 
 import deprecation
 import humanize
+import platformdirs
 from cyclopts import App, Parameter
 from cyclopts.types import ExistingFile, File, PositiveInt  # noqa: TC002
 from loguru import logger
+from rich import box
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm
@@ -97,7 +100,7 @@ def _existing_model_validator(type_: type, value: str) -> None:
 
 
 def _existing_image_validator(type_: type, value: Path | str) -> None:
-    """Validate that input path exists and is either a file or SAFE directory.
+    """Validate that input path exists and is a file.
 
     Args:
         type_: The type being validated (unused, required by cyclopts)
@@ -110,12 +113,8 @@ def _existing_image_validator(type_: type, value: Path | str) -> None:
     if not path.exists():
         raise TypeError(f"Input path does not exist: {path}")
 
-    # Accept SAFE directories or any file
-    if path.is_dir():
-        if not path.name.endswith(".SAFE"):
-            raise TypeError(f"Directory must be a Sentinel-2 SAFE format (name ends with .SAFE), got: {path.name}")
-    elif not path.is_file():
-        raise TypeError(f"Input must be a file or SAFE directory, got: {path}")
+    if not path.is_file():
+        raise TypeError(f"Input must be a file, got: {path}")
 
 
 @app.command
@@ -238,7 +237,13 @@ def revisions(
 def clean() -> None:
     """Clear the Habitat-Mapper model cache to free up space. Models will be re-downloaded as needed."""
     model_dir = get_local_model_dir()
-    files = list(filter(lambda f: f.is_file(), model_dir.glob("**/*")))
+
+    # Also find old kelp-o-matic files
+    kom_model_dir = Path(platformdirs.user_cache_dir(appname="kelp_o_matic", appauthor="hakai")) / "models"
+
+    # 1. Gather files using the idiomatic list comprehension
+    files = [f for f in itertools.chain(model_dir.rglob("*"), kom_model_dir.glob("*")) if f.is_file()]
+
     if not files:
         panel = Panel(
             "[yellow]Model cache is already empty.[/yellow]",
@@ -248,22 +253,60 @@ def clean() -> None:
         console.print(panel)
         return
 
-    total_size = sum(file.stat().st_size for file in files)
+    # 2. Sort by size (descending) so user sees largest files first
+    files.sort(key=lambda f: f.stat().st_size, reverse=True)
+    total_size = sum(f.stat().st_size for f in files)
 
+    # 3. Build a nice table to show the user
+    table = Table(
+        title=f"[bold red]Cache Contents ({humanize.naturalsize(total_size)})[/bold red]",
+        box=box.SIMPLE,
+        show_header=True,
+    )
+    table.add_column("File", style="cyan", no_wrap=True)
+    table.add_column("Location", style="dim")
+    table.add_column("Size", justify="right", style="green")
+
+    # Limit displayed rows to avoid flooding terminal if there are 100s of files
+    max_display = 15
+    for i, file in enumerate(files):
+        if i >= max_display:
+            remaining = len(files) - max_display
+            table.add_row(
+                f"[italic]... and {remaining} more files[/italic]",
+                "",
+                humanize.naturalsize(sum(f.stat().st_size for f in files[i:])),
+            )
+            break
+
+        # clean up path for display (replace /home/user with ~)
+        try:
+            display_path = str(file.parent).replace(str(Path.home()), "~")
+        except ValueError:
+            display_path = str(file.parent)
+
+        table.add_row(file.name, display_path, humanize.naturalsize(file.stat().st_size))
+
+    console.print(table)
+    console.print()  # Add a little breathing room
+
+    # 4. Confirm and Execute
     if not Confirm.ask(
-        f"[yellow]Are you sure you want to clear the model cache? "
-        f"This will free up {humanize.naturalsize(total_size)}.[/yellow]",
+        "[yellow]Are you sure you want to clear the model cache?[/yellow]",
         default=False,
     ):
         logger.warning("Model cache clearing aborted.")
         return
 
-    logger.info("Clearing model cache...")
-    for file in files:
-        file.unlink()
+    with console.status("[bold red]Deleting files...[/bold red]"):
+        for file in files:
+            try:
+                file.unlink()
+            except OSError as e:
+                logger.warning(f"Could not delete {file}: {e}")
 
     panel = Panel(
-        f"[green]✓ Cleared model cache at {model_dir}.\nFreed {humanize.naturalsize(total_size)}[/green]",
+        f"[green]✓ Cleared model cache.\nFreed {humanize.naturalsize(total_size)}[/green]",
         title="[bold green]Cache Cleared[/bold green]",
         border_style="green",
     )
@@ -284,7 +327,7 @@ def segment(
     img_path: Annotated[
         Path,
         Parameter(
-            help="Path to input raster file (GeoTIFF, etc.) or Sentinel-2 SAFE directory",
+            help="Path to input raster file (GeoTIFF)",
             validator=_existing_image_validator,
             name=["--input", "-i"],
         ),
@@ -386,7 +429,7 @@ def segment(
     console.print(success_panel)
 
 
-@app.command
+@app.command(show=False)
 @deprecation.deprecated(
     deprecated_in="0.14.0",
     removed_in="0.15.0",
@@ -489,7 +532,7 @@ def find_kelp(
     )
 
 
-@app.command
+@app.command(show=False)
 @deprecation.deprecated(
     deprecated_in="0.14.0",
     removed_in="0.15.0",

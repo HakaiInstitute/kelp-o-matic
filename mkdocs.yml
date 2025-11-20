@@ -17,6 +17,7 @@ nav:
   - Command Line Interface: cli.md
   - Python API: python_lib.md
   - About: about.md
+  - Attribution: attribution.md
   - FAQs: faqs.md
   - Issue Tracker: 'https://github.com/HakaiInstitute/habitat-mapper/issues'
 
