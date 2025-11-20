@@ -1,78 +1,119 @@
-# Habitat-Mapper
+---
+title: Habitat-Mapper
+hide:
+  - navigation
+  - toc
+---
 
-<div style="overflow: hidden; display: flex; justify-content:flex-start; gap:10px;">
+# Habitat-Mapper {: style="display: none;" }
+
+<div align="center" markdown="1">
+
 <a href="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml">
-    <img alt="🧪 Tests" src="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml/badge.svg" height="20px" />
+    <img alt="Tests" src="https://github.com/HakaiInstitute/habitat-mapper/actions/workflows/test.yml/badge.svg?style=flat-square" />
 </a>
-
-<a href="https://github.com/HakaiInstitute/habitat-mapper/blob/main/LICENSE">
-    <img alt="License" src="https://img.shields.io/pypi/l/habitat-mapper" height="20px" />
-</a>
-
 <a href="https://pypi.org/project/habitat-mapper">
-    <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/habitat-mapper" height="20px">
+    <img alt="PyPI" src="https://img.shields.io/pypi/v/habitat-mapper?style=flat-square" />
+</a>
+<a href="https://github.com/HakaiInstitute/habitat-mapper/blob/main/LICENSE">
+    <img alt="License" src="https://img.shields.io/pypi/l/habitat-mapper?style=flat-square" />
+</a>
+<a href="https://zenodo.org/badge/latestdoi/462897183">
+    <img alt="DOI" src="https://zenodo.org/badge/462897183.svg?style=flat-square" />
 </a>
 
-<a href="https://zenodo.org/badge/latestdoi/462897183">
-    <img alt="DOI" src="https://zenodo.org/badge/462897183.svg" height="20px" />
-</a>
+![Kelp Animation](images/habitat_mapper_optimized.gif){ width=600 }
+
+## **Habitat Segmentation with AI**
+
+*(The artist formerly known as "Kelp-O-Matic")*
+
+[Get Started :material-arrow-right:](installation.md){ .md-button .md-button--primary }
+[View on GitHub :material-github:](https://github.com/HakaiInstitute/habitat-mapper){ .md-button }
+
 </div>
 
-![Kelp Gif](images/habitat_mapper_notext_optimized.gif){ loading=lazy }
+---
 
-**Habitat Segmentation with AI**
+## What is Habitat-Mapper?
 
-(The artist formerly known as *"Kelp-O-Matic"*)
+Habitat-Mapper is an open-source tool for segmenting geospatial imagery. It automates the detection of coastal species
+using deep learning, streamlining analysis for drone (RPAS), aerial, and satellite imagery.
 
-***
+<div class="grid cards" markdown>
 
-## Features
+-   :material-leaf: **Kelp Detection**
 
-* Kelp macrocystis/nereocystis detection in RGB and RGB+NIR RPAS and aerial imagery.
-* Mussel and gooseneck barnacle detection in RGB RPAS imagery.
-* Kelp presence/absence 8-band PlanetLabs satellite imagery.
+    ---
+    Detects *Macrocystis* and *Nereocystis* canopies in RGB and RGB+NIR aerial/drone imagery.
 
+-   :material-waves: **Intertidal Life**
 
-## Quick Start (CLI)
+    ---
+    Identifies Mussels and Gooseneck Barnacles in high-resolution RGB drone imagery.
 
-1. Install Habitat-Mapper with Python pip
-   ```bash
-   pip install habitat-mapper
-   ```
-2. List the available models
-   ```bash
-   hab models
-   ```
-3. Segment your imagery (*e.g.* using the kelp-rgb model)
+-   :material-satellite-variant: **Satellite Scale**
+
+    ---
+    Analyzes 8-band PlanetLabs satellite imagery for broad-scale kelp presence/absence.
+
+</div>
+
+## Quick Start
+
+Install and run your first segmentation in three steps.
+
+1. Install via `pip`
     ```bash
-    hab segment kelp-rgb your_input_image.tif output_kelp.tif
+    pip install habitat-mapper
     ```
 
-## Getting Started
+2. Check available models
+```bash
+hab models
+```
+```bash
+┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Model Name           ┃ Revision ┃ Description                                                             ┃ Status    ┃
+┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ kelp-ps8b            │ 20250818 │ Kelp segmentation model for 8-band PlanetScope imagery.                 │ Cached    │
+│ kelp-rgb             │ 20240722 │ Kelp segmentation model for RGB drone imagery.                          │ Cached    │
+│ kelp-rgbi            │ 20231214 │ Kelp segmentation model for 4-band RGB+NIR drone imagery.               │ Cached    │
+│ mussel-gooseneck-rgb │ 20250725 │ Mussel and gooseneck barnacle segmentation model for RGB drone imagery. │ Available │
+│ mussel-rgb           │ 20250711 │ Mussel segmentation model for RGB drone imagery.                        │ Available │
+└──────────────────────┴──────────┴─────────────────────────────────────────────────────────────────────────┴───────────┘
+```
 
-Check out our [beginner guide](beginner_guide/index.md) if you are new to using command line tools!
+3. Segment an image
+```bash
+hab segment kelp-rgb input_image.tif output_mask.tif
+```
 
-Otherwise, please see the [installation](installation.md) and the [CLI](cli.md) or [Python Library](python_lib.md) documentation.
+!!! tip "New to the Command Line?"
+    Don't worry! We have a dedicated **[Beginner's Guide](/beginner_guide)**
+    that walks you through setting up your terminal, installing the software, and processing your first image.
 
-## Contribute
+---
 
-If you encounter any trouble installing or using Habitat-Mapper, please
-file a bug report using our
-[GitHub Issue Tracker :material-github:](https://github.com/HakaiInstitute/habitat-mapper/issues) and we will do our
-best to help or fix the issue.
+## Project & Community
 
-Comments and questions are also appreciated!
+### Contribute
 
-## License
+We welcome feedback\! If you encounter bugs or have feature requests, please use
+our [Issue Tracker](https://github.com/HakaiInstitute/habitat-mapper/issues).
 
-Habitat-Mapper is released under the
-[MIT license](https://raw.githubusercontent.com/tayden/habitat-mapper/main/LICENSE).
-
-## Contact
+### Team
 
 This project was co-created at the [Hakai Institute](https://hakai.org) by:
 
-- [**Taylor Denouden**](mailto:taylor.denouden@hakai.org) *(Machine Learning, Software Development)*
-- [**Luba Reshitnyk**](mailto:luba.reshitnyk@hakai.org) *(Scientific Application - Kelp, Data Collation and Labelling)*
-- [**Will McInnes**](mailto:will.mcinnes@hakai.org) *(Data Collation and Labelling - Mussels)*
-- [**Alyssa Gehman**](mailto:alyssa.gehman@hakai.org) *(Scientific Application - Mussels)*
+| Name                | Role                                          |
+|:--------------------|:----------------------------------------------|
+| **Taylor Denouden** | Machine Learning & Software Development       |
+| **Luba Reshitnyk**  | Scientific Application (Kelp), Data Collation |
+| **Will McInnes**    | Data Collation & Labelling (Mussels)          |
+| **Alyssa Gehman**   | Scientific Application (Mussels)              |
+
+### License
+
+Habitat-Mapper is released under
+the [MIT license](https://raw.githubusercontent.com/tayden/habitat-mapper/main/LICENSE).

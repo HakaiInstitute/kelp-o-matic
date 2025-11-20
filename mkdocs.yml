@@ -10,11 +10,10 @@ nav:
       - Overview: beginner_guide/index.md
       - Prerequisites:
         - Terminal Crash Course: beginner_guide/terminal_crash_course.md
-      - Installation: beginner_guide/install_env_setup.md
+      - Installation: installation.md
       - Your First Run:
         - Processing Images: beginner_guide/execution.md
         - Post-Processing: beginner_guide/post_processing.md
-  - Installation: installation.md
   - Usage:
     - Input Requirements: expectations.md
     - CLI Reference: cli.md
@@ -68,9 +67,9 @@ watch:
 markdown_extensions:
   - admonition
   - attr_list
+  - md_in_html
   - def_list
   - footnotes
-  - md_in_html
   - pymdownx.caret
   - pymdownx.details
   - pymdownx.keys
