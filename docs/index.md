@@ -72,16 +72,16 @@ Install and run your first segmentation in three steps.
 ```bash
 hab models
 ```
-```bash
-┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
-┃ Model Name           ┃ Revision ┃ Description                                                             ┃ Status    ┃
-┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ kelp-ps8b            │ 20250818 │ Kelp segmentation model for 8-band PlanetScope imagery.                 │ Cached    │
-│ kelp-rgb             │ 20240722 │ Kelp segmentation model for RGB drone imagery.                          │ Cached    │
-│ kelp-rgbi            │ 20231214 │ Kelp segmentation model for 4-band RGB+NIR drone imagery.               │ Cached    │
-│ mussel-gooseneck-rgb │ 20250725 │ Mussel and gooseneck barnacle segmentation model for RGB drone imagery. │ Available │
-│ mussel-rgb           │ 20250711 │ Mussel segmentation model for RGB drone imagery.                        │ Available │
-└──────────────────────┴──────────┴─────────────────────────────────────────────────────────────────────────┴───────────┘
+```text
+# ┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+# ┃ Model Name           ┃ Revision ┃ Description                                                             ┃ Status    ┃
+# ┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+# │ kelp-ps8b            │ 20250818 │ Kelp segmentation model for 8-band PlanetScope imagery.                 │ Available │
+# │ kelp-rgb             │ 20240722 │ Kelp segmentation model for RGB drone imagery.                          │ Available │
+# │ kelp-rgbi            │ 20231214 │ Kelp segmentation model for 4-band RGB+NIR drone imagery.               │ Available │
+# │ mussel-gooseneck-rgb │ 20250725 │ Mussel and gooseneck barnacle segmentation model for RGB drone imagery. │ Available │
+# │ mussel-rgb           │ 20250711 │ Mussel segmentation model for RGB drone imagery.                        │ Available │
+# └──────────────────────┴──────────┴─────────────────────────────────────────────────────────────────────────┴───────────┘
 ```
 
 3. Segment an image

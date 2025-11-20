@@ -2,6 +2,20 @@
 
 The Python library provides access to the segmentation models and processing functionality through a high-level API.
 
+## When to Use the Python API
+
+Use the Python library when you need to:
+
+- **Process multiple images** in a batch script or automated pipeline
+- **Integrate segmentation** into an existing Python workflow or data processing system
+- **Access model outputs programmatically** for further analysis or custom post-processing
+- **Customize processing** beyond what CLI options provide
+- **Build applications** that use Habitat-Mapper as a component
+
+**For single-image processing**, the [CLI](cli.md) is simpler and requires no programming knowledge. See the [Quick Reference](quick_reference.md) for CLI examples.
+
+---
+
 ## Core Components
 
 The main components of the Habitat-Mapper Python library are:
