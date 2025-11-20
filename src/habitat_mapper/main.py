@@ -433,7 +433,7 @@ def segment(
     console.print(success_panel)
 
 
-@app.command
+@app.command(show=False)
 @deprecation.deprecated(
     deprecated_in="0.14.0",
     removed_in="0.15.0",
@@ -536,7 +536,7 @@ def find_kelp(
     )
 
 
-@app.command
+@app.command(show=False)
 @deprecation.deprecated(
     deprecated_in="0.14.0",
     removed_in="0.15.0",
