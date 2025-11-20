@@ -4,7 +4,7 @@ Run segmentation inference on your geospatial imagery using the `hab segment` co
 
 !!! abstract "Prerequisites"
     1. **Activate Environment:** Ensure `(habitat-env)` is active in your terminal.
-    2. **Input Data:** Have your orthomosaics or raster data ready (GeoTIFF or Sentinel-2 SAFE).
+    2. **Input Data:** Have your GeoTIFF orthomosaics or raster data ready.
 
 ---
 
@@ -36,18 +36,30 @@ The `hab segment` command requires the model name, input path, and output destin
 hab segment --model <NAME> --input <PATH> --output <PATH> [OPTIONS]
 ```
 
+!!! tip "For Beginners"
+    You only need three things to get started:
+
+    - `--model` or `-m` - Which model to use (e.g., `kelp-rgb`)
+    - `--input` or `-i` - Path to your image file
+    - `--output` or `-o` - Path where results will be saved
+
+    Advanced options below are for optimization and special cases. You can safely ignore them for your first run.
+
 ### Parameters
 
 | Flag | Short | Description |
 | :--- | :--- | :--- |
 | `--model` | `-m` | **(Required)** Model identifier (e.g., `kelp-rgb`). |
-| `--input` | `-i` | **(Required)** Path to source raster (`.tif`, `.SAFE`). |
+| `--input` | `-i` | **(Required)** Path to source raster (`.tif`). |
 | `--output` | `-o` | **(Required)** Path for output classification raster (`.tif`). |
 | `--crop-size` | `-z` | Tile size for inference window (pixels). Default: `1024`. |
 | `--batch-size` | | Inference batch size. Increase for GPU acceleration. Default: `1`. |
 | `--band` | `-b` | Band mapping for non-standard sensor ordering (see below). |
 | `--blur` | | Kernel size for median blur post-processing. Default: `5`. |
 | `--morph` | | Kernel size for morphological opening/closing. Default: `0`. |
+
+!!! note "Full Command Reference"
+    For complete documentation of all available flags and options, see the [CLI Reference](../cli.md).
 
 ---
 

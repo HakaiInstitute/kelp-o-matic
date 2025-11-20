@@ -5,9 +5,18 @@ species-level kelp extent from outputs from the Habitat-Mapper tool. Final outpu
 consist of polygon features (.shp) that contain species-level classification of
 emergent canopy kelp present in drone imagery.
 
-These instructions assume a basic level of experience with ArcGIS Pro. For
-questions,
-please contact [Luba Reshitnyk](email:luba.reshitnyk@hakai.org) at
+These instructions use **ArcGIS Pro** (version 3.4+), but can also be adapted for **QGIS**
+(a free, open-source alternative). The core workflow is the same across GIS platforms.
+
+!!! info "QGIS Equivalents"
+    If using QGIS instead of ArcGIS Pro, the equivalent tools are:
+
+    - **"Raster to Polygon"** → **Raster menu > Conversion > Polygonize (Raster to Vector)**
+    - **"Field Calculator"** → **Open Attribute Table > Open Field Calculator** (calculator icon)
+    - **"Calculate Geometry"** → **Field Calculator** with expression `$area`
+    - **"Select by Attribute"** → **Select Features Using an Expression** (toolbar button)
+
+For questions, please contact [Luba Reshitnyk](email:luba.reshitnyk@hakai.org) at
 the [Hakai Institute](https://hakai.org).
 
 ![Overview](./images/post_processing1.png)

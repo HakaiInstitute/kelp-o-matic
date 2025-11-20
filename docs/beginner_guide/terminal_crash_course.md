@@ -110,6 +110,12 @@ These are shortcuts that act like relative directions:
     3. Press ++enter++ to go there.
     4. Type `ls` (or `dir` on Windows) to see what is inside.
 
+    **What success looks like:**
+
+    You should see a list of files and folders in your terminal. The list might include folders like "Projects", images, or documents you've saved there.
+
+    If you see an error like `No such file or directory`, press the ++arrow-up++ key to see your last command and check for typos. Remember to use ++tab++ completion to avoid mistakes!
+
 ---
 
 ## 4. Copying and Pasting

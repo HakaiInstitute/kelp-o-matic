@@ -3,6 +3,9 @@
 The `habitat-mapper` package includes one command line tool, `hab`. It will be registered
 in the same virtual environment that the `habitat-mapper` package is installed to.
 
+!!! tip "New to the Command Line?"
+    This page is a comprehensive reference for all CLI options. If you're just getting started, the [Processing Images](beginner_guide/execution.md) guide provides a more beginner-friendly walkthrough with examples.
+
 ```bash
 $ hab --help
 
