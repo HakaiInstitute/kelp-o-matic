@@ -72,17 +72,18 @@ Install and run your first segmentation in three steps.
 ```bash
 hab models
 ```
-```text
-# ┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
-# ┃ Model Name           ┃ Revision ┃ Description                                                             ┃ Status    ┃
-# ┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-# │ kelp-ps8b            │ 20250818 │ Kelp segmentation model for 8-band PlanetScope imagery.                 │ Available │
-# │ kelp-rgb             │ 20240722 │ Kelp segmentation model for RGB drone imagery.                          │ Available │
-# │ kelp-rgbi            │ 20231214 │ Kelp segmentation model for 4-band RGB+NIR drone imagery.               │ Available │
-# │ mussel-gooseneck-rgb │ 20250725 │ Mussel and gooseneck barnacle segmentation model for RGB drone imagery. │ Available │
-# │ mussel-rgb           │ 20250711 │ Mussel segmentation model for RGB drone imagery.                        │ Available │
-# └──────────────────────┴──────────┴─────────────────────────────────────────────────────────────────────────┴───────────┘
-```
+
+<div align="center" markdown="1">
+
+| Model Name           | Revision | Description                                                             |
+|----------------------|----------|-------------------------------------------------------------------------|
+| kelp-ps8b            | 20250818 | Kelp segmentation model for 8-band PlanetScope imagery.                 |
+| kelp-rgb             | 20240722 | Kelp segmentation model for RGB drone imagery.                          |
+| kelp-rgbi            | 20231214 | Kelp segmentation model for 4-band RGB+NIR drone imagery.               |
+| mussel-gooseneck-rgb | 20250725 | Mussel and gooseneck barnacle segmentation model for RGB drone imagery. |
+| mussel-rgb           | 20250711 | Mussel segmentation model for RGB drone imagery.                        |
+
+</div>
 
 3. Segment an image
 ```bash
