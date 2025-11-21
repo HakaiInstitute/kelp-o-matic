@@ -49,3 +49,27 @@ computer.
 
 Tiled GeoTIFFs are a way of storing images that allows for efficient access to small
 chunks of the image and will significantly speed up classification.
+
+!!! tip "Converting to Tiled GeoTIFF"
+
+    Your images may already be internally tiled. If this optimization would improve performance,
+    Habitat-Mapper will display a warning at runtime. If you need to convert a raster to a tiled
+    GeoTIFF, you can use one of the following methods:
+
+    === "ArcGIS Pro"
+
+        1. Use the "Copy Raster" tool
+        2. Set "Compression Type" (e.g., LZW)
+        3. In Environment settings, enable "Tiled" under Raster Storage
+
+    === "QGIS"
+
+        1. Raster → Conversion → Translate (Convert Format)
+        2. Under "Advanced Parameters", set Profile to "High compression"
+        3. Or manually add creation option: `TILED=YES`
+
+    === "GDAL"
+
+        ```bash
+        gdal_translate -co TILED=YES -co COMPRESS=LZW input.tif output_tiled.tif
+        ```
