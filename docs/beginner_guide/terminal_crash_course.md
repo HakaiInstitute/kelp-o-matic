@@ -1,116 +1,136 @@
 # Crash Course on the Terminal
 
-The terminal is a text-based interface to your computer. It allows you to run
-commands to interact with your computer. The terminal is where you will run the
-Habitat-Mapper tool.
+The terminal (or "Command Line") is a text-based way to talk to your computer. Instead of clicking icons, you type
+commands to tell the computer what to do.
 
-There are slight differences in how you interact with the terminal
-depending on your operating system, so choose the tab below based on which is relevant to you.
+You will use the terminal to install Habitat-Mapper and run the image processing tools.
 
-### Accessing the Terminal
+---
 
-=== "Windows"
-    On Windows, there are two default terminal options: Command Prompt and PowerShell.
-    You can use either of these to run the Habitat-Mapper tool. We recommend using PowerShell.
+## 1. Opening the Terminal
 
-    To open PowerShell, search for "PowerShell" in the search bar and click on "Windows PowerShell".
-
-=== "MacOS/Linux"
-    On MacOS and Linux, the default terminal is called Terminal. To open Terminal, search for "Terminal" in the search bar
-    and click on the application that appears.
-
-### Nagivating around
+Choose your operating system to see how to start.
 
 === "Windows"
-    There are two main commands you will use to navigate around the file system in the terminal: `cd` and `dir`.
-    `cd` stands for "change directory" and is used to move between folders. `dir` stands for "directory" and is used to list the contents of a folder.
+    We recommend using **PowerShell** (not the old "Command Prompt").
 
-    !!! tip "Cheat Sheet"
+    1. Press the **Windows Key**.
+    2. Type `PowerShell`.
+    3. Click **Windows PowerShell** to open it.
 
-        | Command | Description |
-        | ------- | ----------- |
-        | `cd [some path]` | Change directory |
-        | `dir [some path]` | List files and folders in the current directory |
+    *(It will look like a blue or black window with text waiting for you to type).*
 
-=== "MacOS/Linux"
-    There are two main commands you will use to navigate around the file system in the terminal: `cd` and `ls`.
-    `cd` stands for "change directory" and is used to move between folders. `ls` means for "list" and is used to list the contents of a folder.
+=== "MacOS"
+    1. Press ++command+space++ to open Spotlight Search.
+    2. Type `Terminal`.
+    3. Press ++enter++.
 
-    !!! tip "Cheat Sheet"
+=== "Linux"
+    You likely already know this, but usually:
 
-        | Command | Description |
-        | ------- | ----------- |
-        | `cd [some path]` | Change directory |
-        | `ls [some path]` | List files and folders in the current directory |
+    1. Press ++ctrl+alt+t++.
+    2. Or search `Terminal` in your applications menu.
 
+---
 
-#### Specifying Paths
+## 2. The "Magic" Keys :material-auto-fix:
 
-=== "Windows"
-    - Use backslashes `\` to separate folders in a path.
-    - Using `..` is interpreted as "the parent directory" of my current location.
-    - Using `.` is interpreted as "the current directory".
-    - Using `~` is interpreted as the user's home directory. (e.g. `C:\Users\McLovin`, if that is your username)
-    - You can use relative paths to navigate to folders in relation to your current location, like ` cd .\Documents`
-    - You can also use absolute paths to navigate, like `cd C:\Users\McLovin\Documents`.
-    - Use ++tab++ to autocomplete file and folder names. It is **very strongly** recommended to use this to avoid typos and save time typing long paths.
-        - e.g. `cd C:\Users\McLovin\Docu` then press ++tab++ to autocomplete to `cd C:\Users\McLovin\Documents`. Pressing ++tab++ again will cycle through all possible completions.
+Before typing commands, learn these two keys. They will save you hours of typing and frustration.
 
-=== "MacOS/Linux"
-    - Use forward slashes `/` to separate folders in a path.
-    - Using `..` is interpreted as "the parent directory" of my current location.
-    - Using `.` is interpreted as "the current directory".
-    - Using `~` is interpreted as the user's home directory. (e.g. `/home/mclovin`, if that is your username)
-    - You can use relative paths to navigate to folders in relation to your current location, like ` cd ./documents`
-    - You can also use absolute paths to navigate, like `cd /home/mclovin/documents`. Absolute paths start from the root directory `/`.
-    - Use ++tab++ to autocomplete file and folder names. It is **very strongly** recommended to use this to avoid typos and save time typing long paths.
-        - e.g. `cd /home/mclovin/docu` then press ++tab++ to autocomplete to `cd /home/mclovin/documents`. Pressing ++tab++ again will cycle through all possible completions.
+### Tab Completion (The most important key!)
 
+Never type a full filename or folder name manually.
+Instead, type the first few letters and press ++tab++. The terminal will auto-complete the name for you.
 
-!!! example "Examples"
-    === "Windows"
-        | Command | Effect |
-        | ------- | ------ |
-        | `dir` | List files and folders in the current directory |
-        | `dir .` | Same as above |
-        | `dir ..` | List files and folders in the parent directory of your current location|
-        | `cd Documents` | Move to a folder called `Documents`, that is contained in the current directory |
-        | `cd .\Documents` | Same as above |
-        | `cd ..` | Move up one directory |
-        | `cd Downloads\CoolDirectory` | Move to a folder called `CoolDirectory` inside a folder called `Downloads` contained in your current directory |
-        | `cd ~` | Move to your user home directory |
-        | `cd ~\Documents` | Move to a folder called `Documents` inside the user home directory |
-        | `cd ..\Documents` | Move up one folder and then into a folder called `Documents` |
-        | `cd C:\Users\McLovin\Documents` | Move to a folder called `Documents` inside the `McLovin` user directory on the `C:` drive |
+* **Why?** It prevents typos. If you press ++tab++ and nothing happens, you know you made a mistake or the file isn't
+  there.
 
+### The Up Arrow
 
-    === "MacOS/Linux"
-        | Command | Effect |
-        | ------- | ------ |
-        | `ls` | List files and folders in the current directory |
-        | `ls .` | Same as above |
-        | `ls ..` | List files and folders in the parent directory of your current location|
-        | `cd documents` | Move to a folder called `documents`, that is contained in the current directory |
-        | `cd ./documents` | Same as above |
-        | `cd ..` | Move up one directory |
-        | `cd downloads/cool_directory` | Move to a folder called `cool_directory` inside a folder called `downloads` contained in your current directory |
-        | `cd ~` | Move to your user home directory |
-        | `cd ~/documents` | Move to a folder called `documents` inside the user home directory |
-        | `cd ../documents` | Move up one folder and then into a folder called `Documents` |
-        | `cd /home/mclovin/documents` | Move to a folder called `documents` inside the `mclovin` home directory |
+Press the ++arrow-up++ key to see the last command you ran. Press it again to go back further.
+This is great for re-running a command without re-typing it.
 
-!!! warning "Spaces in Paths"
-    If a folder or file name has a space in it, you need to enclose the path in quotes.
-    For example, if you have a folder called `My Documents`, you would need to use `cd "My Documents"`.
-    It's a good idea to avoid spaces in folder and file names to make your life easier. Many people use
-    underscores `_` or hyphens `-` instead of spaces.
+---
 
+## 3. Basic Navigation
 
-You did it! You now know enough to navigate around the terminal. There are many commands you can use
-in the terminal, but these are the most important ones to get you started. You're now going to copy and paste some
-commands to set up the Habitat-Mapper tool, detailed in the next section. This is going to add a new command to your
-terminal that you can use to run the Habitat-Mapper tool.
+You can think of the terminal as being "inside" a specific folder on your computer. You use commands to look around or
+move to a different folder.
 
-### Next Steps
+### The Cheat Sheet
 
-Time to move on to the next section: [Virtual Environment Setup and Installation](./install_env_setup.md)
+=== "Windows (PowerShell)"
+
+    | Goal | Command | Example |
+    | :--- | :--- | :--- |
+    | **List** files in current folder | `ls` or `dir` | `ls` |
+    | **Change** to a folder | `cd` | `cd Documents` |
+    | **Go Back** one folder | `cd ..` | `cd ..` |
+    | **Go Home** (User folder) | `cd ~` | `cd ~` |
+    | **Where am I?** | `pwd` | `pwd` |
+
+=== "MacOS / Linux"
+
+    | Goal | Command | Example |
+    | :--- | :--- | :--- |
+    | **List** files in current folder | `ls` | `ls` |
+    | **Change** to a folder | `cd` | `cd Documents` |
+    | **Go Back** one folder | `cd ..` | `cd ..` |
+    | **Go Home** (User folder) | `cd ~` | `cd ~` |
+    | **Where am I?** | `pwd` | `pwd` |
+
+### Understanding Paths
+
+A "Path" is just an address for a file. You will often see special symbols used in these addresses.
+
+#### The Dot Symbols (`.` and `..`)
+
+These are shortcuts that act like relative directions:
+
+* `.` **(One Dot) = "Here"** (The folder you are currently in).
+    * Usage: You often see this when running scripts, like `./activate` (run the activate script located right here).
+* `..` **(Two Dots) = "Parent Folder"** (The folder directly above this one).
+    * Usage: Typing `cd ..` is like clicking the "Up" or "Back" button in your file explorer. It moves you out of the
+      current folder.
+
+#### Rules of the Road
+
+* **Spaces:** If a folder has a space in the name, you **must** use quotes.
+    * :x: `cd My Documents` (Will fail)
+    * :white_check_mark: `cd "My Documents"` (Works!)
+* **Separators:**
+    * Windows uses backslashes `\` (e.g., `C:\Users\Name`).
+    * Mac/Linux uses forward slashes `/` (e.g., `/home/name`).
+
+!!! example "Try it yourself"
+    Open your terminal and try these steps:
+
+    1. Type `cd ~` and press ++enter++ (Goes to your home folder).
+    2. Type `cd Do` and press ++tab++ (Should auto-complete to `Downloads` or `Documents`).
+    3. Press ++enter++ to go there.
+    4. Type `ls` (or `dir` on Windows) to see what is inside.
+
+    **What success looks like:**
+
+    You should see a list of files and folders in your terminal. The list might include folders like "Projects", images, or documents you've saved there.
+
+    If you see an error like `No such file or directory`, press the ++arrow-up++ key to see your last command and check for typos. Remember to use ++tab++ completion to avoid mistakes!
+
+---
+
+## 4. Copying and Pasting
+
+Pasting commands into a terminal can be tricky.
+
+* **Windows (PowerShell):** usually **Right-Click** anywhere in the window to paste. (++ctrl+v++ works in newer
+  versions).
+* **Mac (Terminal):** use ++command+v++.
+* **Linux:** usually ++ctrl+shift+v++ (since ++ctrl+v++ often has a different meaning).
+
+---
+
+## Next Steps
+
+Now that you can move around, let's get the software installed.
+
+[:material-arrow-right: Go to Installation](../installation.md){ .md-button .md-button--primary }
