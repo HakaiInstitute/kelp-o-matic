@@ -40,9 +40,10 @@ dev = [
     "types-requests>=2.32.4.20250809",
 ]
 docs = [
-    "mkdocs>=1.6.1,<2",
-    "mkdocs-material>=9.6.3,<10",
-    "mkdocstrings-python>=1.14.6,<2",
+    "click==8.2.1",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.7.0",
+    "mkdocstrings-python>=1.19.0",
 ]
 examples = [
     "fiona>=1.10.1",

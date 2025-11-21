@@ -1,5 +1,50 @@
 # Common Questions
 
+## Getting Started
+
+**Do I need to activate the environment every time I use Habitat-Mapper?**
+
+Yes. The virtual environment must be activated every time you open a new terminal window. This keeps Habitat-Mapper's dependencies separate from your system Python. You'll know the environment is active when you see `(habitat-env)` (or your environment name) at the beginning of your terminal prompt.
+
+=== "Windows"
+    ```powershell
+    .\habitat-env\Scripts\activate
+    ```
+
+=== "MacOS/Linux"
+    ```bash
+    source ./habitat-env/bin/activate
+    ```
+
+See [Installation](installation.md) for details.
+
+**How long does processing take?**
+
+Processing time varies widely depending on several factors:
+
+- **Image size:** Larger orthomosaics take longer to process
+- **Model choice:** Different models have different computational requirements
+- **Hardware:** GPU processing is significantly faster than CPU-only processing
+- **Crop size:** Larger crop sizes take more time per tile but may require fewer tiles overall
+
+There's no single answer—times can range from seconds to hours depending on your specific setup and data. The tool will display progress as it processes tiles.
+
+**Can I process multiple images at once?**
+
+The CLI processes one image at a time. For batch processing, use the [Python API](python_lib.md) to write a script that loops through multiple files. Here's a simple example:
+
+```python
+from habitat_mapper import model_registry
+from pathlib import Path
+
+model = model_registry['kelp-rgb']
+input_dir = Path("./orthomosaics")
+
+for img_path in input_dir.glob("*.tif"):
+    output_path = Path(f"./outputs/{img_path.stem}_mask.tif")
+    model.process(img_path=img_path, output_path=output_path)
+```
+
 ## Installation and Setup
 
 **What kind of computer do I need to run this?**
@@ -44,7 +89,7 @@ may improve performance.
 
 **The output image is all black. Did it find anything?**
 
-The model outputs pixel values from 0-3 depending on which model was used ([see here](about.md#model-outputs)). Make
+The model outputs pixel values from 0-3 depending on which model was used ([see here](model_outputs.md)). Make
 sure you visualize the outputs in your GIS using "unique values" classification, not a continuous color ramp.
 
 **My outputs don't align with the input orthomosaic in my GIS**
